@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="reset.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link rel="stylesheet" href="index.css">
 </head>
 
@@ -87,9 +88,9 @@
                     <label for="exPara">Exposição</label>
                     <label for="exPara">Paranormal</label>
                 </div>
-                <input class="prinStatus" type="text" id="dextra" name="dextra">
-                <input class="prinStatus" type="text" id="corpo" name="corpo">
-                <input class="prinStatus" type="text" id="exPara" name="exPara">
+                <input class="prinStatus" type="text" id="dextra" name="dextra" value="0">
+                <input class="prinStatus" type="text" id="corpo" name="corpo" value="0">
+                <input class="prinStatus" type="text" id="exPara" name="exPara" value="0">
             </div>
         </section>
         <section class="sec-atributos">
@@ -97,65 +98,212 @@
             <article>
                 <button class="roll"></button><br>
                 <label class="label_atributo" for="atr_aparencia">Aparência</label>
-                <input class="prinStatus" type="text" id="atr_aparencia" name="atr_aparencia">
+                <input class="prinStatus" type="text" id="atr_aparencia" name="atr_aparencia" value="0">
             </article>
             <article>
                 <button class="roll"></button><br>
                 <label class="label_atributo" for="atr_constituicao">Constituição</label>
-                <input class="prinStatus" type="text" id="atr_constituicao" name="atr_constituicao">
+                <input class="prinStatus" type="text" id="atr_constituicao" name="atr_constituicao" value="0">
             </article>
             <article>
                 <button class="roll"></button><br>
                 <label class="label_atributo" for="atr_destreza">Destreza</label>
-                <input class="prinStatus" type="text" id="atr_destreza" name="atr_destreza">
+                <input class="prinStatus" type="text" id="atr_destreza" name="atr_destreza" value="0">
             </article>
             <article>
                 <button class="roll"></button><br>
                 <label class="label_atributo" for="atr_educacao">Educação</label>
-                <input class="prinStatus" type="text" id="atr_educacao" name="atr_educacao">
+                <input class="prinStatus" type="text" id="atr_educacao" name="atr_educacao" value="0">
             </article>
             <article>
                 <button class="roll"></button><br>
                 <label class="label_atributo" for="atr_forca">Força</label>
-                <input class="prinStatus" type="text" id="atr_forca" name="atr_forca">
+                <input class="prinStatus" type="text" id="atr_forca" name="atr_forca" value="0">
             </article>
             <article>
                 <button class="roll"></button><br>
                 <label class="label_atributo" for="atr_inteligencia">Inteligencia</label>
-                <input class="prinStatus" type="text" id="atr_inteligencia" name="atr_inteligencia">
+                <input class="prinStatus" type="text" id="atr_inteligencia" name="atr_inteligencia" value="0">
             </article>
             <article>
                 <button class="roll"></button><br>
                 <label class="label_atributo" for="atr_poder">Poder</label>
-                <input class="prinStatus" type="text" id="atr_poder" name="atr_poder">
+                <input class="prinStatus" type="text" id="atr_poder" name="atr_poder" value="0">
             </article>
             <article>
                 <button class="roll"></button><br>
                 <label class="label_atributo" for="atr_sorte">Sorte</label>
-                <input class="prinStatus" type="text" id="atr_sorte" name="atr_sorte">
+                <input class="prinStatus" type="text" id="atr_sorte" name="atr_sorte" value="0">
             </article>
             <article></article>
             <article>
                 <label class="label_atributo" for="atr_movimento">Movimento</label>
-                <input class="prinStatus" type="text" id="atr_movimento" name="atr_movimento">
+                <input class="prinStatus" type="text" id="atr_movimento" name="atr_movimento" value="0">
             </article>
             <article>
                 <label class="label_atributo" for="atr_tamanho">Tamanho</label>
-                <input class="prinStatus" type="text" id="atr_tamanho" name="atr_tamanho">
+                <input class="prinStatus" type="text" id="atr_tamanho" name="atr_tamanho" value="0">
             </article>
             <article></article>
         </section>
-        <section class="sec-favPercias">
-            <div></div>
-            <h2 class="tituloFavPericias">Atributos</h2>
-            <div class="buttons">
-                <button class="ver">ver</button>
-                <button class="editar">editar</button>
-            </div>
-            
+        <section class="sec-favPericias">
+            <section class="sec-grid">
+                <div></div>
+                <h2 class="tituloFavPericias">Atributos</h2>
+                <div class="buttons">
+                    <button class="ver">ver</button>
+                    <button class="editar">editar</button>
+                </div>
+            </section>
+            <div class="linha"></div>
+            <section class="sec-grid">
+                <article>
+                    <button class="favoritar"></button><br>
+                    <input class="prinStatus" type="text" id="ciencia" name="ciencia" value="0">
+                    <label class="label_pericia" for="ciencia">Ciencia</label>
 
+                </article>
+                <article>
+                    <button class="favoritar"></button><br>
+                    <input class="prinStatus" type="text" id="engenharia" name="engenharia" value="0">
+                    <label class="label_pericia" for="engenharia">Engenharia</label>
 
+                </article>
+                <article>
+                    <button class="favoritar"></button><br>
+                    <input class="prinStatus" type="text" id="arma_de_fogo" name="arma_de_fogo" value="0">
+                    <label class="label_pericia" for="arma_de_fogo">Armas de Fogo</label>
+
+                </article>
+                <article>
+                    <button class="favoritar"></button><br>
+                    <input class="prinStatus" type="text" id="pilotagem" name="pilotagem" value="0">
+                    <label class="label_pericia" for="pilotagem">Pilotagem</label>
+
+                </article>
+                <article>
+                    <button class="favoritar"></button><br>
+                    <input class="prinStatus" type="text" id="acalmar" name="acalmar" value="0">
+                    <label class="label_pericia" for="acalmar">Acalmar</label>
+
+                </article>
+            </section>
         </section>
+        <section class="sec-combate">
+            <section class="sec-grid">
+                <div></div>
+                <h2 class="tituloCombate">Combate</h2>
+                <div class="buttons">
+                    <button class="ver">ver</button>
+                    <button class="editar">editar</button>
+                </div>
+            </section>
+            <div class="linha"></div>
+            <table class="table table-hover">
+                <thead>
+                    <th scope="col">Nome</th>
+                    <th scope="col">Tipo</th>
+                    <th scope="col">Dano</th>
+                    <th scope="col">nun. Atual</th>
+                    <th scope="col">nun. Maximo</th>
+                    <th scope="col">Ataque</th>
+                    <th scope="col">Alcance</th>
+                    <th scope="col">Defeito</th>
+                    <th scope="col">Área</th>    
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">balestra</th>
+                        <td>perfurante</td>
+                        <td>1d6</td>
+                        <td>5</td>
+                        <td>10</td>
+                        <td>destreza</td>
+                        <td>20m</td>
+                        <td>1</td>
+                        <td>1quadrado</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">balestra</th>
+                        <td>perfurante</td>
+                        <td>1d6</td>
+                        <td>5</td>
+                        <td>10</td>
+                        <td>destreza</td>
+                        <td>20m</td>
+                        <td>1</td>
+                        <td>1quadrado</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">balestra</th>
+                        <td>perfurante</td>
+                        <td>1d6</td>
+                        <td>5</td>
+                        <td>10</td>
+                        <td>destreza</td>
+                        <td>20m</td>
+                        <td>1</td>
+                        <td>1quadrado</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">balestra</th>
+                        <td>perfurante</td>
+                        <td>1d6</td>
+                        <td>5</td>
+                        <td>10</td>
+                        <td>destreza</td>
+                        <td>20m</td>
+                        <td>1</td>
+                        <td>1quadrado</td>
+                    </tr>
+                </tbody>
+            </table>
+                
+        </section>
+        <section class="sec-Pericias">
+            <section class="sec-grid">
+                <div></div>
+                <h2 class="tituloPericias">Pericias</h2>
+                <div class="buttons">
+                    <button class="ver">ver</button>
+                    <button class="editar">editar</button>
+                </div>
+            </section>
+            <div class="linha"></div>
+            <section class="sec-grid-g">
+                <article>
+                    <button class="favoritar"></button><br>
+                    <input class="prinStatus" type="text" id="ciencia" name="ciencia" value="0">
+                    <label class="label_pericia" for="ciencia">Ciencia</label>
+
+                </article>
+                <article>
+                    <button class="favoritar"></button><br>
+                    <input class="prinStatus" type="text" id="engenharia" name="engenharia" value="0">
+                    <label class="label_pericia" for="engenharia">Engenharia</label>
+
+                </article>
+                <article>
+                    <button class="favoritar"></button><br>
+                    <input class="prinStatus" type="text" id="arma_de_fogo" name="arma_de_fogo" value="0">
+                    <label class="label_pericia" for="arma_de_fogo">Armas de Fogo</label>
+
+                </article>
+                <article>
+                    <button class="favoritar"></button><br>
+                    <input class="prinStatus" type="text" id="pilotagem" name="pilotagem" value="0">
+                    <label class="label_pericia" for="pilotagem">Pilotagem</label>
+
+                </article>
+                <article>
+                    <button class="favoritar"></button><br>
+                    <input class="prinStatus" type="text" id="acalmar" name="acalmar" value="0">
+                    <label class="label_pericia" for="acalmar">Acalmar</label>
+
+                </article>
+            </section>
+        </section>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     </main>
 </body>
 

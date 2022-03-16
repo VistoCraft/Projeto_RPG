@@ -220,7 +220,6 @@ article{
     border: 1px solid white;
     border-radius: 10px;
     gap: 20px;
-    margin-bottom: 50px;
     padding: 20px;
 }
 
@@ -228,14 +227,19 @@ article{
     padding: 5px;
 }
 
-.sec-favPercias{
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+
+.sec-favPericias{
     border: 1px solid white;
     border-radius: 10px;
     gap: 20px;
-    margin-bottom: 50px;
     padding: 20px;
+    align-content: space-between;
+}
+
+.sec-grid{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    padding-bottom: 5px;
     align-content: space-between;
 }
 
@@ -261,4 +265,80 @@ article{
     color: aliceblue;
     padding: 5px;
     justify-items: flex-end;
+}
+
+.linha{
+    border-bottom: 1px solid white;
+    margin-bottom: 20px;
+}
+
+.favoritar{
+    width: 10px;
+    height: 10px;
+    margin: auto;
+}
+
+.favoritar:active{
+    background-color: purple;
+}
+
+
+.sec-combate{
+    border: 1px solid white;
+    border-radius: 10px;
+    gap: 20px;
+    margin-bottom: 10px;
+    padding: 20px;
+    align-content: space-between;
+    grid-column: span 2;
+}
+
+.tituloCombate{
+    font-size: 20px;
+    margin-bottom: 0px;
+    text-align: center;
+    justify-self: center;
+    grid-column: span 2;
+}
+
+.buttons{
+    text-align: end;
+}
+
+.sec-Pericias{
+    border: 1px solid white;
+    border-radius: 10px;
+    gap: 20px;
+    margin-bottom: 10px;
+    padding: 20px;
+    align-content: space-between;
+    grid-column: span 2;
+}
+
+.tituloPericias{
+    font-size: 20px;
+    margin-bottom: 0px;
+    text-align: center;
+    justify-self: center;
+    grid-column: span 2;
+}
+
+.sec-grid-g{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    gap: 20px;
+    padding-bottom: 5px;
+    align-content: space-between;
+}
+
+td,th{
+    text-align: center;
+}
+
+.table{
+    color: white;
+}
+
+tr{
+    border-color: #5b5b5b;
 }
