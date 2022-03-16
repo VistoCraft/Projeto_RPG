@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="reset.css">
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <main>
+        <section class="sec-logo">
+            <img class="Logo" src="./img/Logo.png" alt="Logo RPG">
+            <h1>Ficha do jogador</h1>
+        </section>
+        <section class="detalhes">
+            <form action="">
+                <h2>Detalhes Pessoais</h2>
+                <label for="nome">Nome</label>
+                <input type="text" name="nome" id="nome">
+                <label for="jogador">Jogador</label>
+                <input type="text" name="jogador" id="jogador">
+                <label for="ocupacao">Ocupação</label>
+                <input type="text" name="ocupacao" id="ocupacao">
+                <label for="idade">Idade</label>
+                <input type="text" name="idade" id="idade">
+                <label for="sexo">Sexo</label>
+                <select name="sexo" id="sexo">
+                    <option value="M">Masculino</option>
+                    <option value="F" selected>Feminino</option>
+                    <option value="N">Não Identificado</option>
+                </select>
+                <label for="nascimento">Local de Nascimento</label>
+                <input type="text" name="nascimento" id="nascimento">
+                <label for="residencia">Local de Residência</label>
+                <input type="text" name="residencia" id="residencia">
+            </form>
+        </section>
+        <section class="stats">
+            <div class="topo">
+                <img class="icon" src="img/icon.jpg" alt="Icone">
+                <img class="d20" src="img/d21.png" alt="">
+            </div>
+            <div>
+                <h4>Vida</h4>
+                <div class="progress">
+                    <p class="num">20/20</p>
+                    <span class="progress-bar vida" style="width: 50%"></span>
+                </div>
+            </div>
+            <div class="condicao">
+                <input type="checkbox" id="lesaoG" name="condicao_vida" value="lesaoG">
+                <label for="lesaoG">Lesão Grave</label><br>
+                <input type="checkbox" id="incosiente" name="condicao_vida" value="inconsiente">
+                <label for="inconsiente">Inconsiente</label><br>
+                <input type="checkbox" id="morrendo" name="condicao_vida" value="morrendo">
+                <label for="morrendo">Morrendo</label>
+            </div>
+            <div class="gsanidade">
+                <h4 class="psan">Sanidade</h4>
+                <div class="progress">
+                    <p class="nums">67/100</p>
+                    <span class="progress-bar sanidade" style="width: 75%"></span>
+                </div>
+                <button class="roll"></button>
+            </div>
+            <div class="condicao">
+                <input type="checkbox" id="traumatizado" name="condicao_sanidade" value="traumatizado">
+                <label for="traumatizado">Traumatizado</label><br>
+                <input type="checkbox" id="enlouquecido" name="condicao_sanidade" value="enlouquecido">
+                <label for="enlouquecido">Enlouquecido</label><br>
+            </div>
+            <div>
+                <h4>Esforço</h4>
+                <div class="progress">
+                    <p class="num">5/13</p>
+                    <span class="progress-bar esforco" style="width: 25%"></span>
+                </div>
+            </div>
+            <div class="prin">
+                <label for="dextra">Dano Extra</label>
+                <label class="centro" for="corpo">Corpo</label>
+                <div class="grande">
+                    <label for="exPara">Exposição</label>
+                    <label for="exPara">Paranormal</label>
+                </div>
+                <input class="prinStatus" type="text" id="dextra" name="dextra">
+                <input class="prinStatus" type="text" id="corpo" name="corpo">
+                <input class="prinStatus" type="text" id="exPara" name="exPara">
+            </div>
+        </section>
+        <section class="sec-atributos">
+            <h2 class="tituloAtributos">Atributos</h2>
+            <article>
+                <button class="roll"></button><br>
+                <label class="label_atributo" for="atr_aparencia">Aparência</label>
+                <input class="prinStatus" type="text" id="atr_aparencia" name="atr_aparencia">
+            </article>
+            <article>
+                <button class="roll"></button><br>
+                <label class="label_atributo" for="atr_constituicao">Constituição</label>
+                <input class="prinStatus" type="text" id="atr_constituicao" name="atr_constituicao">
+            </article>
+            <article>
+                <button class="roll"></button><br>
+                <label class="label_atributo" for="atr_destreza">Destreza</label>
+                <input class="prinStatus" type="text" id="atr_destreza" name="atr_destreza">
+            </article>
+            <article>
+                <button class="roll"></button><br>
+                <label class="label_atributo" for="atr_educacao">Educação</label>
+                <input class="prinStatus" type="text" id="atr_educacao" name="atr_educacao">
+            </article>
+            <article>
+                <button class="roll"></button><br>
+                <label class="label_atributo" for="atr_forca">Força</label>
+                <input class="prinStatus" type="text" id="atr_forca" name="atr_forca">
+            </article>
+            <article>
+                <button class="roll"></button><br>
+                <label class="label_atributo" for="atr_inteligencia">Inteligencia</label>
+                <input class="prinStatus" type="text" id="atr_inteligencia" name="atr_inteligencia">
+            </article>
+            <article>
+                <button class="roll"></button><br>
+                <label class="label_atributo" for="atr_poder">Poder</label>
+                <input class="prinStatus" type="text" id="atr_poder" name="atr_poder">
+            </article>
+            <article>
+                <button class="roll"></button><br>
+                <label class="label_atributo" for="atr_sorte">Sorte</label>
+                <input class="prinStatus" type="text" id="atr_sorte" name="atr_sorte">
+            </article>
+            <article></article>
+            <article>
+                <label class="label_atributo" for="atr_movimento">Movimento</label>
+                <input class="prinStatus" type="text" id="atr_movimento" name="atr_movimento">
+            </article>
+            <article>
+                <label class="label_atributo" for="atr_tamanho">Tamanho</label>
+                <input class="prinStatus" type="text" id="atr_tamanho" name="atr_tamanho">
+            </article>
+            <article></article>
+        </section>
+        <section class="sec-favPercias">
+            <div></div>
+            <h2 class="tituloFavPericias">Atributos</h2>
+            <div class="buttons">
+                <button class="ver">ver</button>
+                <button class="editar">editar</button>
+            </div>
+            
+
+
+        </section>
+    </main>
+</body>
+
+</html>
