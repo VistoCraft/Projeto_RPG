@@ -1,34 +1,33 @@
 const detalhes = JSON.parse(localStorage.getItem("detalhes")) || {
     nome: "",
     jogador: "",
-    ocupacao: "",
+    classe: "",
     idade: "",
-    nascimento: "",
-    residencia: "",
+    origem: "",
+    patente: "",
     dextra: "0",
     corpo: "0",
     exPara: "0",
 };
-const nome = document.getElementById("nome");
-const jogador = document.getElementById("jogador");
-const ocupacao = document.getElementById("ocupacao");
-const idade = document.getElementById("idade");
-const sexo = document.getElementById("sexo");
-const nascimento = document.getElementById("nascimento");
-const residencia = document.getElementById("residencia");
-const dextra = document.getElementById("dextra");
-const corpo = document.getElementById("corpo");
-const exPara = document.getElementById("exPara");
+const nome = $("#nome");
+const jogador = $("#jogador");
+const classe = $("#classe");
+const idade = $("#idade");
+const sexo = $("#sexo");
+const origem = $("#origem");
+const patente = $("#patente");
+const dextra = $("#dextra");
+const corpo = $("#corpo");
+const exPara = $("#exPara");
 
-const tipos = [nome, jogador, ocupacao, idade, sexo, nascimento, residencia, dextra, corpo, exPara]
 
 let aux = {
     nome: detalhes.nome,
     jogador: detalhes.jogador,
-    ocupacao: detalhes.ocupacao,
+    classe: detalhes.classe,
     idade: detalhes.idade,
-    nascimento: detalhes.nascimento,
-    residencia: detalhes.residencia,
+    origem: detalhes.origem,
+    patente: detalhes.patente,
     dextra: detalhes.dextra,
     corpo: detalhes.corpo,
     exPara: detalhes.exPara,
@@ -36,68 +35,79 @@ let aux = {
 
 iniciarDetalhes(detalhes);
 
-nome.addEventListener("blur", () => {
-    aux.nome = nome.value;
-    console.log(detalhes)
+nome.blur(function (e) { 
+    e.preventDefault();
+    aux.nome = $(this)[0].value;
+    localStorage.setItem("detalhes", JSON.stringify(aux));
+});
+
+jogador.blur(function (e) { 
+    e.preventDefault();
+    aux.jogador = $(this)[0].value;
+    localStorage.setItem("detalhes", JSON.stringify(aux));
+});
+
+classe.blur(function (e){
+    e.preventDefault();
+    aux.classe =  $(this)[0].value;
     localStorage.setItem("detalhes", JSON.stringify(aux));
 })
 
-jogador.addEventListener("blur", () => {
-    aux.jogador = jogador.value;
+idade.blur(function (e){
+    e.preventDefault();
+    aux.idade =  $(this)[0].value;
     localStorage.setItem("detalhes", JSON.stringify(aux));
 })
 
-ocupacao.addEventListener("blur", () => {
-    aux.ocupacao = ocupacao.value;
+sexo.blur(function (e){
+    e.preventDefault();
+    aux.sexo =  $(this)[0].value;
     localStorage.setItem("detalhes", JSON.stringify(aux));
 })
 
-idade.addEventListener("blur", () => {
-    aux.idade = idade.value;
+origem.blur(function (e){
+    e.preventDefault();
+    aux.origem =  $(this)[0].value;
     localStorage.setItem("detalhes", JSON.stringify(aux));
 })
 
-sexo.addEventListener("blur", () => {
-    aux.sexo = sexo.value;
+patente.blur(function (e){
+    e.preventDefault();
+    aux.patente =  $(this)[0].value;
     localStorage.setItem("detalhes", JSON.stringify(aux));
 })
 
-residencia.addEventListener("blur", () => {
-    aux.residencia = residencia.value;
+dextra.blur(function (e){
+    e.preventDefault();
+    aux.dextra =  $(this)[0].value;
     localStorage.setItem("detalhes", JSON.stringify(aux));
 })
 
-nascimento.addEventListener("blur", () => {
-    aux.nascimento = nascimento.value;
+corpo.blur(function (e){
+    e.preventDefault();
+    aux.corpo =  $(this)[0].value;
     localStorage.setItem("detalhes", JSON.stringify(aux));
 })
 
-dextra.addEventListener("blur", () => {
-    aux.dextra = dextra.value;
+exPara.blur(function (e){
+    e.preventDefault();
+    aux.exPara =  $(this)[0].value;
     localStorage.setItem("detalhes", JSON.stringify(aux));
 })
 
-corpo.addEventListener("blur", () => {
-    aux.corpo = corpo.value;
-    localStorage.setItem("detalhes", JSON.stringify(aux));
-})
 
-exPara.addEventListener("blur", () => {
-    aux.exPara = exPara.value;
-    localStorage.setItem("detalhes", JSON.stringify(aux));
-})
 
 
 
 function iniciarDetalhes(item) {
-    nome.value = item.nome;
-    jogador.value = item.jogador;
-    ocupacao.value = item.ocupacao;
-    idade.value = item.idade;
-    sexo.value = item.sexo;
-    residencia.value = item.residencia;
-    nascimento.value = item.nascimento;
-    dextra.value = item.dextra;
-    corpo.value = item.corpo;
-    exPara.value = item.exPara;
+    nome.val(item.nome);
+    jogador.val(item.jogador);
+    classe.val(item.classe);
+    idade.val(item.idade);
+    sexo.val(item.sexo);
+    origem.val(item.origem);
+    patente.val(item.patente);
+    dextra.val(item.dextra);
+    corpo.val(item.corpo);
+    exPara.val(item.exPara);
 }
