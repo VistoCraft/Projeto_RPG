@@ -23,7 +23,7 @@ export default function Pericias({ titulo, prefixo = "", pericias, completa = fa
       <section className={`grid content-between pb-[5px] ${grade}`}>
         {pericias.map(({ id, nome }) => (
           <article className="text-center" key={id}>
-            <button className="mx-auto block h-[10px] w-[10px] bg-neutral-200 active:bg-[purple]"></button>
+            <button className="mx-auto block h-[10px] w-[10px] bg-borda active:bg-arcano"></button>
             <input className={campoNumero} type="text" id={prefixo + id} name={id} defaultValue="0" />
             <label className="block" htmlFor={prefixo + id}>{nome}</label>
           </article>

@@ -30,7 +30,7 @@ export default function Status({ detalhes, alterar, barras, ajustarBarra }: Stat
   return (
     <section className="flex flex-col">
       <div className="flex justify-around">
-        <img className="w-[100px] rounded-full border-[3px] border-white" src="/img/icon.jpg" alt="Icone" />
+        <img className="w-[100px] rounded-full border-[3px] border-arcano" src="/img/icon.jpg" alt="Icone" />
         <img className="w-[100px] rounded-full" src="/img/d21.png" alt="" />
       </div>
       <Barra titulo="Vida" corBarra="bg-vida" valor={barras.vida} ajustar={(variacao) => ajustarBarra("vida", variacao)} />
@@ -58,7 +58,7 @@ function Condicoes({ nome, condicoes }: { nome: string; condicoes: Condicao[] })
     <div className="flex justify-evenly">
       {condicoes.map((condicao) => (
         <span key={condicao.id}>
-          <input type="checkbox" id={condicao.id} name={nome} value={condicao.id} />
+          <input className="mr-1 accent-arcano" type="checkbox" id={condicao.id} name={nome} value={condicao.id} />
           <label htmlFor={condicao.id}>{condicao.nome}</label>
         </span>
       ))}

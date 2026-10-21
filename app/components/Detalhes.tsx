@@ -1,5 +1,5 @@
 import type { Alterar, Detalhes as DadosDetalhes } from "./useDetalhes";
-import { campoLinha, rotulo, tituloSecao } from "./estilos";
+import { campoLinha, cartao, rotulo, tituloSecao } from "./estilos";
 
 type CampoId = "nome" | "jogador" | "classe" | "idade" | "origem" | "patente";
 
@@ -17,8 +17,8 @@ const campos: { id: CampoId; nome: string }[] = [
 
 export default function Detalhes({ detalhes, alterar }: DetalhesProps) {
   return (
-    <section className="m-[5px] rounded-[10px] border-2 border-white">
-      <form className="flex flex-col p-[10px]" onSubmit={(e) => e.preventDefault()}>
+    <section className={`${cartao} m-[5px]`}>
+      <form className="flex flex-col" onSubmit={(e) => e.preventDefault()}>
         <h2 className={`${tituloSecao} mb-5`}>Detalhes Pessoais</h2>
         {campos.map((campo) => (
           <Campo key={campo.id} {...campo} detalhes={detalhes} alterar={alterar} />

@@ -7,6 +7,7 @@ Todos ficam em `app/components/`. Os arrays de dados (atributos, perícias, cond
 - `"use client"`. É a raiz da ficha e o único dono de estado.
 - Chama `useDetalhes()` e passa `detalhes` / `alterar` para `Detalhes` e `Status`.
 - Chama `useBarras()` e passa `barras` / `ajustarBarra` para `Status`.
+- Chama `useTema()` e passa `tema` / `alternarTema` para `BotaoTema`, no cabeçalho com o logo e o título. Logo abaixo vem o `DivisorRunico`.
 - Define o array `pericias: Pericia[]`, usado nas duas seções de perícias.
 - Renderiza `Pericias` duas vezes:
   - **favoritas**: `prefixo="fav_"` (4 colunas). Título "Perícias favoritas".
@@ -28,6 +29,19 @@ Hook genérico: `usePersistido<T extends object>(chave, inicial)` retorna `[valo
 
 - Todas começam cheias: 100/100 (`VALOR_MAXIMO_PADRAO`).
 - `ajustar` soma a `variacao` ao valor atual e limita o resultado entre `0` e o `maximo`.
+
+## `useTema.ts`
+
+- `useTema()` retorna `[Tema, AlternarTema]`; `type Tema = "claro" | "escuro"` (padrão `"escuro"`), chave `"tema"`.
+- Um `useEffect` liga ou desliga a classe `dark` no `<html>`.
+
+## `BotaoTema.tsx`
+
+- Props: `{ tema: Tema; alternar: AlternarTema }`. Botão com ícone de sol (no escuro) ou lua (no claro) e `aria-label` "Usar tema claro/escuro".
+
+## `DivisorRunico.tsx`
+
+- Sem props. Linha em degradê de `essencia` para `arcano` com a constante `RUNAS` no centro, decorativa (`aria-hidden`).
 
 ## `useDetalhes.ts`
 
@@ -60,7 +74,7 @@ Detalhes em [05-estado-e-persistencia.md](05-estado-e-persistencia.md).
 
 - Props: `titulo`, `corBarra` (token Tailwind: `bg-vida`, `bg-sanidade` ou `bg-esforco`), `valor: ValorBarra` e `ajustar: (variacao: number) => void`.
 - Botões −/+ (`BotaoBarra`, com `aria-label` "Diminuir/Aumentar <titulo>") chamam `ajustar(∓PASSO)`, com `PASSO = 1`.
-- Mostra `atual/maximo`. A largura da barra é `atual / maximo` em %, via `style` (valor dinâmico, permitido pela R8), com transição de 200 ms.
+- Mostra `atual/maximo` na mesma linha do título, à direita. A largura da barra é `atual / maximo` em %, via `style` (valor dinâmico, permitido pela R8), com transição de 200 ms.
 
 ## `Atributos.tsx`
 
@@ -92,12 +106,26 @@ Constantes com combinações de classes Tailwind usadas em mais de um componente
 
 | Constante | Uso |
 | --- | --- |
-| `cartao` | Borda branca arredondada + padding das seções |
+| `cartao` | Fundo `superficie`, borda `borda`, cantos arredondados, padding e sombra leve das seções |
 | `tituloSecao` | Título `h2` das seções |
 | `rotulo` | `<label>` dos campos |
 | `campoLinha` | Input/select de texto com linha embaixo (`Detalhes`) |
 | `campoNumero` | Input numérico grande e centralizado (atributos, perícias, status) |
-| `botaoContorno` | Botões "ver" / "editar" |
+| `botaoContorno` | Botões "ver" / "editar" e `BotaoTema` |
+| `botaoPrincipal` | Botão de ação principal (largura toda, fundo `arcano-texto-claro`, texto branco) |
+| `link` | Link em `acento`, sublinhado no hover |
+
+## `autenticacao/`
+
+| Arquivo | Papel |
+| --- | --- |
+| `TelaAutenticacao.tsx` | `"use client"`. Moldura das telas: logo, `BotaoTema`, `DivisorRunico` e `children`, centralizados (máx. 440px) |
+| `CartaoFormulario.tsx` | Props `titulo`, `textoBotao`, `envio: EnvioFormulario`, `rodape`, `children`. Mostra os erros com `role="alert"` e desativa o botão enquanto envia |
+| `CampoFormulario.tsx` | Props `id`, `nome`, `tipo` (`email` / `password`), `valor`, `aoAlterar`, `autoComplete`, `dica?`. Input `required` com rótulo e dica ligada por `aria-describedby` |
+| `useEnvioFormulario.ts` | `(acao, aoConcluir) => { enviando, erros, enviar }`. Chama `acao()` no submit; sucesso chama `aoConcluir`, falha guarda os erros |
+| `FormularioLogin.tsx` | `"use client"`. E-mail e senha, chama `entrar` |
+| `FormularioCadastro.tsx` | `"use client"`. E-mail, senha e confirmação. Confere se as senhas batem, chama `cadastrar` e depois `entrar` |
+| `rotas.ts` | `ROTA_APOS_LOGIN = "/"` |
 
 ## Ao criar um componente novo
 

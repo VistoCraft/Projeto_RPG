@@ -1,18 +1,52 @@
 @import "tailwindcss";
 
-@theme {
-  --color-fundo: rgb(4, 4, 4);
-  --color-trilho: #2b2b2b;
-  --color-linha-tabela: #5b5b5b;
-  --color-texto-tabela: #212529;
-  --color-vida: #770202;
-  --color-sanidade: rgb(0, 0, 77);
-  --color-esforco: #40006d;
+@theme static {
+  --color-pergaminho: #f0f4f8;
+  --color-luar: #ecf1f6;
+  --color-nevoa: #e2eaf1;
+  --color-nevoa-escura: #c9d6e2;
+  --color-abismo: #1f2937;
+  --color-abismo-claro: #2d3748;
+  --color-noite: #131823;
+  --color-arcano: #7f56d9;
+  --color-arcano-texto-claro: #6941c6;
+  --color-arcano-texto-escuro: #9e77ed;
+  --color-essencia: #00d28e;
+  --color-essencia-escura: #00bfa5;
+  --color-essencia-texto-claro: #007a62;
+  --color-mare: #2c6e8f;
+
+  --color-vida: #c53a47;
+  --color-sanidade: #2c6e8f;
+  --color-esforco: #7f56d9;
+
+  --color-fundo: var(--color-pergaminho);
+  --color-superficie: var(--color-nevoa);
+  --color-borda: var(--color-nevoa-escura);
+  --color-texto: var(--color-abismo);
+  --color-destaque: var(--color-arcano-texto-claro);
+  --color-acento: var(--color-essencia-texto-claro);
+  --color-trilho: var(--color-nevoa-escura);
+}
+
+@theme inline {
+  --font-titulo: var(--font-almendra);
+  --font-texto: var(--font-literata);
 }
 
 @layer base {
+  .dark {
+    --color-fundo: var(--color-noite);
+    --color-superficie: var(--color-abismo);
+    --color-borda: var(--color-abismo-claro);
+    --color-texto: var(--color-luar);
+    --color-destaque: var(--color-arcano-texto-escuro);
+    --color-acento: var(--color-essencia);
+    --color-trilho: var(--color-abismo-claro);
+  }
+
   option {
-    background-color: black;
-    color: white;
+    background-color: var(--color-superficie);
+    color: var(--color-texto);
   }
 }

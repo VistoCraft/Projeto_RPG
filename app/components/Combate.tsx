@@ -21,15 +21,15 @@ export default function Combate() {
   return (
     <section className={`${cartao} col-span-2 mb-[10px]`}>
       <Cabecalho titulo="Combate" />
-      <table className="mb-4 w-full bg-white text-texto-tabela">
+      <table className="mb-4 w-full">
         <thead>
-          <tr className="border-b border-linha-tabela">
+          <tr className="border-b border-borda font-titulo">
             {colunas.map((coluna) => <th key={coluna} className={celula} scope="col">{coluna}</th>)}
           </tr>
         </thead>
         <tbody>
           {armas.map((arma, i) => (
-            <tr key={i} className="border-b border-linha-tabela hover:bg-black/[.075]">
+            <tr key={i} className="border-b border-borda hover:bg-arcano/10">
               <th className={celula} scope="row">{arma.nome}</th>
               <td className={celula}>{arma.tipo}</td>
               <td className={celula}>{arma.dano}</td>

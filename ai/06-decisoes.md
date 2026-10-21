@@ -4,6 +4,30 @@ Uma entrada por decisão, a mais recente no topo. Formato: **data — título**,
 
 ---
 
+## 2026-10-21 — Telas de login e cadastro
+
+- **Contexto:** o backend já tinha `/auth/register` e `/auth/login` (Identity). Faltavam as telas.
+- **Decisão:** rotas `/login` e `/cadastro` no route group `(autenticacao)`, com layout próprio. HTTP segue a R6: `FetchRestProvider` em `src/providers/`, instância `api`, e `autenticacaoRepositorio` em `src/repositories/` com DTO (`password`) → domínio (`senha`) e tradução dos códigos de erro. A sessão é o cookie do Identity (`useCookies=true`, `credentials: "include"`). O cadastro já faz o login em seguida. A URL da API tem padrão local, porque a documentação do Next pede para não commitar `.env`.
+- **Consequências:** o cadastro ainda não pede o nome (o `/auth/register` do Identity só aceita e-mail e senha); o nome fica para a página de perfil. Toda nova chamada ao backend é um método num repositório, sobre o mesmo `api`.
+
+## 2026-10-21 — Identidade visual com tema claro e escuro
+
+- **Contexto:** a ficha tinha fundo preto, bordas brancas e cores soltas. O planejamento definiu uma identidade visual (`Projeto_RPG_Planejamento/03-identidade-visual.md`).
+- **Decisão:** a paleta virou tokens no `@theme static`. Os componentes usam tokens de papel (`fundo`, `superficie`, `borda`, `texto`, `destaque`, `acento`, `trilho`), cujo valor muda na classe `.dark` do `<html>`, em vez de `dark:` em cada classe. O tema fica salvo na chave `"tema"` (padrão escuro, para manter o visual atual sem piscar). Fontes Almendra (títulos) e Literata (texto) via `next/font/google`. As barras ganharam cores da paleta e o valor `atual/maximo` saiu de dentro da barra para a linha do título. A tabela de combate deixou de ter fundo branco.
+- **Consequências:** os tokens `linha-tabela` e `texto-tabela` foram removidos. Componente novo usa os tokens de papel e funciona nos dois temas sem nada extra.
+
+## 2026-10-21 — Stack do backend
+
+- **Contexto:** o backend precisava de stack, banco, tempo real e login para começar.
+- **Decisão:** ASP.NET Core (.NET 10) com PostgreSQL via Entity Framework Core, ASP.NET Core Identity (e-mail e senha agora, Google e Discord depois como login externo) e SignalR para o chat e o tabuleiro.
+- **Consequências:** o frontend vai falar com a API em `http://localhost:5228` usando cookie (CORS com credenciais para `http://localhost:3000`) e com o SignalR via `@microsoft/signalr`.
+
+## 2026-10-21 — Repositórios de backend e de planejamento
+
+- **Contexto:** o projeto vai virar um site com hub, lista de mesas e, em cada mesa, chat, fichas e tabuleiro.
+- **Decisão:** criar `Projeto_RPG_Backend` e `Projeto_RPG_Planejamento` (visão, lista de tarefas e dúvidas), ao lado deste repositório em `D:\GitHub\`.
+- **Consequências:** o roadmap do produto fica no repositório de planejamento. Este `ai/` continua documentando só o frontend.
+
 ## 2026-10-21 — Barras com −/+ e hook genérico de persistência
 
 - **Contexto:** os botões −/+ de Vida, Sanidade e Esforço não faziam nada. As barras mostravam valores fixos (67/100 e 50%), que nem batiam entre si.

@@ -6,6 +6,14 @@ Ficha interativa de jogador para RPG de mesa, com interface em português. O jog
 
 Não há backend, login nem banco de dados: é uma página única (rota `/`).
 
+## Repositórios relacionados
+
+Ficam lado a lado em `D:\GitHub\`:
+- `Projeto_RPG_Planejamento`: visão do site (hub, mesas, chat, fichas e tabuleiro), lista de tarefas e dúvidas em aberto.
+- `Projeto_RPG_Backend`: backend em ASP.NET Core (.NET 10), PostgreSQL, Identity e SignalR.
+
+Este repositório é o frontend. Hoje ele tem só a ficha, que vai virar a área de fichas de cada mesa.
+
 ## Histórico
 
 1. Começou como HTML estático + jQuery + Bootstrap (`index.html`, `js/main.js`).

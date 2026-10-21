@@ -2,7 +2,7 @@
 
 ## Como funciona hoje
 
-- Todo estado salvo passa por `usePersistido(chave, inicial)` (`app/components/usePersistido.ts`). Hoje há duas chaves: `"detalhes"` (`useDetalhes`) e `"barras"` (`useBarras`).
+- Todo estado salvo passa por `usePersistido(chave, inicial)` (`app/components/usePersistido.ts`). Hoje há três chaves: `"detalhes"` (`useDetalhes`), `"barras"` (`useBarras`) e `"tema"` (`useTema`).
 - **Leitura:** um `useEffect` lê `localStorage[chave]` uma única vez, depois da hidratação. Ele mescla com o valor inicial, então chaves novas ganham o valor padrão mesmo em dados salvos antigos. JSON inválido é ignorado (`try/catch`).
 - **Escrita:** outro `useEffect` salva o objeto inteiro a cada mudança. A flag `carregado` impede que o estado inicial vazio sobrescreva os dados salvos antes da leitura.
 - **Alteração dos detalhes:** `alterar` é um `onChange` genérico. Ele usa o atributo `name` do input como chave: `{ ...atual, [name]: value }`.
@@ -20,6 +20,10 @@ Todos os valores de `"detalhes"` são `string`.
 | Chave `"barras"` | Formato | Componente |
 | --- | --- | --- |
 | `vida`, `sanidade`, `esforco` | `{ atual: number; maximo: number }` (padrão 100/100) | `Barra.tsx`, via `Status.tsx` |
+
+| Chave `"tema"` | Formato | Componente |
+| --- | --- | --- |
+| `tema` | `"claro"` \| `"escuro"` (padrão `"escuro"`) | `BotaoTema.tsx`, via `Ficha.tsx` |
 
 - Os botões −/+ mudam `atual` de 1 em 1, sempre entre 0 e `maximo`. O `maximo` ainda não é editável na tela.
 
