@@ -1,3 +1,5 @@
+import type { Opcao } from "./perfil";
+
 export type VisibilidadeMesa = "publica" | "privada";
 
 export type StatusMesa = "ativa" | "encerrada";
@@ -48,6 +50,15 @@ export type DadosEdicaoMesa = {
   visibilidade: VisibilidadeMesa;
   entradaBloqueada: boolean;
 };
+
+export const OPCOES_VISIBILIDADE: Opcao[] = [
+  { valor: "publica", rotulo: "Pública: aparece no hub e qualquer pessoa logada entra como espectadora" },
+  { valor: "privada", rotulo: "Privada: só entra quem tiver o código de convite" },
+];
+
+export function visibilidadeDoValor(valor: string): VisibilidadeMesa {
+  return valor === "privada" ? "privada" : "publica";
+}
 
 export const TAMANHO_MAXIMO_NOME_MESA = 80;
 export const TAMANHO_MAXIMO_DESCRICAO_MESA = 500;

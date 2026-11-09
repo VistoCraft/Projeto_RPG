@@ -52,8 +52,8 @@ app/
     legal/             # PaginaLegal (moldura com seções numeradas), TermosDeUso, PoliticaPrivacidade
     hub/               # Hub de mesas: Hub, BannerHub, AvisoVisitante, AcoesHub, FiltrosMesas, ListaMesas, CartaoMesa, useMesas
     mesa/              # Criar mesa e página da mesa: NovaMesa, FormularioNovaMesa, PaginaMesa, CabecalhoMesa, PainelGerencia,
-                       #   ModalExclusao, ListaParticipantes, AreasMesa, useMesa, useTemplates
-    formulario/        # Peças genéricas: CartaoFormulario, CampoFormulario, CampoSelecao, CampoAreaTexto, useEnvioFormulario
+                       #   FormularioEdicaoMesa, ModalExclusao, ListaParticipantes, AreasMesa, useMesa, useTemplates
+    formulario/        # Peças genéricas: CartaoFormulario, CampoFormulario, CampoSelecao, CampoAreaTexto, ListaErros, useEnvioFormulario
     autenticacao/      # Telas de login e cadastro: TelaAutenticacao, CampoAceiteTermos, FormularioLogin, FormularioCadastro, usePaises
 src/
   dominio/             # Tipos de domínio (Credenciais, Perfil, Mesa, DetalheMesa, Template, Resultado...) e regras de papel (mesa.ts), listas (países, como conheceu) e termos.ts (versão, contato)

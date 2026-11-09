@@ -128,6 +128,7 @@ Peças genéricas de formulário, usadas no login, no cadastro e na criação de
 | `CampoFormulario.tsx` | Props `id`, `nome`, `tipo` (`email` / `password` / `text` / `date`), `valor`, `aoAlterar`, `autoComplete`, `dica?`. Input `required` com rótulo e dica ligada por `aria-describedby` |
 | `CampoSelecao.tsx` | Props `id`, `nome`, `valor`, `aoAlterar`, `opcoes: Opcao[]`, `textoVazio`, `obrigatorio`, `autoComplete?`. `<select>` com uma opção vazia no topo |
 | `CampoAreaTexto.tsx` | Props `id`, `nome`, `valor`, `aoAlterar`, `tamanhoMaximo`. `<textarea>` com contador de caracteres |
+| `ListaErros.tsx` | Prop `erros`. Lista com `role="alert"`; não renderiza nada se estiver vazia |
 | `useEnvioFormulario.ts` | `(acao, aoConcluir) => { enviando, erros, enviar }`. Genérico sobre o resultado: sucesso chama `aoConcluir(resultado)` (ex.: com a mesa criada), falha guarda os erros |
 
 ## `autenticacao/`
@@ -173,9 +174,10 @@ Rodapé de todas as páginas (em `app/layout.tsx`): linha fina em cima, aviso de
 | `FormularioNovaMesa.tsx` | Nome, descrição, template (`useTemplates`) e visibilidade; chama `criarMesa` e leva à mesa criada |
 | `useTemplates.ts` | `() => Template[]`. Carrega `listarTemplates()` |
 | `PaginaMesa.tsx` | `"use client"`. Raiz de `/mesas/[id]` (`useParams`): `CabecalhoMesa`, aviso de encerrada, `PainelGerencia` (dono/ajudante), `ListaParticipantes` e `AreasMesa`; visitante vê `AvisoLogin` |
-| `useMesa.ts` | `(id, logado) => { mesa, carregando, executando, erros, executar }`. `executar(acao)` roda uma ação do repositório e troca a mesa pela resposta |
+| `useMesa.ts` | `(id, logado) => { mesa, carregando, executando, erros, executar, substituir }`. `executar(acao)` roda uma ação do repositório e troca a mesa pela resposta; `substituir(mesa)` troca direto (usado pelo formulário de edição, que mostra os próprios erros) |
 | `CabecalhoMesa.tsx` | Props `mesa`, `estado`. Nome, descrição, mestre, template, meu papel; botões "Entrar como espectador" e "Sair da mesa" |
-| `PainelGerencia.tsx` | Props `mesa`, `estado`. Código de convite (copiar, gerar novo), bloquear entrada; para o dono, encerrar/reabrir e excluir |
+| `PainelGerencia.tsx` | Props `mesa`, `estado`. Botão de editar (abre `FormularioEdicaoMesa`), código de convite (copiar, gerar novo), bloquear entrada; para o dono, encerrar/reabrir e excluir. Com a mesa encerrada, só o dono vê as ações de status |
+| `FormularioEdicaoMesa.tsx` | Props `mesa`, `estado`, `aoFechar`. Nome, descrição e visibilidade (mantém o bloqueio de entrada); só salva se algo mudou, mostra os erros dentro do formulário e fecha ao salvar |
 | `ModalExclusao.tsx` | Props `mesa`, `aoFechar`. `<dialog>` que explica o que é apagado e o que é guardado e só libera o botão quando o nome da mesa é digitado |
 | `ListaParticipantes.tsx` | Props `mesa`, `estado`. Apelido e papel; quem gerencia troca o papel (`papeisAtribuiveis`) e remove (`podeRemover`) |
 | `AreasMesa.tsx` | Sem props. Cartões "Em breve" de chat, fichas e tabuleiro |

@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { EnvioFormulario } from "./useEnvioFormulario";
+import ListaErros from "./ListaErros";
 import { botaoPrincipal, cartao, tituloSecao } from "../estilos";
 
 type CartaoFormularioProps = {
@@ -15,11 +16,7 @@ export default function CartaoFormulario({ titulo, textoBotao, envio, rodape, ch
     <form className={`${cartao} flex flex-col`} onSubmit={envio.enviar}>
       <h1 className={`${tituloSecao} mb-6 text-[28px]`}>{titulo}</h1>
       {children}
-      {envio.erros.length > 0 && (
-        <ul role="alert" className="mb-4 flex flex-col gap-1 rounded-md border border-vida bg-vida/10 p-3 text-sm">
-          {envio.erros.map((erro) => <li key={erro}>{erro}</li>)}
-        </ul>
-      )}
+      <ListaErros erros={envio.erros} />
       <button type="submit" className={botaoPrincipal} disabled={envio.enviando}>
         {envio.enviando ? "Aguarde..." : textoBotao}
       </button>

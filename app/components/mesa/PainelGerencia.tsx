@@ -3,6 +3,7 @@ import { atualizarMesa, encerrarMesa, gerarNovoCodigo, reabrirMesa } from "@/src
 import { paraDadosEdicao, type DetalheMesa } from "@/src/dominio/mesa";
 import type { EstadoMesa } from "./useMesa";
 import ModalExclusao from "./ModalExclusao";
+import FormularioEdicaoMesa from "./FormularioEdicaoMesa";
 import { botaoContorno, cartao, tituloSecao } from "../estilos";
 
 type PainelGerenciaProps = {
@@ -12,6 +13,7 @@ type PainelGerenciaProps = {
 
 export default function PainelGerencia({ mesa, estado }: PainelGerenciaProps) {
   const [excluindo, setExcluindo] = useState(false);
+  const [editando, setEditando] = useState(false);
   const dono = mesa.meuPapel === "dono";
   const ativa = mesa.status === "ativa";
   const { executar, executando } = estado;
@@ -22,6 +24,12 @@ export default function PainelGerencia({ mesa, estado }: PainelGerenciaProps) {
   return (
     <section className={`${cartao} flex flex-col gap-4`} aria-labelledby="titulo-gerencia">
       <h2 id="titulo-gerencia" className={tituloSecao}>Gerenciar mesa</h2>
+      {ativa && !editando && (
+        <button type="button" className={`${botaoContorno} self-start`} onClick={() => setEditando(true)}>
+          <i className="bi bi-pencil" aria-hidden="true"></i> Editar nome, descrição e visibilidade
+        </button>
+      )}
+      {ativa && editando && <FormularioEdicaoMesa mesa={mesa} estado={estado} aoFechar={() => setEditando(false)} />}
       {ativa && mesa.codigoConvite && (
         <div className="flex flex-wrap items-center gap-3">
           <span className="text-sm">Código de convite:</span>

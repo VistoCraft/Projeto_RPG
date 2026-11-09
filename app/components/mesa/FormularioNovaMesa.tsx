@@ -2,7 +2,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { criarMesa } from "@/src/repositories/mesasRepositorio";
-import { TAMANHO_MAXIMO_DESCRICAO_MESA, type VisibilidadeMesa } from "@/src/dominio/mesa";
+import { OPCOES_VISIBILIDADE, TAMANHO_MAXIMO_DESCRICAO_MESA, visibilidadeDoValor, type VisibilidadeMesa } from "@/src/dominio/mesa";
 import type { Opcao } from "@/src/dominio/perfil";
 import useTemplates from "./useTemplates";
 import useEnvioFormulario from "../formulario/useEnvioFormulario";
@@ -11,15 +11,6 @@ import CampoFormulario from "../formulario/CampoFormulario";
 import CampoAreaTexto from "../formulario/CampoAreaTexto";
 import CampoSelecao from "../formulario/CampoSelecao";
 import { link } from "../estilos";
-
-const OPCOES_VISIBILIDADE: Opcao[] = [
-  { valor: "publica", rotulo: "Pública: aparece no hub e qualquer pessoa logada entra como espectadora" },
-  { valor: "privada", rotulo: "Privada: só entra quem tiver o código de convite" },
-];
-
-function visibilidadeDoValor(valor: string): VisibilidadeMesa {
-  return valor === "privada" ? "privada" : "publica";
-}
 
 export default function FormularioNovaMesa() {
   const router = useRouter();

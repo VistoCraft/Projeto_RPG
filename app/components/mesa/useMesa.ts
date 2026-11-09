@@ -13,6 +13,7 @@ export type EstadoMesa = {
   executando: boolean;
   erros: string[];
   executar: (acao: AcaoMesa) => Promise<void>;
+  substituir: (mesa: DetalheMesa) => void;
 };
 
 export default function useMesa(id: string, logado: boolean): EstadoMesa {
@@ -45,5 +46,10 @@ export default function useMesa(id: string, logado: boolean): EstadoMesa {
     setExecutando(false);
   };
 
-  return { mesa, carregando, executando, erros, executar };
+  const substituir = (atualizada: DetalheMesa) => {
+    setErros([]);
+    setMesa(atualizada);
+  };
+
+  return { mesa, carregando, executando, erros, executar, substituir };
 }
