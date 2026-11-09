@@ -4,7 +4,7 @@ Tecnologias e configuração: [04-tecnologias.md](04-tecnologias.md). Contexto e
 
 ## Como a página é montada
 
-Rotas: `/` (hub de mesas, página padrão), `/ficha`, `/login` e `/cadastro`. Nenhum link leva à `/ficha` por enquanto. As duas últimas ficam no route group `app/(autenticacao)/`, que tem um layout próprio (`TelaAutenticacao`). Login e cadastro falam com o backend (`Projeto_RPG_Backend`); a ficha ainda não.
+Rotas: `/` (home, apresentação do produto), `/mesas` (hub, aberto a visitantes), `/termos`, `/privacidade`, `/ficha`, `/login` e `/cadastro`. Nenhum link leva à `/ficha` por enquanto. As duas últimas ficam no route group `app/(autenticacao)/`, que tem um layout próprio (`TelaAutenticacao`). Login e cadastro falam com o backend (`Projeto_RPG_Backend`); a ficha ainda não.
 
 ```
 app/layout.tsx          (Server Component)  <html class="dark">, <body> (flex coluna + <Rodape /> no fim), metadata, fontes, globals.css e bootstrap-icons
@@ -26,26 +26,30 @@ app/layout.tsx          (Server Component)  <html class="dark">, <body> (flex co
 
 Como `Ficha.tsx` tem `"use client"`, tudo o que ele importa também vira client component. Na prática, o servidor só gera o HTML inicial (pré-renderização estática) e o React assume no navegador (hidratação).
 
-## Hub (`/`)
+## Home (`/`) e hub (`/mesas`)
 
 ```
-app/page.tsx ─► Hub ("use client": useTema, useMesas) ─► CabecalhoHub (logo, Entrar, Criar conta, BotaoTema), BannerHub, DivisorRunico, ListaMesas ─► CartaoMesa
-                     useMesas ─► src/repositories/mesasRepositorio.listarMesas() (por enquanto devolve MESAS_DE_EXEMPLO, sem HTTP)
+app/page.tsx       ─► Home ("use client": useTema, useSessao) ─► CabecalhoSite, HeroHome, DivisorRunico, RecursosHome, PassosHome
+app/mesas/page.tsx ─► Hub  ("use client": useTema, useSessao, useMesas) ─► CabecalhoSite, BannerHub, AvisoVisitante (só visitante), DivisorRunico, ListaMesas ─► CartaoMesa
+                     useSessao ─► perfilRepositorio.obterPerfil() (GET /perfil; 401 = visitante) e sair() (POST /auth/sair)
+                     useMesas  ─► mesasRepositorio.listarMesas() (por enquanto devolve MESAS_DE_EXEMPLO, sem HTTP)
 ```
+
+- A sessão é conferida no navegador: o cookie é do domínio da API, então o servidor do Next não o enxerga. Enquanto `useSessao` carrega, o cabeçalho não mostra os links de conta, para não piscar.
 
 ## Telas de autenticação
 
 ```
 app/(autenticacao)/layout.tsx  ─► TelaAutenticacao ("use client": useTema, BotaoTema, DivisorRunico)
-├─ login/page.tsx    ─► FormularioLogin    ─► entrar()                      ─┐
-└─ cadastro/page.tsx ─► FormularioCadastro ─► cadastrar() e depois entrar()  ─┤
-                                                                              ▼
-        src/repositories/autenticacaoRepositorio ─► src/providers/api (FetchRestProvider) ─► POST /auth/register, /auth/login?useCookies=true
+├─ login/page.tsx    ─► FormularioLogin    ─► entrar()     ─┐
+└─ cadastro/page.tsx ─► FormularioCadastro ─► cadastrar()  ─┤
+                                                             ▼
+        src/repositories/autenticacaoRepositorio ─► src/providers/api (FetchRestProvider) ─► POST /auth/cadastro, /auth/login?useCookies=true
 ```
 
-- Os dois formulários usam `CartaoFormulario` (título, erros, botão, rodapé) e `useEnvioFormulario` (estado `enviando` / `concluido` / `erros`).
-- Deu certo: o cartão mostra a mensagem de sucesso e fica na mesma tela (por enquanto nada leva à ficha). O backend grava o cookie de sessão.
-- O repositório converte os códigos de erro do Identity (`DuplicateUserName`, `PasswordTooShort`, `Failed`...) em mensagens em português.
+- Os dois formulários usam `CartaoFormulario` (título, erros, botão, rodapé) e `useEnvioFormulario` (estado `enviando` / `erros`, e `aoConcluir` no sucesso).
+- Deu certo: o backend grava o cookie de sessão e o formulário leva a `/mesas`. O `/auth/cadastro` já cria a conta com o perfil e faz o login.
+- O repositório converte os códigos de erro do backend (`DuplicateUserName`, `PasswordTooShort`, `ApelidoEmUso`, `IdadeMinima`...) em mensagens em português.
 
 ## Fluxo de dados
 

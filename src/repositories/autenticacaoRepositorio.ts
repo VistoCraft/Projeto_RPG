@@ -1,10 +1,23 @@
 import { api } from "../providers/api";
 import { STATUS_SEM_CONEXAO, type RespostaRest } from "../providers/FetchRestProvider";
-import type { Credenciais, ResultadoAutenticacao } from "../dominio/autenticacao";
+import type { Credenciais, DadosCadastro, ResultadoAutenticacao } from "../dominio/autenticacao";
+import { IDADE_MINIMA } from "../dominio/perfil";
+import { VERSAO_TERMOS } from "../dominio/termos";
 
 type CredenciaisDto = {
   email: string;
   password: string;
+};
+
+type CadastroDto = {
+  email: string;
+  senha: string;
+  apelido: string;
+  pais: string;
+  dataNascimento: string;
+  comoConheceu: string | null;
+  aceitouTermos: boolean;
+  versaoTermos: string;
 };
 
 const MENSAGEM_SEM_CONEXAO = "Não foi possível conectar ao servidor. Tente de novo em instantes.";
@@ -23,20 +36,38 @@ const mensagensPorCodigo: Record<string, string> = {
   PasswordRequiresNonAlphanumeric: "A senha precisa ter pelo menos um símbolo (ex.: ! @ #).",
   LockedOut: "Conta bloqueada por excesso de tentativas. Tente de novo mais tarde.",
   NotAllowed: "Esta conta ainda não pode entrar.",
+  ApelidoObrigatorio: "Informe um nickname.",
+  ApelidoInvalido: "O nickname precisa ter de 3 a 30 letras, números, \".\", \"_\" ou \"-\", sem espaços.",
+  ApelidoEmUso: "Este nickname já está em uso.",
+  PaisInvalido: "Escolha o seu país.",
+  DataNascimentoObrigatoria: "Informe a data de nascimento.",
+  DataNascimentoInvalida: "Informe uma data de nascimento válida.",
+  IdadeMinima: `É preciso ter pelo menos ${IDADE_MINIMA} anos para criar uma conta.`,
+  ComoConheceuInvalido: "Resposta muito longa em \"Como conheceu o site\".",
+  TermosNaoAceitos: "É preciso aceitar os termos de uso e a política de privacidade.",
+  TermosDesatualizados: "Os termos foram atualizados. Recarregue a página e leia a versão nova.",
 };
 
-export async function cadastrar(credenciais: Credenciais): Promise<ResultadoAutenticacao> {
-  const resposta = await api.post("/auth/register", paraDto(credenciais));
+export async function cadastrar(dados: DadosCadastro): Promise<ResultadoAutenticacao> {
+  const resposta = await api.post("/auth/cadastro", paraCadastroDto(dados));
   return paraResultado(resposta, MENSAGEM_CADASTRO_FALHOU);
 }
 
 export async function entrar(credenciais: Credenciais): Promise<ResultadoAutenticacao> {
-  const resposta = await api.post("/auth/login?useCookies=true", paraDto(credenciais));
+  const resposta = await api.post("/auth/login?useCookies=true", paraCredenciaisDto(credenciais));
   return paraResultado(resposta, MENSAGEM_LOGIN_INVALIDO);
 }
 
-function paraDto({ email, senha }: Credenciais): CredenciaisDto {
+export async function sair(): Promise<void> {
+  await api.post("/auth/sair");
+}
+
+function paraCredenciaisDto({ email, senha }: Credenciais): CredenciaisDto {
   return { email: email.trim(), password: senha };
+}
+
+function paraCadastroDto(dados: DadosCadastro): CadastroDto {
+  return { ...dados, email: dados.email.trim(), apelido: dados.apelido.trim(), versaoTermos: VERSAO_TERMOS };
 }
 
 function paraResultado(resposta: RespostaRest, mensagemPadrao: string): ResultadoAutenticacao {

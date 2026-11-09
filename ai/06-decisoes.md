@@ -4,6 +4,18 @@ Uma entrada por decisão, a mais recente no topo. Formato: **data — título**,
 
 ---
 
+## 2026-11-09 — Termos de uso e política de privacidade
+
+- **Contexto:** o cadastro coleta país e data de nascimento, e o site vai ser publicado. O projeto é de estudo e sem fins comerciais.
+- **Decisão:** páginas `/termos` e `/privacidade` (conteúdo em `legal/`), linkadas no rodapé, com o aviso de projeto de estudo em destaque. O cadastro exige marcar o aceite; o backend recusa sem aceite (`TermosNaoAceitos`) ou com versão diferente da atual (`TermosDesatualizados`) e grava `VersaoTermosAceita` e `TermosAceitosEm` no usuário. Contato de privacidade: `EMAIL_CONTATO` em `src/dominio/termos.ts`.
+- **Consequências:** a versão dos termos existe nos dois projetos e precisa mudar junto. Uma versão nova vai exigir um fluxo de novo aceite para quem já tem conta.
+
+## 2026-11-09 — Home, hub para visitantes e cadastro com perfil (fase 2)
+
+- **Contexto:** a fase 2 pedia uma home para apresentar o produto, o hub aberto a visitantes, o cadastro com perfil, o logout e o usuário logado no cabeçalho.
+- **Decisão:** `/` virou a `Home` e o hub foi para `/mesas`. Os dois usam `CabecalhoSite` e o hook `useSessao`, que chama `GET /perfil` no navegador (401 = visitante). O cadastro chama o `POST /auth/cadastro` do backend, que valida o perfil, cria a conta e já faz o login; o `/auth/register` do Identity foi bloqueado. Login e cadastro levam a `/mesas`, revertendo a decisão de 24/10. A lista de países vem de códigos ISO com nomes do `Intl.DisplayNames`, montada depois da hidratação (`usePaises`) porque os nomes podem mudar entre o Node e o navegador.
+- **Consequências:** `CabecalhoHub` e a mensagem de sucesso do `CartaoFormulario` saíram. Toda página nova com cabeçalho usa `CabecalhoSite` e `useSessao`.
+
 ## 2026-11-09 — Sistema por mesa, mesas públicas e privadas, contrato da API
 
 - **Contexto:** a fase 1 do planejamento (fundação) pedia o modelo de dados e o padrão de API antes de criar as mesas no backend.

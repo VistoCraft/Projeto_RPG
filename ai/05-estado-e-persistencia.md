@@ -2,6 +2,7 @@
 
 ## Como funciona hoje
 
+- A sessão não fica no `localStorage`: é o cookie do Identity, e `useSessao` pergunta ao backend (`GET /perfil`) a cada página.
 - Todo estado salvo passa por `usePersistido(chave, inicial)` (`app/components/usePersistido.ts`). Hoje há três chaves: `"detalhes"` (`useDetalhes`), `"barras"` (`useBarras`) e `"tema"` (`useTema`).
 - **Leitura:** um `useEffect` lê `localStorage[chave]` uma única vez, depois da hidratação. Ele mescla com o valor inicial, então chaves novas ganham o valor padrão mesmo em dados salvos antigos. JSON inválido é ignorado (`try/catch`).
 - **Escrita:** outro `useEffect` salva o objeto inteiro a cada mudança. A flag `carregado` impede que o estado inicial vazio sobrescreva os dados salvos antes da leitura.

@@ -3,7 +3,7 @@ import { campoLinha, rotulo } from "../estilos";
 type CampoFormularioProps = {
   id: string;
   nome: string;
-  tipo: "email" | "password";
+  tipo: "email" | "password" | "text" | "date";
   valor: string;
   aoAlterar: (valor: string) => void;
   autoComplete: string;

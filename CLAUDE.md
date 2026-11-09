@@ -21,7 +21,9 @@ ai/                    # Documentação do projeto (NN-nome.md; 00-regras tem pr
 app/
   globals.css          # Tailwind: @import, @theme (paleta, tokens de papel, fontes) e @layer base (.dark, option)
   layout.tsx           # HTML raiz (classe "dark"), metadata, fontes (next/font), globals.css, bootstrap-icons e <Rodape />
-  page.tsx             # Rota "/" — só renderiza <Hub />
+  page.tsx             # Rota "/" — só renderiza <Home /> (apresentação do produto)
+  mesas/page.tsx       # Rota "/mesas" — só renderiza <Hub /> (aberto a visitantes)
+  termos/, privacidade/ # Rotas "/termos" e "/privacidade" — Termos de uso e Política de privacidade
   ficha/page.tsx       # Rota "/ficha" — só renderiza <Ficha /> (sem link por enquanto)
   (autenticacao)/      # Route group: layout com TelaAutenticacao, rotas /login e /cadastro
   components/
@@ -30,6 +32,8 @@ app/
     useDetalhes.ts     # Hook: estado dos detalhes (chave "detalhes")
     useBarras.ts       # Hook: Vida/Sanidade/Esforço e ajuste por −/+ (chave "barras")
     useTema.ts         # Hook: tema claro/escuro e classe "dark" no <html> (chave "tema")
+    useSessao.ts       # Hook: visitante ou logado (GET /perfil) e sair()
+    CabecalhoSite.tsx  # Cabeçalho da home e do hub: logo, Mesas, Entrar/Criar conta ou nickname/Sair, BotaoTema
     BotaoTema.tsx      # Botão que alterna o tema
     DivisorRunico.tsx  # Linha decorativa com runas abaixo do título
     Detalhes.tsx       # Formulário "Detalhes Pessoais"
@@ -41,11 +45,13 @@ app/
     Cabecalho.tsx      # Título de seção com botões "ver" / "editar"
     estilos.ts         # Combinações de classes Tailwind reutilizadas (cartao, campoNumero, botaoPrincipal, link...)
     Rodape.tsx         # Rodapé com os créditos, em todas as páginas
-    hub/               # Hub de mesas: Hub, CabecalhoHub, BannerHub, ListaMesas, CartaoMesa, useMesas
+    home/              # Home: Home, HeroHome, RecursosHome, PassosHome
+    legal/             # PaginaLegal (moldura com seções numeradas), TermosDeUso, PoliticaPrivacidade
+    hub/               # Hub de mesas: Hub, BannerHub, AvisoVisitante, ListaMesas, CartaoMesa, useMesas
     autenticacao/      # Telas de login e cadastro: TelaAutenticacao, CartaoFormulario, CampoFormulario,
-                       #   FormularioLogin, FormularioCadastro, useEnvioFormulario
+                       #   CampoSelecao, CampoAceiteTermos, FormularioLogin, FormularioCadastro, useEnvioFormulario, usePaises
 src/
-  dominio/             # Tipos de domínio (Credenciais, ResultadoAutenticacao, Mesa, StatusMesa)
+  dominio/             # Tipos de domínio (Credenciais, DadosCadastro, Perfil, Mesa...), listas (países, como conheceu) e termos.ts (versão, contato)
   providers/           # FetchRestProvider e a instância api (URL em NEXT_PUBLIC_API_URL)
   repositories/        # Únicas chamadas HTTP (regra R6), com DTO → domínio
 public/img/            # Imagens, servidas em /img/...
@@ -53,10 +59,10 @@ public/img/            # Imagens, servidas em /img/...
 
 ## Convenções
 
-- **TypeScript**: componentes em `.tsx`, o resto em `.ts`. Tipe as props de cada componente com um `type <Nome>Props`. Os tipos `Detalhes` e `Alterar` são exportados de `useDetalhes.ts`; `Barras`, `BarraId`, `ValorBarra` e `AjustarBarra` de `useBarras.ts`; `Tema` e `AlternarTema` de `useTema.ts`; `Pericia` de `Pericias.tsx`. Não crie arquivos `.js`. O `yarn build` roda a checagem de tipos.
+- **TypeScript**: componentes em `.tsx`, o resto em `.ts`. Tipe as props de cada componente com um `type <Nome>Props`. Os tipos `Detalhes` e `Alterar` são exportados de `useDetalhes.ts`; `Barras`, `BarraId`, `ValorBarra` e `AjustarBarra` de `useBarras.ts`; `Tema` e `AlternarTema` de `useTema.ts`; `Sessao` e `EstadoSessao` de `useSessao.ts`; `Pericia` de `Pericias.tsx`. Não crie arquivos `.js`. O `yarn build` roda a checagem de tipos.
 - **Nomes em português**: componentes, variáveis, funções, constantes de estilo e tokens do tema (`detalhes`, `alterar`, `cartao`, `bg-vida`...). Siga o mesmo padrão.
 - **Listas viram arrays**: campos repetidos (atributos, perícias, condições, colunas da tabela) ficam em um array no topo do componente e são renderizados com `.map`. Para adicionar um atributo ou perícia, basta incluir um item no array.
-- **Client components**: só `Ficha.tsx` e os hooks (`use*.ts`) têm `"use client"`. Os outros componentes são importados por `Ficha`, então também rodam no cliente. Coloque `"use client"` apenas em componentes novos que usem hooks e sejam importados fora de `Ficha`.
+- **Client components**: têm `"use client"` só os hooks (`use*.ts`) e as raízes que usam hooks e são importadas por páginas (`Ficha`, `Home`, `Hub`, `TelaAutenticacao`, os formulários). Os componentes que elas importam já rodam no cliente e ficam sem a diretiva.
 - **Estilo = Tailwind CSS (v4), sempre** (regra R8 em `ai/00-regras.md`). Classes utilitárias no `className`. Não crie arquivo `.css`, não use CSS Modules, Bootstrap nem `style={{}}` fixo. Cores do projeto são tokens no `@theme` de `app/globals.css`. Nos componentes use os tokens de papel (`bg-fundo`, `bg-superficie`, `border-borda`, `text-texto`, `text-destaque`, `text-acento`), que já trocam no tema escuro; não use `dark:` nem `white`/`black`. Títulos com `font-titulo`, texto com `font-texto`. Identidade visual em `../Projeto_RPG_Planejamento/03-identidade-visual.md`. Combinações repetidas ficam em `app/components/estilos.ts`.
 - **Ícones**: `bootstrap-icons` (classes `bi bi-*`), importado em `app/layout.tsx`. É o único pacote do Bootstrap no projeto.
 - **Imagens**: arquivos em `public/img/`, referenciados com caminho absoluto (`/img/d21.png`), tanto no `src` quanto em classe Tailwind (`bg-[url(/img/d21.png)]`). Hoje usamos `<img>` simples, não `next/image`.

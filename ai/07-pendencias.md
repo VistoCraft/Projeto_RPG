@@ -16,15 +16,15 @@ Os botões existem na tela, mas não fazem nada:
 
 ## Autenticação
 
-- Não há logout nem indicação de usuário logado na ficha.
-- Login e cadastro não levam à ficha (só mostram mensagem de sucesso) até a ficha exigir login; a ficha (`/ficha`) ainda abre direto pela URL.
-- O cadastro ainda não pede o perfil (nickname, país, data de nascimento, como conheceu), como decidido em 09/11.
+- A ficha (`/ficha`) abre direto pela URL, sem login; ela será refeita dentro da mesa.
+- Pedidos de acesso, correção e exclusão de dados (LGPD) são atendidos manualmente pelo e-mail de contato; falta uma tela de exclusão de conta.
+- Termos e política foram escritos sem revisão jurídica; mudar o texto exige subir `VERSAO_TERMOS` (front) e `VersaoTermosAtual` (back) juntos.
+- Falta a página de perfil para editar os dados, e o login com Google (com a etapa de completar o perfil).
 
 ## Hub
 
 - A lista de mesas vem de `MESAS_DE_EXEMPLO` em `mesasRepositorio.ts`; falta a API de mesas no backend.
 - Os cartões de mesa não levam a lugar nenhum; faltam a rota `/mesas/[id]`, criar mesa, busca e filtro.
-- O cabeçalho mostra Entrar / Criar conta mesmo para quem já está logado.
 - O e-mail não é confirmado (`isEmailConfirmed` fica `false`).
 
 ## Dados que não são salvos

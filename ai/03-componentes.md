@@ -114,32 +114,64 @@ Constantes com combinações de classes Tailwind usadas em mais de um componente
 | `botaoContorno` | Botões "ver" / "editar" e `BotaoTema` |
 | `botaoPrincipal` | Botão de ação principal (largura toda, fundo `arcano-texto-claro`, texto branco) |
 | `link` | Link em `acento`, sublinhado no hover |
+| `listaMarcadores` | Lista com marcadores das páginas legais |
+| `faixaDestaque` | Faixa com degradê `noite` → `arcano-texto-claro` → `mare` e texto `pergaminho` (banner do hub e destaque da home) |
+| `chamadaPrincipal` / `chamadaSecundaria` | Links com cara de botão sobre a `faixaDestaque` (preenchido em `arcano` / contorno claro) |
 
 ## `autenticacao/`
 
 | Arquivo | Papel |
 | --- | --- |
 | `TelaAutenticacao.tsx` | `"use client"`. Moldura das telas: logo, `BotaoTema`, `DivisorRunico` e `children`, centralizados (máx. 440px) |
-| `CartaoFormulario.tsx` | Props `titulo`, `textoBotao`, `mensagemSucesso`, `envio: EnvioFormulario`, `rodape`, `children`. Mostra os erros com `role="alert"`, o sucesso com `role="status"` e desativa o botão enquanto envia |
-| `CampoFormulario.tsx` | Props `id`, `nome`, `tipo` (`email` / `password`), `valor`, `aoAlterar`, `autoComplete`, `dica?`. Input `required` com rótulo e dica ligada por `aria-describedby` |
-| `useEnvioFormulario.ts` | `(acao) => { enviando, concluido, erros, enviar }`. Chama `acao()` no submit; sucesso marca `concluido`, falha guarda os erros |
-| `FormularioLogin.tsx` | `"use client"`. E-mail e senha, chama `entrar` |
-| `FormularioCadastro.tsx` | `"use client"`. E-mail, senha e confirmação. Confere se as senhas batem, chama `cadastrar` e depois `entrar` |
+| `CartaoFormulario.tsx` | Props `titulo`, `textoBotao`, `envio: EnvioFormulario`, `rodape`, `children`. Mostra os erros com `role="alert"` e desativa o botão enquanto envia |
+| `CampoFormulario.tsx` | Props `id`, `nome`, `tipo` (`email` / `password` / `text` / `date`), `valor`, `aoAlterar`, `autoComplete`, `dica?`. Input `required` com rótulo e dica ligada por `aria-describedby` |
+| `CampoSelecao.tsx` | Props `id`, `nome`, `valor`, `aoAlterar`, `opcoes: Opcao[]`, `textoVazio`, `obrigatorio`, `autoComplete?`. `<select>` com uma opção vazia no topo |
+| `useEnvioFormulario.ts` | `(acao, aoConcluir) => { enviando, erros, enviar }`. Chama `acao()` no submit; sucesso chama `aoConcluir`, falha guarda os erros |
+| `CampoAceiteTermos.tsx` | Props `aceito`, `aoAlterar`. Checkbox obrigatório com links (nova aba) para `/termos` e `/privacidade` |
+| `usePaises.ts` | `() => Opcao[]`. Monta `listarPaises("pt-BR")` em `useEffect`, para os nomes do `Intl` não causarem erro de hidratação |
+| `FormularioLogin.tsx` | `"use client"`. E-mail e senha, chama `entrar` e leva a `/mesas` |
+| `FormularioCadastro.tsx` | `"use client"`. Nickname, e-mail, senha e confirmação, país, data de nascimento (18+) e como conheceu (opcional). Confere se as senhas batem, chama `cadastrar` (que já faz o login) e leva a `/mesas` |
 
 ## `Rodape.tsx`
 
-Rodapé de todas as páginas (em `app/layout.tsx`): linha fina em cima, "Desenvolvido por Victor Prezia · ano".
+Rodapé de todas as páginas (em `app/layout.tsx`): linha fina em cima, aviso de projeto de estudo sem fins comerciais, links para Termos de uso e Privacidade e "Desenvolvido por Victor Prezia · ano".
+
+## `legal/`
+
+| Arquivo | Papel |
+| --- | --- |
+| `PaginaLegal.tsx` | `"use client"`. Props `titulo`, `resumo`, `secoes: SecaoLegal[]` (`{ titulo, conteudo }`). Cabeçalho do site, data de atualização (`DATA_ATUALIZACAO_TERMOS`), resumo em destaque e seções numeradas |
+| `TermosDeUso.tsx` | Array `secoes` dos Termos de uso, com o aviso de projeto de estudo no resumo |
+| `PoliticaPrivacidade.tsx` | Array `secoes` da Política de privacidade (LGPD): dados coletados, finalidades e bases legais, compartilhamento, cookies, retenção e direitos |
 
 ## `hub/`
 
 | Arquivo | Papel |
 | --- | --- |
-| `Hub.tsx` | `"use client"`. Raiz da rota `/`: chama `useTema` e `useMesas`, monta cabeçalho, banner, `DivisorRunico` e lista (máx. 940px, responsivo) |
-| `CabecalhoHub.tsx` | Props `tema`, `alternarTema`. Logo à esquerda; links Entrar / Criar conta e `BotaoTema` à direita |
-| `BannerHub.tsx` | Faixa com degradê `noite` → `arcano-texto-claro` → `mare`, título "Hub de mesas" e frase de chamada |
+| `Hub.tsx` | `"use client"`. Raiz da rota `/mesas`: chama `useTema`, `useSessao` e `useMesas`, monta `CabecalhoSite`, banner, aviso de visitante, `DivisorRunico` e lista (máx. 940px, responsivo) |
+| `BannerHub.tsx` | `faixaDestaque` com o título "Hub de mesas" e frase de chamada |
+| `AvisoVisitante.tsx` | Sem props. Aviso de que a pessoa está vendo como visitante, com links para criar conta e entrar |
 | `useMesas.ts` | `() => { mesas, carregando }`. Carrega `listarMesas()` em `useEffect` |
 | `ListaMesas.tsx` | Prop `estado: EstadoMesas`. Título "Mesas", aviso de carregando / vazio e grade de `CartaoMesa` (2 colunas a partir de `sm`) |
 | `CartaoMesa.tsx` | Prop `mesa: Mesa`. Nome, selo de status (`aparenciaDoStatus`), mestre, sistema e jogadores/limite |
+
+## `useSessao.ts`
+
+- `useSessao()` retorna `{ sessao, sair }`. `type Sessao` = `{ estado: "carregando" }` \| `{ estado: "visitante" }` \| `{ estado: "logado"; perfil: Perfil }`.
+- Chama `obterPerfil()` em `useEffect`; `sair()` chama o `POST /auth/sair` e volta para visitante.
+
+## `CabecalhoSite.tsx`
+
+- Props: `tema`, `alternarTema`, `sessao: EstadoSessao`. Logo (link para `/`) à esquerda; à direita, link Mesas, os links Entrar / Criar conta (visitante) ou o nickname e o botão Sair (logado), e o `BotaoTema`. Enquanto a sessão carrega, não mostra os links de conta.
+
+## `home/`
+
+| Arquivo | Papel |
+| --- | --- |
+| `Home.tsx` | `"use client"`. Raiz da rota `/`: chama `useTema` e `useSessao`, monta `CabecalhoSite`, `HeroHome`, `DivisorRunico`, `RecursosHome` e `PassosHome` |
+| `HeroHome.tsx` | Prop `logado`. Título, frase e chamadas: Criar conta / Ver mesas (visitante) ou Ir para as mesas (logado) |
+| `RecursosHome.tsx` | Sem props. Array `recursos` (ícone, título, texto) em cartões, 2 colunas a partir de `sm` |
+| `PassosHome.tsx` | Sem props. Array `passos` numerados, 3 colunas a partir de `sm` |
 
 ## Ao criar um componente novo
 

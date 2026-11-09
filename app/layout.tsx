@@ -10,8 +10,8 @@ const almendra = Almendra({ subsets: ["latin"], weight: ["400", "700"], variable
 const literata = Literata({ subsets: ["latin"], variable: "--font-literata" });
 
 export const metadata: Metadata = {
-  title: "Hub de mesas",
-  description: "Hub de mesas e ficha interativa para jogar RPG",
+  title: "RPG de mesa online",
+  description: "Mesas, fichas, chat e tabuleiro para jogar RPG de mesa online",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

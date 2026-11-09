@@ -6,6 +6,8 @@ export type RespostaRest = {
   corpo: unknown;
 };
 
+type MetodoHttp = "GET" | "POST";
+
 export default class FetchRestProvider {
   private readonly urlBase: string;
 
@@ -13,13 +15,21 @@ export default class FetchRestProvider {
     this.urlBase = urlBase;
   }
 
-  async post(caminho: string, corpo: unknown): Promise<RespostaRest> {
+  get(caminho: string): Promise<RespostaRest> {
+    return this.requisitar("GET", caminho);
+  }
+
+  post(caminho: string, corpo?: unknown): Promise<RespostaRest> {
+    return this.requisitar("POST", caminho, corpo);
+  }
+
+  private async requisitar(metodo: MetodoHttp, caminho: string, corpo?: unknown): Promise<RespostaRest> {
     try {
       const resposta = await fetch(`${this.urlBase}${caminho}`, {
-        method: "POST",
+        method: metodo,
         credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(corpo),
+        headers: corpo === undefined ? undefined : { "Content-Type": "application/json" },
+        body: corpo === undefined ? undefined : JSON.stringify(corpo),
       });
       return { ok: resposta.ok, status: resposta.status, corpo: await lerCorpo(resposta) };
     } catch {

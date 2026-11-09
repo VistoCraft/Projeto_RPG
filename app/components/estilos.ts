@@ -15,3 +15,13 @@ export const botaoContorno = "cursor-pointer rounded-md border border-borda bg-t
 export const botaoPrincipal = "w-full cursor-pointer rounded-md bg-arcano-texto-claro px-4 py-2 font-titulo text-[18px] font-bold text-white hover:brightness-110 disabled:cursor-wait disabled:opacity-60";
 
 export const link = "font-bold text-acento underline-offset-4 hover:underline";
+
+export const listaMarcadores = "flex list-disc flex-col gap-1 pl-6";
+
+export const faixaDestaque = "rounded-lg bg-linear-to-br from-noite via-arcano-texto-claro to-mare px-6 py-12 text-center text-pergaminho shadow-sm";
+
+const chamadaBase = "inline-block rounded-md px-5 py-2 font-titulo text-[18px] font-bold";
+
+export const chamadaPrincipal = `${chamadaBase} bg-arcano text-pergaminho hover:brightness-110`;
+
+export const chamadaSecundaria = `${chamadaBase} border border-pergaminho/60 text-pergaminho hover:bg-pergaminho/10`;

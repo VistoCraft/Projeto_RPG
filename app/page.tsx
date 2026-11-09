@@ -1,5 +1,5 @@
-import Hub from "./components/hub/Hub";
+import Home from "./components/home/Home";
 
-export default function Home() {
-  return <Hub />;
+export default function PaginaInicial() {
+  return <Home />;
 }
