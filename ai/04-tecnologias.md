@@ -41,8 +41,9 @@
 | `.env.example` | `NEXT_PUBLIC_API_URL` (URL do backend). Copie para `.env.local` se precisar de outro valor; o padrão é `http://localhost:5228` |
 | `next-env.d.ts` | Gerado pelo Next; está no `.gitignore` |
 | `.gitignore` | Ignora `node_modules/`, `.next/`, `out/`, logs e `.env*.local` |
+| `.github/workflows/ci.yml` | CI no GitHub Actions: `yarn install --frozen-lockfile` e `yarn build` em todo PR e push na `main` |
 
 ## Ferramentas úteis
 
-- `yarn build` compila e checa os tipos. É a validação principal, já que não há testes automatizados.
+- `yarn build` compila e checa os tipos. É a validação principal (e a do CI), já que não há testes automatizados nem lint.
 - `.next/dev/logs/next-development.log` guarda os logs do `yarn dev`, incluindo erros do navegador com o diff completo de hidratação.

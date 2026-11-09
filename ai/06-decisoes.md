@@ -4,6 +4,12 @@ Uma entrada por decisão, a mais recente no topo. Formato: **data — título**,
 
 ---
 
+## 2026-11-09 — Sistema por mesa, mesas públicas e privadas, contrato da API
+
+- **Contexto:** a fase 1 do planejamento (fundação) pedia o modelo de dados e o padrão de API antes de criar as mesas no backend.
+- **Decisão:** cada mesa parte de um template de ficha, padrão (5e, com o conteúdo de licença aberta do SRD 5.1) ou custom da área de templates do usuário, com a fórmula de rolagem de cada atributo, e guarda uma cópia que o mestre pode alterar sem mudar o template; a mesa é pública (aparece no hub) ou privada (só por código de convite). O modelo de dados e o contrato da API ficam em `../Projeto_RPG_Planejamento/04-modelo-de-dados.md` e `05-padrao-de-api.md`. Todo erro do backend vem como Problem Details, com códigos `PascalCase` em `errors`, que os repositórios traduzem para mensagens.
+- **Consequências:** a ficha atual era um teste e será refeita do zero, montada pelo modelo da mesa. A ficha vive na mesa: só o mestre cria e atribui fichas (completas ou simplificadas, para pets e NPCs) a jogadores, que as editam e podem salvar uma cópia na biblioteca. Alterar o modelo da mesa gera backup e converte as fichas. A rota `/` vai virar a home do produto, e o hub vai para `/mesas`, aberto a visitantes como mostruário (só mesas públicas e templates padrão). O cadastro passa a pedir o perfil: nickname único, país e data de nascimento (18+) obrigatórios, "como conheceu" opcional. O tipo `Mesa` do frontend ganha `visibilidade` quando a API de mesas existir.
+
 ## 2026-10-24 — Hub de mesas na rota `/`
 
 - **Contexto:** o planejamento prevê um hub com a lista de mesas como página inicial, e a ficha sai do `/`.

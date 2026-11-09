@@ -2,6 +2,8 @@
 
 Tire o item daqui quando ele for resolvido. Se a solução envolveu uma escolha, registre em [06-decisoes.md](06-decisoes.md).
 
+A ficha atual era um teste e será refeita do zero, montada pelo modelo da mesa (ver [06-decisoes.md](06-decisoes.md)). Os itens sobre a ficha valem só até lá.
+
 ## Funcionalidades sem implementação
 
 Os botões existem na tela, mas não fazem nada:
@@ -16,7 +18,7 @@ Os botões existem na tela, mas não fazem nada:
 
 - Não há logout nem indicação de usuário logado na ficha.
 - Login e cadastro não levam à ficha (só mostram mensagem de sucesso) até a ficha exigir login; a ficha (`/ficha`) ainda abre direto pela URL.
-- O cadastro não pede o nome do usuário.
+- O cadastro ainda não pede o perfil (nickname, país, data de nascimento, como conheceu), como decidido em 09/11.
 
 ## Hub
 
