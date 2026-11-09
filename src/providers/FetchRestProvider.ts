@@ -6,7 +6,7 @@ export type RespostaRest = {
   corpo: unknown;
 };
 
-type MetodoHttp = "GET" | "POST" | "PUT" | "DELETE";
+type MetodoHttp = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
 export default class FetchRestProvider {
   private readonly urlBase: string;
@@ -25,6 +25,10 @@ export default class FetchRestProvider {
 
   put(caminho: string, corpo: unknown): Promise<RespostaRest> {
     return this.requisitar("PUT", caminho, corpo);
+  }
+
+  patch(caminho: string, corpo: unknown): Promise<RespostaRest> {
+    return this.requisitar("PATCH", caminho, corpo);
   }
 
   delete(caminho: string): Promise<RespostaRest> {

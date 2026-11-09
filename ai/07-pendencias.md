@@ -6,6 +6,9 @@ A ficha atual era um teste e será refeita do zero, montada pelo modelo da mesa 
 
 ## Funcionalidades sem implementação
 
+- A ficha de teste antiga (`/ficha`, `Ficha.tsx`, `Detalhes`, `Status`, `Barra`, `Atributos`, `Pericias`, `Combate`, `Cabecalho`, `usePersistido`, `useDetalhes`, `useBarras`) foi substituída pela ficha da mesa e pode ser apagada.
+- A ficha mostra o resultado das fórmulas, mas ainda não rola os dados (entra com o chat).
+
 Os botões existem na tela, mas não fazem nada:
 
 | Botão | Onde | Dúvidas antes de implementar |

@@ -115,6 +115,8 @@ Constantes com combinações de classes Tailwind usadas em mais de um componente
 | `campoLinha` | Input/select de texto com linha embaixo (`Detalhes`) |
 | `campoNumero` | Input numérico grande e centralizado (atributos, perícias, status) |
 | `botaoContorno` | Botões "ver" / "editar" e `BotaoTema` |
+| `campoFicha` / `rotuloFicha` | Campo compacto da ficha (sem largura; quem usa define) que vira texto simples quando desabilitado / rótulo pequeno dos campos da ficha |
+| `botaoPerigo` / `botaoCompacto` | Botão de contorno vermelho (excluir) / botão preenchido pequeno ("Nova ficha", "Criar ficha"), para não somar classes que brigam com `botaoContorno` e `botaoPrincipal` |
 | `botaoPrincipal` | Botão de ação principal (largura toda, fundo `arcano-texto-claro`, texto branco) |
 | `link` | Link em `acento`, sublinhado no hover |
 | `listaMarcadores` | Lista com marcadores das páginas legais |
@@ -184,14 +186,18 @@ Rodapé de todas as páginas (em `app/layout.tsx`), de largura total e em linha 
 | `FormularioNovaMesa.tsx` | Nome, descrição, template (`useTemplates`) e visibilidade; chama `criarMesa` e leva à mesa criada |
 | `useTemplates.ts` | `() => Template[]`. Carrega `listarTemplates()` |
 | `PaginaMesa.tsx` | `"use client"`. Raiz de `/mesas/[id]` (`useParams`): `CabecalhoMesa`, aviso de encerrada e a grade `AreasMesa` + lateral (`PainelGerencia` para dono/co-mestre e `ListaParticipantes`); visitante vê `AvisoLogin` |
-| `useTempoRealMesa.ts` | `(mesaId, ativo, { aoAtualizar, aoExcluir })`. Assina os eventos da mesa enquanto a página está aberta; guarda os callbacks num `ref` para não reassinar a cada render |
+| `useTempoRealMesa.ts` | `(mesaId, ativo, { aoAtualizar, aoExcluir, aoAtualizarFichas })`. Assina os eventos da mesa enquanto a página está aberta; guarda os callbacks num `ref` para não reassinar a cada render |
 | `useMesa.ts` | `(id, logado) => { mesa, carregando, executando, erros, executar, substituir, recarregar }`. `recarregar()` busca a mesa de novo sem mostrar "carregando" (usado pelo tempo real). `executar(acao)` roda uma ação do repositório e troca a mesa pela resposta; `substituir(mesa)` troca direto (usado pelo formulário de edição, que mostra os próprios erros) |
 | `CabecalhoMesa.tsx` | Props `mesa`, `estado`. `FaixaPagina` com voltar, selo (`rotuloDoSelo`), mestre, template, visibilidade, nome, descrição e meu papel; botões "Entrar como espectador" e "Sair da mesa" |
 | `PainelGerencia.tsx` | Props `mesa`, `estado`. Botão de editar (abre `FormularioEdicaoMesa`), código de convite (copiar, gerar novo), bloquear entrada, encerrar/reabrir; só o dono vê o excluir |
 | `FormularioEdicaoMesa.tsx` | Props `mesa`, `estado`, `aoFechar`. Nome, descrição e visibilidade (mantém o bloqueio de entrada); só salva se algo mudou, mostra os erros dentro do formulário e fecha ao salvar |
 | `ModalExclusao.tsx` | Props `mesa`, `aoFechar`. `<dialog>` que explica o que é apagado e o que é guardado e só libera o botão quando o nome da mesa é digitado |
 | `ListaParticipantes.tsx` | Props `mesa`, `estado`. Apelido e papel; quem gerencia troca o papel (`papeisAtribuiveis`) e remove (`podeRemover`) |
-| `AreasMesa.tsx` | Sem props. Espaços reservados "Em breve" com grade de fundo: tabuleiro grande (2 colunas) e, abaixo, fichas e chat |
+| `AreasMesa.tsx` | Prop `fichas: ReactNode` (largura total no topo da grade). Abaixo, espaços reservados "Em breve" de tabuleiro e chat, com grade de fundo |
+| `useFichas.ts` | `(mesaId, ativo)` → `{ fichas, carregando, executando, erros, executar, recarregar }`. Só busca se a pessoa participa da mesa; `executar(acao)` roda a ação, mostra os erros ou recarrega a lista e devolve se deu certo |
+| `PainelFichas.tsx` | Props `mesa`, `estado: EstadoFichas`. Cartão "Fichas" com contador, botão "Nova ficha" (equipe, mesa ativa), formulário de criação, lista separada em Personagens e Pets e NPCs e edição no lugar do item |
+| `ItemFicha.tsx` | Props `mesaId`, `ficha`, `podeCuidar`, `executando`, `aoEditar`, `aoExcluir`. Nome (link para a ficha) e botão "Abrir", jogador ("Você", apelido ou "NPC do mestre"), visibilidade (para a equipe) ou "Só leitura"; editar e excluir com confirmação no próprio item. A ficha da pessoa fica destacada |
+| `FormularioFicha.tsx` | Props `ficha` (`null` = nova), `jogadores`, `executando`, `aoSalvar`, `aoFechar`. Nome, tipo (só na criação), jogador (só papel Jogador; vazio = NPC do mestre) e "os outros jogadores podem ver" |
 
 ## `AvisoLogin.tsx` e `SeloMesa.tsx`
 
@@ -202,6 +208,22 @@ Rodapé de todas as páginas (em `app/layout.tsx`), de largura total e em linha 
 
 - `useSessao()` retorna `{ sessao, sair }`. `type Sessao` = `{ estado: "carregando" }` \| `{ estado: "visitante" }` \| `{ estado: "logado"; perfil: Perfil }`.
 - Chama `obterPerfil()` em `useEffect`; `sair()` chama o `POST /auth/sair` e volta para visitante.
+
+## `ficha/`
+
+| Arquivo | Papel |
+| --- | --- |
+| `PaginaFicha.tsx` | `"use client"`. Raiz de `/mesas/[id]/fichas/[fichaId]`: `FaixaPagina` com volta para a mesa, tipo, jogador, "Só leitura" ou a situação da gravação (`role="status"`) e o botão Modo leitura / Editar ficha; abaixo, `FichaModelo`. Só edita quem `podeEditar` com a mesa ativa |
+| `useFicha.ts` | `(mesaId, fichaId, ativo)` → `{ ficha, carregando, erros, situacao, alterar }`. `situacao`: `salvo`, `pendente`, `salvando` ou `erro` (recarrega a ficha). Envia os campos pendentes ao sair da página |
+| `FichaModelo.tsx` | Props `modelo`, `conteudo`, `editavel`, `aoAlterar`. Monta o contexto das fórmulas (atributo, detalhe numérico, perícia, barra; `treinada(id)`) e as seções que o modelo tiver |
+| `SecaoFicha.tsx` | Props `id`, `titulo`, `icone`, `acoes?`, `classes?`, `children`. Cartão de cada seção |
+| `DetalhesFicha.tsx` | Campos de texto, número e lista em grade `auto-fill` |
+| `BarrasFicha.tsx` | Barra com cor do modelo (`CORES`), atual e máximo editáveis e botões −/+ |
+| `AtributosFicha.tsx` | Cartões com modificador grande, valor e a rolagem calculada (`1d20 + 3`) |
+| `PericiasFicha.tsx` | Busca, favoritas no topo, estrela (favorita), caixa (treinada), sigla do atributo e rolagem calculada |
+| `CondicoesFicha.tsx` | Botões que marcam e desmarcam (`aria-pressed`); grava a lista inteira |
+| `CombateFicha.tsx` | Tabela de ataques: adicionar e remover linhas, células por coluna do modelo; coluna de rolagem mostra o resultado da fórmula. Grava a tabela inteira |
+| `CampoNumeroFicha.tsx` | Input numérico com rascunho local: só grava quando o número é inteiro e está dentro dos limites; fica vermelho (`aria-invalid`) se não estiver |
 
 ## `FaixaPagina.tsx` e `PainelLateral.tsx`
 

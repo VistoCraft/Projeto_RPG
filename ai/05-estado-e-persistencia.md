@@ -1,5 +1,9 @@
 # Estado e persistência
 
+## Ficha da mesa (salva no backend)
+
+A ficha de verdade fica em `/mesas/[id]/fichas/[fichaId]` e é salva no backend, não no `localStorage`. O `useFicha` muda o valor na tela na hora e envia só os campos alterados, juntos, 400 ms depois da última mudança (`PATCH`). Campos que chegam de outra pessoa pelo tempo real são aplicados, menos os que esta tela mudou há menos de 1,5 s. Tudo o que está abaixo vale só para a ficha de teste antiga em `/ficha`.
+
 ## Como funciona hoje
 
 - A sessão não fica no `localStorage`: é o cookie do Identity, e `useSessao` pergunta ao backend (`GET /perfil`) a cada página.

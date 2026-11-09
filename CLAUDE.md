@@ -24,8 +24,9 @@ app/
   page.tsx             # Rota "/" — só renderiza <Home /> (apresentação do produto)
   mesas/page.tsx       # Rota "/mesas" — só renderiza <Hub /> (aberto a visitantes)
   mesas/nova/, mesas/[id]/ # Rotas "/mesas/nova" (<NovaMesa />) e "/mesas/[id]" (<PaginaMesa />)
+  mesas/[id]/fichas/[fichaId]/ # Rota da ficha (<PaginaFicha />)
   termos/, privacidade/, creditos/ # Rotas "/termos", "/privacidade" e "/creditos" (atribuição do SRD 5.1 e licenças)
-  ficha/page.tsx       # Rota "/ficha" — só renderiza <Ficha /> (sem link por enquanto)
+  ficha/page.tsx       # Rota "/ficha" — ficha de teste antiga (<Ficha />), sem link; substituída pela ficha da mesa
   (autenticacao)/      # Route group: layout com TelaAutenticacao, rotas /login e /cadastro
   components/
     Ficha.tsx          # "use client" — monta a página e guarda o estado
@@ -54,12 +55,15 @@ app/
     legal/             # PaginaLegal (moldura com seções numeradas), TermosDeUso, PoliticaPrivacidade, Creditos
     hub/               # Hub de mesas: Hub, AvisoVisitante, EntrarComCodigo, FiltrosMesas, ListaMesas, CartaoMesa, useMesas
     mesa/              # Criar mesa e página da mesa: NovaMesa, FormularioNovaMesa, PaginaMesa, CabecalhoMesa, PainelGerencia,
-                       #   FormularioEdicaoMesa, ModalExclusao, ListaParticipantes, AreasMesa, useMesa, useTempoRealMesa, useTemplates
+                       #   FormularioEdicaoMesa, ModalExclusao, ListaParticipantes, AreasMesa, PainelFichas, ItemFicha, FormularioFicha,
+                       #   useMesa, useFichas, useTempoRealMesa, useTemplates
     formulario/        # Peças genéricas: CartaoFormulario, CaixaCampo, CampoFormulario, CampoSelecao, CampoBuscaSelecao, CampoDataSelecao, CampoAreaTexto, ListaErros,
                        #   useEnvioFormulario
+    ficha/             # Ficha montada pelo modelo: PaginaFicha, FichaModelo (reaproveitável, sem depender da página), SecaoFicha,
+                       #   DetalhesFicha, BarrasFicha, AtributosFicha, PericiasFicha, CondicoesFicha, CombateFicha, CampoNumeroFicha, useFicha
     autenticacao/      # Telas de login e cadastro: TelaAutenticacao, CampoAceiteTermos, FormularioLogin, FormularioCadastro, usePaises
 src/
-  dominio/             # Tipos de domínio (Credenciais, Perfil, Mesa, DetalheMesa, Template, Resultado...) e regras de papel (mesa.ts), listas (países, como conheceu) e termos.ts (versão, contato)
+  dominio/             # Tipos de domínio (Credenciais, Perfil, Mesa, DetalheMesa, Template, Ficha, ModeloFicha, Resultado...), formula.ts (avalia as fórmulas para exibir) e regras de papel (mesa.ts), listas (países, como conheceu) e termos.ts (versão, contato)
   providers/           # FetchRestProvider, a instância api (URL em NEXT_PUBLIC_API_URL) e ConexaoTempoReal (SignalR)
   repositories/        # Únicas chamadas HTTP e de tempo real (regra R6), com DTO → domínio; erros traduzidos em errosApi.ts
 public/img/            # Imagens, servidas em /img/...

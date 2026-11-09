@@ -4,7 +4,7 @@ Tecnologias e configuração: [04-tecnologias.md](04-tecnologias.md). Contexto e
 
 ## Como a página é montada
 
-Rotas: `/` (home, apresentação do produto), `/mesas` (hub, aberto a visitantes), `/mesas/nova`, `/mesas/[id]`, `/termos`, `/privacidade`, `/creditos`, `/ficha`, `/login` e `/cadastro`. Nenhum link leva à `/ficha` por enquanto. As duas últimas ficam no route group `app/(autenticacao)/`, que tem um layout próprio (`TelaAutenticacao`). Login e cadastro falam com o backend (`Projeto_RPG_Backend`); a ficha ainda não.
+Rotas: `/` (home, apresentação do produto), `/mesas` (hub, aberto a visitantes), `/mesas/nova`, `/mesas/[id]`, `/mesas/[id]/fichas/[fichaId]`, `/termos`, `/privacidade`, `/creditos`, `/ficha`, `/login` e `/cadastro`. Nenhum link leva à `/ficha` por enquanto. As duas últimas ficam no route group `app/(autenticacao)/`, que tem um layout próprio (`TelaAutenticacao`). Login, cadastro, mesas e a ficha da mesa falam com o backend (`Projeto_RPG_Backend`); só a ficha de teste antiga (`/ficha`) não.
 
 ```
 app/layout.tsx          (Server Component)  <html class="dark">, <body> (flex coluna + <Rodape /> no fim), metadata, fontes, globals.css e bootstrap-icons
@@ -34,9 +34,11 @@ app/mesas/page.tsx ─► Hub  ("use client": useTema, useSessao, useMesas) ─�
                      useSessao ─► perfilRepositorio.obterPerfil() (GET /perfil; 401 = visitante) e sair() (POST /auth/sair)
                      useMesas  ─► mesasRepositorio.listarMesas(filtro) (GET /mesas?busca&status&minhas)
 app/mesas/nova     ─► NovaMesa ─► PainelLateral + FormularioNovaMesa ─► criarMesa() ─► /mesas/[id]
-app/mesas/[id]     ─► PaginaMesa ("use client": useTema, useSessao, useMesa) ─► CabecalhoMesa (FaixaPagina), AreasMesa | lateral: PainelGerencia, ListaParticipantes
+app/mesas/[id]     ─► PaginaMesa ("use client": useTema, useSessao, useMesa) ─► CabecalhoMesa (FaixaPagina), AreasMesa (PainelFichas + tabuleiro e chat em breve) | lateral: PainelGerencia, ListaParticipantes
                      useMesa.executar(acao) ─► mesasRepositorio (entrar, sair, papel, remover, bloquear, código, encerrar, reabrir) ─► troca a mesa pela resposta
+                     useFichas (só participante) ─► fichasRepositorio (listar, criar, editar, excluir em /mesas/{id}/fichas)
                      useTempoRealMesa ─► tempoRealMesaRepositorio.assinarMesa ─► ConexaoTempoReal (SignalR /hubs/mesa)
+                       MesaAtualizada → recarrega mesa e fichas · FichasAtualizadas → recarrega fichas · MesaExcluida → /mesas
                        MesaAtualizada ─► useMesa.recarregar()   MesaExcluida ─► volta para /mesas
 ```
 
@@ -73,6 +75,18 @@ useDetalhes() ─► [detalhes, alterar]   useBarras() ─► [barras, ajustarBa
 
 - Só os **detalhes**, as **barras** e o **tema** passam pelo estado do React. Atributos, perícias, condições e combate ainda são estáticos ou não controlados (`defaultValue`). Veja [05-estado-e-persistencia.md](05-estado-e-persistencia.md).
 - Os dados descem por props a partir de `Ficha`. Não há Context nem biblioteca de estado. O padrão é um hook por tipo de dado, todos sobre `usePersistido`. Se a quantidade de props passando por `Status` crescer demais, avalie um Context. Registre a escolha em [06-decisoes.md](06-decisoes.md).
+
+## Ficha da mesa
+
+```
+app/mesas/[id]/fichas/[fichaId] ─► PaginaFicha ("use client": useTema, useSessao, useMesa, useFicha) ─► FaixaPagina + FichaModelo
+  useFicha ─► fichasRepositorio.obterFicha (GET .../fichas/{fichaId}: dados + modelo) ─► normalizarConteudo
+           ─► alterar(caminho, valor): muda na tela na hora, junta os campos e envia depois de 400 ms (PATCH .../fichas/{fichaId})
+           ─► assinarFicha: FichaAtualizada (campos de outra pessoa, menos os editados aqui há menos de 1,5 s) · FichasAtualizadas (recarrega)
+  FichaModelo(modelo, conteudo, editavel, aoAlterar) ─► Detalhes, Status (barras), Atributos, Condições, Perícias, Ataques
+```
+
+`FichaModelo` não conhece a página nem a mesa: recebe o modelo, o conteúdo, se é editável e a função de alterar. Quando existir o tabuleiro, ele pode ser aberto num painel lá dentro com o mesmo `useFicha`.
 
 ## Layout
 

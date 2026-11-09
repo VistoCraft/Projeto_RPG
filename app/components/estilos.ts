@@ -16,6 +16,10 @@ export const grupoCampo = "mb-5 flex flex-col";
 
 export const campoCaixa = "peer min-h-11 w-full rounded-md border border-texto/25 bg-fundo py-2 text-texto outline-none transition placeholder:text-texto/45 hover:border-arcano/60 focus:border-arcano focus:ring-3 focus:ring-arcano/25 aria-invalid:border-vida user-invalid:border-vida";
 
+export const campoFicha = "min-w-0 rounded-md border border-texto/20 bg-fundo px-2 py-1.5 text-texto outline-none transition hover:border-arcano/60 focus:border-arcano focus:ring-2 focus:ring-arcano/25 aria-invalid:border-vida disabled:cursor-default disabled:border-transparent disabled:bg-transparent disabled:px-0";
+
+export const rotuloFicha = "text-xs font-semibold tracking-wide opacity-75";
+
 export const campoSemMargem = "border-0 border-b-2 border-borda bg-transparent p-[5px] text-texto outline-none focus:border-arcano";
 
 export const campoLinha = `${campoSemMargem} mb-[15px]`;
@@ -23,6 +27,10 @@ export const campoLinha = `${campoSemMargem} mb-[15px]`;
 export const campoNumero = `${campoSemMargem} w-[60px] text-center text-[30px] tabular-nums`;
 
 export const botaoContorno = "cursor-pointer rounded-md border border-borda bg-transparent px-2 py-1 text-destaque hover:border-arcano";
+
+export const botaoPerigo = "cursor-pointer rounded-md border border-borda bg-transparent px-2 py-1 text-vida hover:border-vida disabled:opacity-60";
+
+export const botaoCompacto = "cursor-pointer rounded-md bg-arcano-texto-claro px-4 py-1 font-bold text-white hover:brightness-110 disabled:cursor-wait disabled:opacity-60";
 
 export const botaoPrincipal = "w-full cursor-pointer rounded-md bg-arcano-texto-claro px-4 py-2 font-titulo text-[18px] font-bold text-white hover:brightness-110 disabled:cursor-wait disabled:opacity-60";
 

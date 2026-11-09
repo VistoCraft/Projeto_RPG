@@ -4,6 +4,18 @@ Uma entrada por decisão, a mais recente no topo. Formato: **data — título**,
 
 ---
 
+## 2026-11-09 — Ficha montada pelo modelo, em página própria (fase 4.4)
+
+- **Contexto:** a ficha antiga tinha campos fixos e salvava no `localStorage`.
+- **Decisão:** página própria `/mesas/[id]/fichas/[fichaId]` (pedido do usuário; quando existir o tabuleiro, a ficha também abre dentro dele). O componente `FichaModelo` não depende da página. As alterações vão por `PATCH` com só os campos mudados, agrupados a cada 400 ms; o backend valida contra o modelo, grava com `jsonb_set` e avisa só quem pode ver a ficha. As fórmulas são avaliadas no frontend só para exibir o total.
+- **Consequências:** a ficha antiga (`/ficha`) ficou sem uso e pode ser apagada. Modo leitura é só da tela (não é salvo).
+
+## 2026-11-09 — Fichas na mesa (fase 4.3)
+
+- **Contexto:** a mesa precisava das fichas antes da ficha montada pelo modelo (4.4).
+- **Decisão:** a área de fichas da página da mesa lista o que a pessoa pode ver (filtrado no backend) e deixa a equipe (dono, co-mestre, assistente) criar, renomear, entregar a um jogador, mudar a visibilidade e excluir. A resposta traz `ehMinha` e `podeEditar` em vez do id do usuário. O tempo real usa o evento `FichasAtualizadas`, só com o id da mesa; o cliente busca a lista de novo.
+- **Consequências:** abrir e editar o conteúdo da ficha fica para a 4.4 (o `GET /mesas/{id}/fichas/{fichaId}` já devolve dados e modelo). A exclusão usa confirmação no próprio item, sem `window.confirm`.
+
 ## 2026-11-09 — Páginas em largura total
 
 - **Contexto:** todas as páginas ficavam numa coluna central de 940px, sobrando espaço vazio em telas grandes.

@@ -6,13 +6,15 @@ import useTema from "../useTema";
 import useSessao from "../useSessao";
 import useMesa from "./useMesa";
 import useTempoRealMesa from "./useTempoRealMesa";
+import useFichas from "./useFichas";
 import CabecalhoSite from "../CabecalhoSite";
 import AvisoLogin from "../AvisoLogin";
 import CabecalhoMesa from "./CabecalhoMesa";
 import PainelGerencia from "./PainelGerencia";
 import ListaParticipantes from "./ListaParticipantes";
 import AreasMesa from "./AreasMesa";
-import { conteudoPagina } from "../estilos";
+import PainelFichas from "./PainelFichas";
+import { cartao, conteudoPagina } from "../estilos";
 
 export default function PaginaMesa() {
   const { id } = useParams<{ id: string }>();
@@ -21,8 +23,19 @@ export default function PaginaMesa() {
   const logado = sessao.sessao.estado === "logado";
   const router = useRouter();
   const estado = useMesa(id, logado);
-  useTempoRealMesa(id, logado, { aoAtualizar: estado.recarregar, aoExcluir: () => router.push("/mesas") });
   const { mesa, carregando, erros } = estado;
+  const participa = mesa?.meuPapel != null;
+  const fichas = useFichas(id, participa);
+  useTempoRealMesa(id, logado, {
+    aoAtualizar: () => {
+      estado.recarregar();
+      if (participa) fichas.recarregar();
+    },
+    aoExcluir: () => router.push("/mesas"),
+    aoAtualizarFichas: () => {
+      if (participa) fichas.recarregar();
+    },
+  });
 
   return (
     <>
@@ -45,7 +58,7 @@ export default function PaginaMesa() {
                 </p>
               )}
               <div className="grid flex-1 items-start gap-6 xl:grid-cols-[1fr_400px]">
-                <AreasMesa />
+                <AreasMesa fichas={participa ? <PainelFichas mesa={mesa} estado={fichas} /> : <AvisoFichas />} />
                 <aside className="flex flex-col gap-6">
                   {podeGerenciarMesa(mesa.meuPapel) && <PainelGerencia mesa={mesa} estado={estado} />}
                   <ListaParticipantes mesa={mesa} estado={estado} />
@@ -56,5 +69,13 @@ export default function PaginaMesa() {
         </div>
       </main>
     </>
+  );
+}
+
+function AvisoFichas() {
+  return (
+    <p className={`${cartao} text-center text-sm opacity-80 md:col-span-2`}>
+      <i className="bi bi-journal-text text-destaque" aria-hidden="true"></i> Entre na mesa para ver as fichas.
+    </p>
   );
 }

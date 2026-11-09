@@ -15,6 +15,7 @@ export default function useTempoRealMesa(mesaId: string, ativo: boolean, eventos
     return assinarMesa(mesaId, {
       aoAtualizar: () => eventosAtuais.current.aoAtualizar(),
       aoExcluir: () => eventosAtuais.current.aoExcluir(),
+      aoAtualizarFichas: () => eventosAtuais.current.aoAtualizarFichas(),
     });
   }, [mesaId, ativo]);
 }

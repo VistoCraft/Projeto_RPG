@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { cartaoBase } from "../estilos";
 
 type Area = {
@@ -9,14 +10,18 @@ type Area = {
 };
 
 const areas: Area[] = [
-  { icone: "bi-grid-3x3", titulo: "Tabuleiro", texto: "Mapa com grade e tokens ligados às fichas.", fase: "Fase 6", classes: "md:col-span-2 min-h-[360px]" },
-  { icone: "bi-journal-text", titulo: "Fichas", texto: "As fichas da mesa, distribuídas pelo mestre.", fase: "Fase 4", classes: "min-h-[220px]" },
-  { icone: "bi-chat-dots", titulo: "Chat", texto: "Mensagens e rolagens em tempo real.", fase: "Fase 5", classes: "min-h-[220px]" },
+  { icone: "bi-grid-3x3", titulo: "Tabuleiro", texto: "Mapa com grade e tokens ligados às fichas.", fase: "Fase 6", classes: "min-h-[280px]" },
+  { icone: "bi-chat-dots", titulo: "Chat", texto: "Mensagens e rolagens em tempo real.", fase: "Fase 5", classes: "min-h-[280px]" },
 ];
 
-export default function AreasMesa() {
+type AreasMesaProps = {
+  fichas: ReactNode;
+};
+
+export default function AreasMesa({ fichas }: AreasMesaProps) {
   return (
     <section aria-label="Áreas da mesa" className="grid gap-6 md:grid-cols-2">
+      {fichas}
       {areas.map(({ icone, titulo, texto, fase, classes }) => (
         <article
           key={titulo}

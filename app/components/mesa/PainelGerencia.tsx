@@ -4,7 +4,7 @@ import { paraDadosEdicao, type DetalheMesa } from "@/src/dominio/mesa";
 import type { EstadoMesa } from "./useMesa";
 import ModalExclusao from "./ModalExclusao";
 import FormularioEdicaoMesa from "./FormularioEdicaoMesa";
-import { botaoContorno, cartao, tituloPainel } from "../estilos";
+import { botaoContorno, botaoPerigo, cartao, tituloPainel } from "../estilos";
 
 type PainelGerenciaProps = {
   mesa: DetalheMesa;
@@ -61,7 +61,7 @@ export default function PainelGerencia({ mesa, estado }: PainelGerenciaProps) {
           </button>
         )}
         {dono && (
-          <button type="button" className={`${botaoContorno} text-vida hover:border-vida`} onClick={() => setExcluindo(true)}>
+          <button type="button" className={botaoPerigo} onClick={() => setExcluindo(true)}>
             <i className="bi bi-trash" aria-hidden="true"></i> Excluir mesa
           </button>
         )}
