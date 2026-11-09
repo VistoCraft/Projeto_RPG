@@ -18,6 +18,7 @@
 | --- | --- | --- |
 | `next`, `react`, `react-dom` | produção | Framework e UI |
 | `bootstrap-icons` | produção | Ícones `bi bi-*` (ex.: botões −/+ das barras) |
+| `@microsoft/signalr` | produção | Cliente do SignalR, usado só em `src/providers/ConexaoTempoReal.ts` (uma conexão para o site, com reconexão automática e volta aos grupos) |
 | `next/font/google` | (vem com o `next`) | Almendra e Literata, baixadas no build e servidas pelo próprio site |
 | `tailwindcss`, `@tailwindcss/postcss`, `postcss` | desenvolvimento | Tailwind v4, integrado ao Next via PostCSS |
 | `typescript` | desenvolvimento | Checagem de tipos. O `yarn add` instalou a 7.0.2. |

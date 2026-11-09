@@ -45,7 +45,7 @@ export default function FormularioEdicaoMesa({ mesa, estado, aoFechar }: Formula
 
   return (
     <form className="flex flex-col rounded-md border border-borda p-4" onSubmit={(evento) => void salvar(evento)} aria-label="Editar dados da mesa">
-      <CampoFormulario id="edicaoNome" nome="Nome da mesa" tipo="text" valor={nome} aoAlterar={setNome} autoComplete="off" />
+      <CampoFormulario id="edicaoNome" nome="Nome da mesa" tipo="text" valor={nome} aoAlterar={setNome} autoComplete="off" icone="dice-5" />
       <CampoAreaTexto id="edicaoDescricao" nome="Descrição (opcional)" valor={descricao} aoAlterar={setDescricao} tamanhoMaximo={TAMANHO_MAXIMO_DESCRICAO_MESA} />
       <CampoSelecao
         id="edicaoVisibilidade"
@@ -54,6 +54,7 @@ export default function FormularioEdicaoMesa({ mesa, estado, aoFechar }: Formula
         aoAlterar={(valor) => setVisibilidade(visibilidadeDoValor(valor))}
         opcoes={OPCOES_VISIBILIDADE}
         textoVazio="Escolha a visibilidade"
+        icone="eye"
         obrigatorio
       />
       <ListaErros erros={erros} />

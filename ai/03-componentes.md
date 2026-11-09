@@ -108,15 +108,22 @@ Constantes com combinações de classes Tailwind usadas em mais de um componente
 | --- | --- |
 | `cartao` | Fundo `superficie`, borda `borda`, cantos arredondados, padding e sombra leve das seções |
 | `tituloSecao` | Título `h2` das seções |
-| `rotulo` | `<label>` dos campos |
+| `rotulo` | `<label>` dos campos da ficha antiga |
+| `rotuloCampo`, `dicaCampo`, `grupoCampo` | Rótulo, texto de ajuda e espaçamento dos campos de formulário (`formulario/`) |
+| `campoCaixa` | Caixa dos campos de formulário: borda arredondada, 44px de altura, anel de foco arcano e borda vermelha quando inválido. O padding lateral vem de `classeCampo` (`CaixaCampo.tsx`) |
+| `campoSemMargem` | Campo com linha embaixo, sem margem (para combinar com outro layout, como a lista do combobox) |
 | `campoLinha` | Input/select de texto com linha embaixo (`Detalhes`) |
 | `campoNumero` | Input numérico grande e centralizado (atributos, perícias, status) |
 | `botaoContorno` | Botões "ver" / "editar" e `BotaoTema` |
 | `botaoPrincipal` | Botão de ação principal (largura toda, fundo `arcano-texto-claro`, texto branco) |
 | `link` | Link em `acento`, sublinhado no hover |
 | `listaMarcadores` | Lista com marcadores das páginas legais |
-| `faixaDestaque` | Faixa com degradê `noite` → `arcano-texto-claro` → `mare` e texto `pergaminho` (banner do hub e destaque da home) |
-| `chamadaPrincipal` / `chamadaSecundaria` | Links com cara de botão sobre a `faixaDestaque` (preenchido em `arcano` / contorno claro) |
+| `conteudoPagina` | Largura total com margens laterais responsivas (`px-4` até `2xl:px-16`); base de todas as páginas |
+| `faixaTela` / `brilhoFaixa` | Faixa de largura total com degradê `noite` → `arcano-texto-claro` → `mare` e texto `pergaminho`, e a camada de brilho radial por cima |
+| `cartaoBase` | Cartão sem padding, para quem define o próprio (`CartaoMesa`, `CartaoFormulario`); `cartao` = `cartaoBase` + `p-5` |
+| `tituloPainel` | Título alinhado à esquerda com ícone, dos painéis laterais |
+| `rotuloSecao` | Sobretítulo em caixa alta e cor `acento` das seções da home |
+| `chamadaPrincipal` / `chamadaSecundaria` | Links com cara de botão sobre a faixa (preenchido em `arcano` / contorno claro) |
 
 ## `formulario/`
 
@@ -124,9 +131,12 @@ Peças genéricas de formulário, usadas no login, no cadastro e na criação de
 
 | Arquivo | Papel |
 | --- | --- |
-| `CartaoFormulario.tsx` | Props `titulo`, `textoBotao`, `envio: EnvioFormulario`, `rodape`, `children`. Mostra os erros com `role="alert"` e desativa o botão enquanto envia |
-| `CampoFormulario.tsx` | Props `id`, `nome`, `tipo` (`email` / `password` / `text` / `date`), `valor`, `aoAlterar`, `autoComplete`, `dica?`. Input `required` com rótulo e dica ligada por `aria-describedby` |
-| `CampoSelecao.tsx` | Props `id`, `nome`, `valor`, `aoAlterar`, `opcoes: Opcao[]`, `textoVazio`, `obrigatorio`, `autoComplete?`. `<select>` com uma opção vazia no topo |
+| `CartaoFormulario.tsx` | Props `titulo`, `textoBotao`, `envio: EnvioFormulario`, `rodape`, `children`, `estreito?` (limita a 440px, usado no login). Mostra os erros com `role="alert"` e desativa o botão enquanto envia |
+| `CaixaCampo.tsx` | Props `icone?` (nome do bootstrap-icons sem `bi-`), `seta?`, `acao?`, `children`. Envolve o campo e posiciona o ícone à esquerda (fica arcano no foco), a seta de seleção ou um botão à direita. Exporta `classeCampo(icone?, temDireita?)` com o padding certo para cada caso |
+| `CampoFormulario.tsx` | Props `id`, `nome`, `tipo` (`email` / `password` / `text` / `date`), `valor`, `aoAlterar`, `autoComplete`, `dica?`, `icone?`. Input `required` com rótulo e dica ligada por `aria-describedby`; em senha, botão de olho para mostrar/ocultar |
+| `CampoSelecao.tsx` | Props `id`, `nome`, `valor`, `aoAlterar`, `opcoes: Opcao[]`, `textoVazio`, `obrigatorio`, `autoComplete?`, `icone?`. `<select>` com uma opção vazia no topo e seta própria |
+| `CampoBuscaSelecao.tsx` | Props `id`, `nome`, `valor`, `aoAlterar`, `opcoes`, `textoAjuda`, `autoComplete?`, `icone?`. Combobox acessível: digitar filtra sem diferenciar acentos, setas/Enter/Esc pelo teclado, clique escolhe; ao sair, escolhe se o texto for igual a uma opção |
+| `CampoDataSelecao.tsx` | Props `id`, `nome`, `aoAlterar` (ISO `AAAA-MM-DD` ou vazio), `anosAtras` (`{ minimo, maximo }`), `dica?`. Três selects (dia, mês por nome, ano) num `fieldset`; os dias seguem o mês e o ano bissexto; os anos são montados em `useEffect` |
 | `CampoAreaTexto.tsx` | Props `id`, `nome`, `valor`, `aoAlterar`, `tamanhoMaximo`. `<textarea>` com contador de caracteres |
 | `ListaErros.tsx` | Prop `erros`. Lista com `role="alert"`; não renderiza nada se estiver vazia |
 | `useEnvioFormulario.ts` | `(acao, aoConcluir) => { enviando, erros, enviar }`. Genérico sobre o resultado: sucesso chama `aoConcluir(resultado)` (ex.: com a mesa criada), falha guarda os erros |
@@ -135,52 +145,53 @@ Peças genéricas de formulário, usadas no login, no cadastro e na criação de
 
 | Arquivo | Papel |
 | --- | --- |
-| `TelaAutenticacao.tsx` | `"use client"`. Moldura das telas: logo, `BotaoTema`, `DivisorRunico` e `children`, centralizados (máx. 440px) |
+| `TelaAutenticacao.tsx` | `"use client"`. Tela dividida: `PainelLateral` (logo e vantagens) à esquerda a partir de `lg`; à direita, "Voltar ao início", `BotaoTema` e o formulário centralizado (máx. 760px; o login usa o cartão estreito) |
 | `CampoAceiteTermos.tsx` | Props `aceito`, `aoAlterar`. Checkbox obrigatório com links (nova aba) para `/termos` e `/privacidade` |
 | `usePaises.ts` | `() => Opcao[]`. Monta `listarPaises("pt-BR")` em `useEffect`, para os nomes do `Intl` não causarem erro de hidratação |
 | `FormularioLogin.tsx` | `"use client"`. E-mail e senha, chama `entrar` e leva a `/mesas` |
-| `FormularioCadastro.tsx` | `"use client"`. Nickname, e-mail, senha e confirmação, país, data de nascimento (18+) e como conheceu (opcional). Confere se as senhas batem, chama `cadastrar` (que já faz o login) e leva a `/mesas` |
+| `FormularioCadastro.tsx` | `"use client"`. Em duas colunas a partir de `md`: nickname, e-mail, senha e confirmação, país (`CampoBuscaSelecao`), data de nascimento (`CampoDataSelecao`, anos de 18 a 110 atrás) e como conheceu (opcional); o aceite dos termos ocupa a largura toda. Confere se as senhas batem, chama `cadastrar` (que já faz o login) e leva a `/mesas` |
 
 ## `Rodape.tsx`
 
-Rodapé de todas as páginas (em `app/layout.tsx`): linha fina em cima, aviso de projeto de estudo sem fins comerciais, links para Termos de uso e Privacidade e "Desenvolvido por Victor Prezia · ano".
+Rodapé de todas as páginas (em `app/layout.tsx`), de largura total e em linha a partir de `md`: aviso de projeto de estudo sem fins comerciais, links para Termos de uso, Privacidade e Créditos e "Desenvolvido por Victor Prezia · ano".
 
 ## `legal/`
 
 | Arquivo | Papel |
 | --- | --- |
-| `PaginaLegal.tsx` | `"use client"`. Props `titulo`, `resumo`, `secoes: SecaoLegal[]` (`{ titulo, conteudo }`). Cabeçalho do site, data de atualização (`DATA_ATUALIZACAO_TERMOS`), resumo em destaque e seções numeradas |
+| `PaginaLegal.tsx` | `"use client"`. Props `titulo`, `resumo`, `secoes: SecaoLegal[]` (`{ titulo, conteudo }`). `FaixaPagina` com a data (`DATA_ATUALIZACAO_TERMOS`), o número de seções e o resumo; índice fixo com âncoras `#secao-N`; seções como texto corrido (título numerado 01, 02... e conteúdo, sem cartão) num `<article>` com `[columns:44rem_2]` (no máximo 2 colunas, cada uma com no mínimo 704px) e `break-inside-avoid` por seção |
 | `TermosDeUso.tsx` | Array `secoes` dos Termos de uso, com o aviso de projeto de estudo no resumo |
+| `Creditos.tsx` | Array `secoes` com a atribuição do SRD 5.1 (CC-BY-4.0), o aviso de marca e as licenças de fontes e ícones |
 | `PoliticaPrivacidade.tsx` | Array `secoes` da Política de privacidade (LGPD): dados coletados, finalidades e bases legais, compartilhamento, cookies, retenção e direitos |
 
 ## `hub/`
 
 | Arquivo | Papel |
 | --- | --- |
-| `Hub.tsx` | `"use client"`. Raiz da rota `/mesas`: chama `useTema`, `useSessao` e `useMesas(filtro)`, guarda o filtro e monta `CabecalhoSite`, banner, aviso de visitante ou `AcoesHub`, `DivisorRunico`, `FiltrosMesas` e lista |
-| `BannerHub.tsx` | `faixaDestaque` com o título "Hub de mesas" e frase de chamada |
+| `Hub.tsx` | `"use client"`. Raiz da rota `/mesas`: chama `useTema`, `useSessao` e `useMesas(filtro)`, guarda o filtro e monta `CabecalhoSite`, `FaixaPagina` (com "Criar mesa" se logado) e a grade lateral + lista; a lateral tem o aviso de visitante ou `EntrarComCodigo` e os `FiltrosMesas` |
 | `AvisoVisitante.tsx` | Sem props. Aviso de que a pessoa está vendo como visitante, com links para criar conta e entrar |
-| `AcoesHub.tsx` | Sem props (só logado). Link "Criar mesa" e formulário "Entrar com código", que leva à mesa |
-| `FiltrosMesas.tsx` | Props `filtro`, `aoAlterar`, `logado`. Busca pelo nome, situação (todas, ativas, encerradas) e "só as minhas" (logado) |
+| `EntrarComCodigo.tsx` | Sem props (só logado). Cartão com o campo do código de convite (`CaixaCampo`) e o botão que leva à mesa |
+| `FiltrosMesas.tsx` | Props `filtro`, `aoAlterar`, `logado`. Cartão com busca pelo nome, situação em botões segmentados (todas, ativas, encerradas; `aria-pressed`) e "só as minhas" (logado) |
 | `useMesas.ts` | `(filtro, sessaoPronta) => { mesas, carregando, erros }`. Chama `listarMesas(filtro)` com espera de 300 ms entre digitações, depois que a sessão carrega |
-| `ListaMesas.tsx` | Prop `estado: EstadoMesas`. Avisos de carregando / erro / vazio e grade de `CartaoMesa` (2 colunas a partir de `sm`) |
+| `ListaMesas.tsx` | Prop `estado: EstadoMesas`. Avisos de carregando / erro / vazio e contagem; grade de `CartaoMesa` em `auto-fill` (mínimo 320px por cartão) |
 | `CartaoMesa.tsx` | Prop `mesa: Mesa`. Link para `/mesas/[id]` com nome (cadeado se privada), `SeloMesa`, descrição, mestre, template, jogadores e espectadores e o meu papel |
 
 ## `mesa/`
 
 | Arquivo | Papel |
 | --- | --- |
-| `NovaMesa.tsx` | `"use client"`. Raiz de `/mesas/nova`: `CabecalhoSite` e `FormularioNovaMesa` (logado) ou `AvisoLogin` |
+| `NovaMesa.tsx` | `"use client"`. Raiz de `/mesas/nova`: `CabecalhoSite` e tela dividida com `PainelLateral` (dicas) e `FormularioNovaMesa` (logado) ou `AvisoLogin` |
 | `FormularioNovaMesa.tsx` | Nome, descrição, template (`useTemplates`) e visibilidade; chama `criarMesa` e leva à mesa criada |
 | `useTemplates.ts` | `() => Template[]`. Carrega `listarTemplates()` |
-| `PaginaMesa.tsx` | `"use client"`. Raiz de `/mesas/[id]` (`useParams`): `CabecalhoMesa`, aviso de encerrada, `PainelGerencia` (dono/ajudante), `ListaParticipantes` e `AreasMesa`; visitante vê `AvisoLogin` |
-| `useMesa.ts` | `(id, logado) => { mesa, carregando, executando, erros, executar, substituir }`. `executar(acao)` roda uma ação do repositório e troca a mesa pela resposta; `substituir(mesa)` troca direto (usado pelo formulário de edição, que mostra os próprios erros) |
-| `CabecalhoMesa.tsx` | Props `mesa`, `estado`. Nome, descrição, mestre, template, meu papel; botões "Entrar como espectador" e "Sair da mesa" |
-| `PainelGerencia.tsx` | Props `mesa`, `estado`. Botão de editar (abre `FormularioEdicaoMesa`), código de convite (copiar, gerar novo), bloquear entrada; para o dono, encerrar/reabrir e excluir. Com a mesa encerrada, só o dono vê as ações de status |
+| `PaginaMesa.tsx` | `"use client"`. Raiz de `/mesas/[id]` (`useParams`): `CabecalhoMesa`, aviso de encerrada e a grade `AreasMesa` + lateral (`PainelGerencia` para dono/co-mestre e `ListaParticipantes`); visitante vê `AvisoLogin` |
+| `useTempoRealMesa.ts` | `(mesaId, ativo, { aoAtualizar, aoExcluir })`. Assina os eventos da mesa enquanto a página está aberta; guarda os callbacks num `ref` para não reassinar a cada render |
+| `useMesa.ts` | `(id, logado) => { mesa, carregando, executando, erros, executar, substituir, recarregar }`. `recarregar()` busca a mesa de novo sem mostrar "carregando" (usado pelo tempo real). `executar(acao)` roda uma ação do repositório e troca a mesa pela resposta; `substituir(mesa)` troca direto (usado pelo formulário de edição, que mostra os próprios erros) |
+| `CabecalhoMesa.tsx` | Props `mesa`, `estado`. `FaixaPagina` com voltar, selo (`rotuloDoSelo`), mestre, template, visibilidade, nome, descrição e meu papel; botões "Entrar como espectador" e "Sair da mesa" |
+| `PainelGerencia.tsx` | Props `mesa`, `estado`. Botão de editar (abre `FormularioEdicaoMesa`), código de convite (copiar, gerar novo), bloquear entrada, encerrar/reabrir; só o dono vê o excluir |
 | `FormularioEdicaoMesa.tsx` | Props `mesa`, `estado`, `aoFechar`. Nome, descrição e visibilidade (mantém o bloqueio de entrada); só salva se algo mudou, mostra os erros dentro do formulário e fecha ao salvar |
 | `ModalExclusao.tsx` | Props `mesa`, `aoFechar`. `<dialog>` que explica o que é apagado e o que é guardado e só libera o botão quando o nome da mesa é digitado |
 | `ListaParticipantes.tsx` | Props `mesa`, `estado`. Apelido e papel; quem gerencia troca o papel (`papeisAtribuiveis`) e remove (`podeRemover`) |
-| `AreasMesa.tsx` | Sem props. Cartões "Em breve" de chat, fichas e tabuleiro |
+| `AreasMesa.tsx` | Sem props. Espaços reservados "Em breve" com grade de fundo: tabuleiro grande (2 colunas) e, abaixo, fichas e chat |
 
 ## `AvisoLogin.tsx` e `SeloMesa.tsx`
 
@@ -192,18 +203,27 @@ Rodapé de todas as páginas (em `app/layout.tsx`): linha fina em cima, aviso de
 - `useSessao()` retorna `{ sessao, sair }`. `type Sessao` = `{ estado: "carregando" }` \| `{ estado: "visitante" }` \| `{ estado: "logado"; perfil: Perfil }`.
 - Chama `obterPerfil()` em `useEffect`; `sair()` chama o `POST /auth/sair` e volta para visitante.
 
+## `FaixaPagina.tsx` e `PainelLateral.tsx`
+
+| Arquivo | Papel |
+| --- | --- |
+| `FaixaPagina.tsx` | Props `rotulo?`, `titulo`, `descricao?`, `children?`, `ladoALado?`. Faixa de título de largura total (`faixaTela`), usada no hub, na mesa e nas páginas legais. Por padrão, `children` são ações alinhadas à direita; com `ladoALado`, a faixa vira duas colunas (`1fr / 1.4fr`) e `children` ocupa a coluna da direita inteira (o resumo das páginas legais) |
+| `PainelLateral.tsx` | Props `rotulo`, `titulo`, `itens: ItemPainel[]` (`{ icone, texto }`), `topo?`. Coluna com degradê das telas divididas (login, cadastro, nova mesa); some abaixo de `lg` |
+
 ## `CabecalhoSite.tsx`
 
-- Props: `tema`, `alternarTema`, `sessao: EstadoSessao`. Logo (link para `/`) à esquerda; à direita, link Mesas, os links Entrar / Criar conta (visitante) ou o nickname e o botão Sair (logado), e o `BotaoTema`. Enquanto a sessão carrega, não mostra os links de conta.
+- Props: `tema`, `alternarTema`, `sessao: EstadoSessao`. Barra fixa no topo, de largura total, com fundo translúcido. À esquerda, logo e o menu `itensMenu` (Início, Mesas), com o item atual destacado (`usePathname`, `aria-current`); à direita, os links Entrar / Criar conta (visitante) ou o nickname e o botão Sair (logado), e o `BotaoTema`. Enquanto a sessão carrega, não mostra os links de conta.
 
 ## `home/`
 
 | Arquivo | Papel |
 | --- | --- |
-| `Home.tsx` | `"use client"`. Raiz da rota `/`: chama `useTema` e `useSessao`, monta `CabecalhoSite`, `HeroHome`, `DivisorRunico`, `RecursosHome` e `PassosHome` |
-| `HeroHome.tsx` | Prop `logado`. Título, frase e chamadas: Criar conta / Ver mesas (visitante) ou Ir para as mesas (logado) |
-| `RecursosHome.tsx` | Sem props. Array `recursos` (ícone, título, texto) em cartões, 2 colunas a partir de `sm` |
-| `PassosHome.tsx` | Sem props. Array `passos` numerados, 3 colunas a partir de `sm` |
+| `Home.tsx` | `"use client"`. Raiz da rota `/`: chama `useTema` e `useSessao`, monta `CabecalhoSite`, `HeroHome`, `RecursosHome`, `PassosHome` e `ChamadaFinalHome` |
+| `HeroHome.tsx` | Prop `logado`. Faixa de tela cheia: título, frase, chamadas (Criar conta / Ver mesas ou Ir para as mesas) e `PreviaMesa` à direita |
+| `PreviaMesa.tsx` | Sem props, decorativa (`aria-hidden`, só a partir de `lg`). Ilustração feita em JSX de uma mesa: ficha com atributos, tabuleiro com tokens e chat com rolagem |
+| `ChamadaFinalHome.tsx` | Prop `logado`. `DivisorRunico`, chamada e link para criar conta ou criar mesa |
+| `RecursosHome.tsx` | Sem props. Array `recursos` (ícone, título, texto) em cartões, 2 colunas a partir de `sm` e 4 a partir de `xl` |
+| `PassosHome.tsx` | Sem props. Array `passos` (ícone, título, texto) numerados de 01 a 03 em faixa, 3 colunas a partir de `md` |
 
 ## Ao criar um componente novo
 

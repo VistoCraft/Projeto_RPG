@@ -4,7 +4,7 @@ Tecnologias e configuração: [04-tecnologias.md](04-tecnologias.md). Contexto e
 
 ## Como a página é montada
 
-Rotas: `/` (home, apresentação do produto), `/mesas` (hub, aberto a visitantes), `/mesas/nova`, `/mesas/[id]`, `/termos`, `/privacidade`, `/ficha`, `/login` e `/cadastro`. Nenhum link leva à `/ficha` por enquanto. As duas últimas ficam no route group `app/(autenticacao)/`, que tem um layout próprio (`TelaAutenticacao`). Login e cadastro falam com o backend (`Projeto_RPG_Backend`); a ficha ainda não.
+Rotas: `/` (home, apresentação do produto), `/mesas` (hub, aberto a visitantes), `/mesas/nova`, `/mesas/[id]`, `/termos`, `/privacidade`, `/creditos`, `/ficha`, `/login` e `/cadastro`. Nenhum link leva à `/ficha` por enquanto. As duas últimas ficam no route group `app/(autenticacao)/`, que tem um layout próprio (`TelaAutenticacao`). Login e cadastro falam com o backend (`Projeto_RPG_Backend`); a ficha ainda não.
 
 ```
 app/layout.tsx          (Server Component)  <html class="dark">, <body> (flex coluna + <Rodape /> no fim), metadata, fontes, globals.css e bootstrap-icons
@@ -29,13 +29,15 @@ Como `Ficha.tsx` tem `"use client"`, tudo o que ele importa também vira client 
 ## Home (`/`) e hub (`/mesas`)
 
 ```
-app/page.tsx       ─► Home ("use client": useTema, useSessao) ─► CabecalhoSite, HeroHome, DivisorRunico, RecursosHome, PassosHome
-app/mesas/page.tsx ─► Hub  ("use client": useTema, useSessao, useMesas) ─► CabecalhoSite, BannerHub, AvisoVisitante (só visitante), DivisorRunico, ListaMesas ─► CartaoMesa
+app/page.tsx       ─► Home ("use client": useTema, useSessao) ─► CabecalhoSite, HeroHome (+ PreviaMesa), RecursosHome, PassosHome, ChamadaFinalHome
+app/mesas/page.tsx ─► Hub  ("use client": useTema, useSessao, useMesas) ─► CabecalhoSite, FaixaPagina, lateral (AvisoVisitante ou EntrarComCodigo, FiltrosMesas), ListaMesas ─► CartaoMesa
                      useSessao ─► perfilRepositorio.obterPerfil() (GET /perfil; 401 = visitante) e sair() (POST /auth/sair)
                      useMesas  ─► mesasRepositorio.listarMesas(filtro) (GET /mesas?busca&status&minhas)
-app/mesas/nova     ─► NovaMesa ─► FormularioNovaMesa ─► criarMesa() ─► /mesas/[id]
-app/mesas/[id]     ─► PaginaMesa ("use client": useTema, useSessao, useMesa) ─► CabecalhoMesa, PainelGerencia, ListaParticipantes, AreasMesa
+app/mesas/nova     ─► NovaMesa ─► PainelLateral + FormularioNovaMesa ─► criarMesa() ─► /mesas/[id]
+app/mesas/[id]     ─► PaginaMesa ("use client": useTema, useSessao, useMesa) ─► CabecalhoMesa (FaixaPagina), AreasMesa | lateral: PainelGerencia, ListaParticipantes
                      useMesa.executar(acao) ─► mesasRepositorio (entrar, sair, papel, remover, bloquear, código, encerrar, reabrir) ─► troca a mesa pela resposta
+                     useTempoRealMesa ─► tempoRealMesaRepositorio.assinarMesa ─► ConexaoTempoReal (SignalR /hubs/mesa)
+                       MesaAtualizada ─► useMesa.recarregar()   MesaExcluida ─► volta para /mesas
 ```
 
 - As regras de papel do front (`podeGerenciar`, `papeisAtribuiveis`, `podeRemover` em `src/dominio/mesa.ts`) só escondem botões; quem decide é o backend.
@@ -46,7 +48,7 @@ app/mesas/[id]     ─► PaginaMesa ("use client": useTema, useSessao, useMesa)
 ## Telas de autenticação
 
 ```
-app/(autenticacao)/layout.tsx  ─► TelaAutenticacao ("use client": useTema, BotaoTema, DivisorRunico)
+app/(autenticacao)/layout.tsx  ─► TelaAutenticacao ("use client": useTema, BotaoTema, PainelLateral)
 ├─ login/page.tsx    ─► FormularioLogin    ─► entrar()     ─┐
 └─ cadastro/page.tsx ─► FormularioCadastro ─► cadastrar()  ─┤
                                                              ▼
@@ -74,7 +76,20 @@ useDetalhes() ─► [detalhes, alterar]   useBarras() ─► [barras, ajustarBa
 
 ## Layout
 
-Feito com classes Tailwind direto no JSX (regra R8):
+Feito com classes Tailwind direto no JSX (regra R8).
+
+**Páginas do site (largura total):** nenhuma página fica presa numa coluna central. O `CabecalhoSite` é uma barra fixa no topo (`sticky`) e o conteúdo usa `conteudoPagina` (margens de 16px a 64px conforme a tela, sem largura máxima). Cada raiz renderiza `<CabecalhoSite />` e um `<main className="flex flex-1 flex-col">`.
+
+| Página | Estrutura |
+| --- | --- |
+| Home | Hero de tela cheia com texto à esquerda e `PreviaMesa` à direita (a partir de `lg`); recursos em 4 colunas (`xl`); passos em faixa; chamada final |
+| Hub | `FaixaPagina` com "Criar mesa"; abaixo, grade lateral (280–300px, fixa ao rolar) + lista, com os cartões em `auto-fill` de no mínimo 320px |
+| Mesa | `FaixaPagina` com selos, informações e ações; abaixo, `AreasMesa` + coluna lateral de 400px (gerência e participantes) a partir de `xl` |
+| Nova mesa, login e cadastro | Tela dividida (`5fr / 7fr`): `PainelLateral` com degradê à esquerda (some abaixo de `lg`) e o formulário centralizado à direita |
+| Termos, privacidade, créditos | `FaixaPagina` `ladoALado`: data, número de seções e título à esquerda e o resumo à direita; índice fixo à esquerda (em linha rolável no celular) e o texto corrido, sem cartões, em `columns: 44rem 2`: uma coluna até cerca de 1850px de tela e no máximo duas acima disso, separadas por uma linha fina |
+
+**Ficha antiga (`/ficha`):**
+
 
 - `main` (`Ficha.tsx`) é `grid grid-cols-2 gap-[30px] w-[940px] mx-auto`: grid de **2 colunas**, largura fixa de **940px** e centralizado. Ainda não é responsivo.
 - A ordem no grid segue a ordem do JSX em `Ficha.tsx`:

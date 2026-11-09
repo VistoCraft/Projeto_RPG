@@ -14,6 +14,7 @@ export type EstadoMesa = {
   erros: string[];
   executar: (acao: AcaoMesa) => Promise<void>;
   substituir: (mesa: DetalheMesa) => void;
+  recarregar: () => void;
 };
 
 export default function useMesa(id: string, logado: boolean): EstadoMesa {
@@ -51,5 +52,16 @@ export default function useMesa(id: string, logado: boolean): EstadoMesa {
     setMesa(atualizada);
   };
 
-  return { mesa, carregando, executando, erros, executar, substituir };
+  const recarregar = () => {
+    void obterMesa(id).then((resultado) => {
+      if (resultado.sucesso) {
+        setMesa(resultado.valor);
+        return;
+      }
+      setMesa(null);
+      setErros(resultado.erros);
+    });
+  };
+
+  return { mesa, carregando, executando, erros, executar, substituir, recarregar };
 }

@@ -34,9 +34,9 @@ export default function FormularioNovaMesa() {
 
   return (
     <CartaoFormulario titulo="Criar mesa" textoBotao="Criar mesa" envio={envio} rodape={rodape}>
-      <CampoFormulario id="nome" nome="Nome da mesa" tipo="text" valor={nome} aoAlterar={setNome} autoComplete="off" />
+      <CampoFormulario id="nome" nome="Nome da mesa" tipo="text" valor={nome} aoAlterar={setNome} autoComplete="off" icone="dice-5" />
       <CampoAreaTexto id="descricao" nome="Descrição (opcional)" valor={descricao} aoAlterar={setDescricao} tamanhoMaximo={TAMANHO_MAXIMO_DESCRICAO_MESA} />
-      <CampoSelecao id="template" nome="Template de ficha" valor={templateId} aoAlterar={setTemplateId} opcoes={opcoesTemplate} textoVazio="Escolha o template" obrigatorio />
+      <CampoSelecao id="template" nome="Template de ficha" valor={templateId} aoAlterar={setTemplateId} opcoes={opcoesTemplate} textoVazio="Escolha o template" obrigatorio icone="file-earmark-text" />
       <CampoSelecao
         id="visibilidade"
         nome="Quem pode ver a mesa"
@@ -44,6 +44,7 @@ export default function FormularioNovaMesa() {
         aoAlterar={(valor) => setVisibilidade(visibilidadeDoValor(valor))}
         opcoes={OPCOES_VISIBILIDADE}
         textoVazio="Escolha a visibilidade"
+        icone="eye"
         obrigatorio
       />
     </CartaoFormulario>

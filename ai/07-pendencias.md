@@ -23,7 +23,7 @@ Os botões existem na tela, mas não fazem nada:
 
 ## Hub
 
-- A página da mesa não atualiza sozinha quando outra pessoa entra ou muda de papel (falta o SignalR); é preciso recarregar.
+- O hub (`/mesas`) ainda não se atualiza em tempo real; só a página de cada mesa.
 - O hub não pagina: mostra só as 20 mesas mais recentes que a API devolve.
 - Se "Sair da mesa" falhar, o erro não aparece na tela.
 - O e-mail não é confirmado (`isEmailConfirmed` fica `false`).
@@ -38,9 +38,9 @@ Atributos, perícias, condições e tabela de combate. Veja [05-estado-e-persist
 
 - As duas seções de perícias são independentes: mudar o valor numa não muda na outra.
 - A tabela de combate mostra 4 linhas iguais de exemplo ("balestra").
-- O layout tem largura fixa de **940px** e não é responsivo.
+- O layout da ficha antiga (`/ficha`) tem largura fixa de **940px** e não é responsivo (as outras páginas já ocupam a tela toda).
 - `public/img/bg.jpg` e `public/img/d20.png` não são usados.
-- `public/img/Logo.png` é o logo de D&D (marca de terceiros); trocar pelo logo próprio em SVG previsto na identidade visual.
+- `public/img/Logo.png` é o logo de D&D (marca de terceiros) e contradiz o aviso de não afiliação em `/creditos`; trocar pelo logo próprio em SVG antes de publicar.
 - Quem escolhe o tema claro vê o escuro por um instante ao recarregar, porque o tema salvo só é aplicado depois da hidratação.
 - As cores das barras (`vida`, `sanidade`, `esforco`) têm pouco contraste com o trilho no tema escuro; o valor numérico ao lado do título compensa.
 - Colunas "nun. Atual" e "nun. Maximo" da tabela de combate (`Combate.tsx`): falta confirmar o que significam (munição?) antes de corrigir o texto.

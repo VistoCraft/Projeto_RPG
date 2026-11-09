@@ -15,6 +15,10 @@ function aparenciaDe({ status, entradaBloqueada }: SeloMesaProps["mesa"]): Apare
   return entradaBloqueada ? APARENCIA_BLOQUEADA : APARENCIA_ABERTA;
 }
 
+export function rotuloDoSelo(mesa: SeloMesaProps["mesa"]): string {
+  return aparenciaDe(mesa).rotulo;
+}
+
 export default function SeloMesa({ mesa }: SeloMesaProps) {
   const { rotulo, classes } = aparenciaDe(mesa);
   return <span className={`shrink-0 rounded-full border px-3 py-0.5 text-sm ${classes}`}>{rotulo}</span>;

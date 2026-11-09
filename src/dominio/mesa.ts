@@ -4,7 +4,7 @@ export type VisibilidadeMesa = "publica" | "privada";
 
 export type StatusMesa = "ativa" | "encerrada";
 
-export type PapelParticipante = "dono" | "ajudante" | "jogador" | "espectador";
+export type PapelParticipante = "dono" | "coMestre" | "assistente" | "jogador" | "espectador";
 
 export type Mesa = {
   id: string;
@@ -65,27 +65,36 @@ export const TAMANHO_MAXIMO_DESCRICAO_MESA = 500;
 
 export const ROTULOS_PAPEL: Record<PapelParticipante, string> = {
   dono: "Mestre (dono)",
-  ajudante: "Ajudante",
+  coMestre: "Co-mestre",
+  assistente: "Assistente (fichas e tabuleiro)",
   jogador: "Jogador",
   espectador: "Espectador",
 };
 
-const PAPEIS_ATRIBUIVEIS: PapelParticipante[] = ["ajudante", "jogador", "espectador"];
+export const PAPEIS_ATRIBUIVEIS: PapelParticipante[] = ["coMestre", "assistente", "jogador", "espectador"];
 
-export function podeGerenciar(papel: PapelParticipante | null): boolean {
-  return papel === "dono" || papel === "ajudante";
+function ehEquipe(papel: PapelParticipante): boolean {
+  return papel === "coMestre" || papel === "assistente";
+}
+
+export function podeGerenciarMesa(papel: PapelParticipante | null): boolean {
+  return papel === "dono" || papel === "coMestre";
+}
+
+export function podeCuidarDeFichasETabuleiro(papel: PapelParticipante | null): boolean {
+  return podeGerenciarMesa(papel) || papel === "assistente";
 }
 
 export function papeisAtribuiveis(ator: PapelParticipante, alvo: PapelParticipante): PapelParticipante[] {
   if (alvo === "dono") return [];
   if (ator === "dono") return PAPEIS_ATRIBUIVEIS;
-  if (ator === "ajudante" && alvo !== "ajudante") return PAPEIS_ATRIBUIVEIS.filter((papel) => papel !== "ajudante");
+  if (ator === "coMestre" && !ehEquipe(alvo)) return PAPEIS_ATRIBUIVEIS.filter((papel) => !ehEquipe(papel));
   return [];
 }
 
 export function podeRemover(ator: PapelParticipante, alvo: PapelParticipante): boolean {
   if (alvo === "dono") return false;
-  return ator === "dono" || (ator === "ajudante" && alvo !== "ajudante");
+  return ator === "dono" || (ator === "coMestre" && !ehEquipe(alvo));
 }
 
 export function paraDadosEdicao(mesa: DetalheMesa): DadosEdicaoMesa {

@@ -4,6 +4,24 @@ Uma entrada por decisão, a mais recente no topo. Formato: **data — título**,
 
 ---
 
+## 2026-11-09 — Páginas em largura total
+
+- **Contexto:** todas as páginas ficavam numa coluna central de 940px, sobrando espaço vazio em telas grandes.
+- **Decisão:** cabeçalho fixo e conteúdo de largura total com margens responsivas (`conteudoPagina`), faixas de título de ponta a ponta (`FaixaPagina`), coluna lateral no hub e na mesa, e tela dividida (`PainelLateral`) no login, no cadastro e na nova mesa. Nos termos, na privacidade e nos créditos, o texto é corrido, sem cartões, e ocupa a largura toda: uma coluna em telas comuns e no máximo duas em telas muito grandes. A ilustração da home (`PreviaMesa`) é feita em JSX, sem imagem de terceiros.
+- **Consequências:** toda página nova renderiza `<CabecalhoSite />` + `<main className="flex flex-1 flex-col">` e usa `conteudoPagina`; não use `max-w-[940px]`. A ficha antiga (`/ficha`) continua como estava.
+
+## 2026-11-09 — Campos de formulário em caixa, com ícone e foco visível
+
+- **Contexto:** os campos de cadastro, login e mesa eram só uma linha embaixo, pouco legíveis e com foco discreto.
+- **Decisão:** usar caixas próprias (`campoCaixa` + `CaixaCampo`), seguindo boas práticas públicas de sistemas de design abertos, sem copiar código nem visual de ninguém: rótulo sempre visível acima do campo (o placeholder não substitui o rótulo), área de toque de 44px, anel de foco arcano bem distinto do hover, borda vermelha só quando inválido, ícones do bootstrap-icons (MIT), botão para mostrar a senha e data em três seletores (dia, mês, ano) em vez de calendário.
+- **Consequências:** a ficha antiga (`Detalhes`, `Atributos`) e os filtros do hub continuam com `campoLinha`/`campoNumero`; a ficha nova (4.4) deve usar o novo padrão.
+
+## 2026-11-09 — Equipe do mestre em dois níveis e tempo real (fase 4.1)
+
+- **Contexto:** o dono do projeto pediu dois níveis de ajudante (um com quase tudo do mestre, outro só para fichas e tabuleiro) e sincronização da ficha em tempo real, o que adiantou o SignalR da fase 5.
+- **Decisão:** papéis `coMestre` e `assistente` no lugar de `ajudante` (os ajudantes antigos viraram co-mestres). A página da mesa assina o hub `/hubs/mesa` por `useTempoRealMesa`; o servidor só avisa (`MesaAtualizada`, `MesaExcluida`) e cada cliente busca a mesa de novo, porque o que cada um vê depende do papel. A conexão fica em `src/providers/ConexaoTempoReal.ts` (uma para o site, com contador por mesa para não sair do grupo cedo demais no modo estrito do React) e é usada só pelo `tempoRealMesaRepositorio`.
+- **Consequências:** `podeGerenciar` virou `podeGerenciarMesa` e `podeCuidarDeFichasETabuleiro`. Toda tela nova que mostre dados da mesa pode reaproveitar `useTempoRealMesa`.
+
 ## 2026-11-09 — Mesas, papéis e página da mesa (fase 3)
 
 - **Contexto:** a fase 3 tirava o hub dos dados de exemplo e criava a página de cada mesa. Decisões do dono do projeto: sem limite de jogadores (o mestre bloqueia a entrada), quem entra vira espectador, o mestre promove e pode ter ajudantes mas não passa a posse, a exclusão pede confirmação e a mesa encerrada fica só para leitura.

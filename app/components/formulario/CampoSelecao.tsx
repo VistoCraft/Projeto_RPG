@@ -1,5 +1,6 @@
 import type { Opcao } from "@/src/dominio/perfil";
-import { campoLinha, rotulo } from "../estilos";
+import CaixaCampo, { classeCampo } from "./CaixaCampo";
+import { grupoCampo, rotuloCampo } from "../estilos";
 
 type CampoSelecaoProps = {
   id: string;
@@ -10,24 +11,27 @@ type CampoSelecaoProps = {
   textoVazio: string;
   obrigatorio: boolean;
   autoComplete?: string;
+  icone?: string;
 };
 
-export default function CampoSelecao({ id, nome, valor, aoAlterar, opcoes, textoVazio, obrigatorio, autoComplete }: CampoSelecaoProps) {
+export default function CampoSelecao({ id, nome, valor, aoAlterar, opcoes, textoVazio, obrigatorio, autoComplete, icone }: CampoSelecaoProps) {
   return (
-    <div className="flex flex-col">
-      <label className={rotulo} htmlFor={id}>{nome}</label>
-      <select
-        className={`${campoLinha} w-full`}
-        id={id}
-        name={id}
-        value={valor}
-        onChange={(evento) => aoAlterar(evento.target.value)}
-        autoComplete={autoComplete}
-        required={obrigatorio}
-      >
-        <option value="">{textoVazio}</option>
-        {opcoes.map((opcao) => <option key={opcao.valor} value={opcao.valor}>{opcao.rotulo}</option>)}
-      </select>
+    <div className={grupoCampo}>
+      <label className={rotuloCampo} htmlFor={id}>{nome}</label>
+      <CaixaCampo icone={icone} seta>
+        <select
+          className={`${classeCampo(icone, true)} cursor-pointer appearance-none ${valor ? "" : "text-texto/60"}`}
+          id={id}
+          name={id}
+          value={valor}
+          onChange={(evento) => aoAlterar(evento.target.value)}
+          autoComplete={autoComplete}
+          required={obrigatorio}
+        >
+          <option value="">{textoVazio}</option>
+          {opcoes.map((opcao) => <option key={opcao.valor} value={opcao.valor}>{opcao.rotulo}</option>)}
+        </select>
+      </CaixaCampo>
     </div>
   );
 }

@@ -8,9 +8,9 @@ type CampoAceiteTermosProps = {
 
 export default function CampoAceiteTermos({ aceito, aoAlterar }: CampoAceiteTermosProps) {
   return (
-    <label className="mb-[15px] flex items-start gap-3 text-sm" htmlFor="aceiteTermos">
+    <label className="mb-5 flex cursor-pointer items-start gap-3 rounded-md border border-texto/15 bg-fundo/60 p-3 text-sm leading-relaxed" htmlFor="aceiteTermos">
       <input
-        className="mt-1 h-4 w-4 shrink-0 accent-arcano"
+        className="mt-1 h-4 w-4 shrink-0 cursor-pointer accent-arcano"
         type="checkbox"
         id="aceiteTermos"
         name="aceiteTermos"

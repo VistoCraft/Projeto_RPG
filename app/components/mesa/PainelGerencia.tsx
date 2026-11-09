@@ -4,7 +4,7 @@ import { paraDadosEdicao, type DetalheMesa } from "@/src/dominio/mesa";
 import type { EstadoMesa } from "./useMesa";
 import ModalExclusao from "./ModalExclusao";
 import FormularioEdicaoMesa from "./FormularioEdicaoMesa";
-import { botaoContorno, cartao, tituloSecao } from "../estilos";
+import { botaoContorno, cartao, tituloPainel } from "../estilos";
 
 type PainelGerenciaProps = {
   mesa: DetalheMesa;
@@ -23,23 +23,25 @@ export default function PainelGerencia({ mesa, estado }: PainelGerenciaProps) {
 
   return (
     <section className={`${cartao} flex flex-col gap-4`} aria-labelledby="titulo-gerencia">
-      <h2 id="titulo-gerencia" className={tituloSecao}>Gerenciar mesa</h2>
+      <h2 id="titulo-gerencia" className={tituloPainel}><i className="bi bi-sliders text-destaque" aria-hidden="true"></i> Gerenciar mesa</h2>
       {ativa && !editando && (
         <button type="button" className={`${botaoContorno} self-start`} onClick={() => setEditando(true)}>
-          <i className="bi bi-pencil" aria-hidden="true"></i> Editar nome, descrição e visibilidade
+          <i className="bi bi-pencil" aria-hidden="true"></i> Editar dados da mesa
         </button>
       )}
       {ativa && editando && <FormularioEdicaoMesa mesa={mesa} estado={estado} aoFechar={() => setEditando(false)} />}
       {ativa && mesa.codigoConvite && (
-        <div className="flex flex-wrap items-center gap-3">
-          <span className="text-sm">Código de convite:</span>
-          <code className="rounded-md border border-borda px-3 py-1 font-mono text-lg tracking-widest">{mesa.codigoConvite}</code>
-          <button type="button" className={botaoContorno} onClick={() => void navigator.clipboard.writeText(mesa.codigoConvite ?? "")}>
-            <i className="bi bi-clipboard" aria-hidden="true"></i> Copiar
-          </button>
-          <button type="button" className={botaoContorno} disabled={executando} onClick={() => void executar(() => gerarNovoCodigo(mesa.id))}>
-            <i className="bi bi-arrow-repeat" aria-hidden="true"></i> Gerar novo
-          </button>
+        <div className="flex flex-col gap-2 rounded-md border border-borda bg-fundo p-3">
+          <span className="text-xs font-semibold tracking-wide opacity-75">Código de convite</span>
+          <code className="font-mono text-2xl tracking-[0.3em] text-destaque">{mesa.codigoConvite}</code>
+          <div className="flex flex-wrap gap-2">
+            <button type="button" className={botaoContorno} onClick={() => void navigator.clipboard.writeText(mesa.codigoConvite ?? "")}>
+              <i className="bi bi-clipboard" aria-hidden="true"></i> Copiar
+            </button>
+            <button type="button" className={botaoContorno} disabled={executando} onClick={() => void executar(() => gerarNovoCodigo(mesa.id))}>
+              <i className="bi bi-arrow-repeat" aria-hidden="true"></i> Gerar novo
+            </button>
+          </div>
         </div>
       )}
       {ativa && (
@@ -48,22 +50,22 @@ export default function PainelGerencia({ mesa, estado }: PainelGerenciaProps) {
           Bloquear a entrada de novas pessoas
         </label>
       )}
-      {dono && (
-        <div className="flex flex-wrap gap-3 border-t border-borda pt-4">
-          {ativa ? (
-            <button type="button" className={botaoContorno} disabled={executando} onClick={() => void executar(() => encerrarMesa(mesa.id))}>
-              <i className="bi bi-archive" aria-hidden="true"></i> Encerrar mesa
-            </button>
-          ) : (
-            <button type="button" className={botaoContorno} disabled={executando} onClick={() => void executar(() => reabrirMesa(mesa.id))}>
-              <i className="bi bi-arrow-counterclockwise" aria-hidden="true"></i> Reabrir mesa
-            </button>
-          )}
+      <div className="flex flex-wrap gap-3 border-t border-borda pt-4">
+        {ativa ? (
+          <button type="button" className={botaoContorno} disabled={executando} onClick={() => void executar(() => encerrarMesa(mesa.id))}>
+            <i className="bi bi-archive" aria-hidden="true"></i> Encerrar mesa
+          </button>
+        ) : (
+          <button type="button" className={botaoContorno} disabled={executando} onClick={() => void executar(() => reabrirMesa(mesa.id))}>
+            <i className="bi bi-arrow-counterclockwise" aria-hidden="true"></i> Reabrir mesa
+          </button>
+        )}
+        {dono && (
           <button type="button" className={`${botaoContorno} text-vida hover:border-vida`} onClick={() => setExcluindo(true)}>
             <i className="bi bi-trash" aria-hidden="true"></i> Excluir mesa
           </button>
-        </div>
-      )}
+        )}
+      </div>
       {excluindo && <ModalExclusao mesa={mesa} aoFechar={() => setExcluindo(false)} />}
     </section>
   );

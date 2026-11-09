@@ -24,9 +24,9 @@ export default function FormularioLogin() {
   );
 
   return (
-    <CartaoFormulario titulo="Entrar" textoBotao="Entrar" envio={envio} rodape={rodape}>
-      <CampoFormulario id="email" nome="E-mail" tipo="email" valor={email} aoAlterar={setEmail} autoComplete="email" />
-      <CampoFormulario id="senha" nome="Senha" tipo="password" valor={senha} aoAlterar={setSenha} autoComplete="current-password" />
+    <CartaoFormulario titulo="Entrar" textoBotao="Entrar" envio={envio} rodape={rodape} estreito>
+      <CampoFormulario id="email" nome="E-mail" tipo="email" valor={email} aoAlterar={setEmail} autoComplete="email" icone="envelope" />
+      <CampoFormulario id="senha" nome="Senha" tipo="password" valor={senha} aoAlterar={setSenha} autoComplete="current-password" icone="lock" />
     </CartaoFormulario>
   );
 }

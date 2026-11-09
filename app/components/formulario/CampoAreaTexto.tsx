@@ -1,4 +1,5 @@
-import { campoLinha, rotulo } from "../estilos";
+import { classeCampo } from "./CaixaCampo";
+import { dicaCampo, grupoCampo, rotuloCampo } from "../estilos";
 
 type CampoAreaTextoProps = {
   id: string;
@@ -10,17 +11,17 @@ type CampoAreaTextoProps = {
 
 export default function CampoAreaTexto({ id, nome, valor, aoAlterar, tamanhoMaximo }: CampoAreaTextoProps) {
   return (
-    <div className="flex flex-col">
-      <label className={rotulo} htmlFor={id}>{nome}</label>
+    <div className={grupoCampo}>
+      <label className={rotuloCampo} htmlFor={id}>{nome}</label>
       <textarea
-        className={`${campoLinha} min-h-24 w-full resize-y`}
+        className={`${classeCampo()} min-h-24 resize-y`}
         id={id}
         name={id}
         value={valor}
         maxLength={tamanhoMaximo}
         onChange={(evento) => aoAlterar(evento.target.value)}
       />
-      <p className="-mt-2 mb-[15px] text-right text-xs opacity-70">{valor.length}/{tamanhoMaximo}</p>
+      <p className={`${dicaCampo} text-right tabular-nums`}>{valor.length}/{tamanhoMaximo}</p>
     </div>
   );
 }
