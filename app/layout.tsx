@@ -3,20 +3,24 @@ import type { ReactNode } from "react";
 import { Almendra, Literata } from "next/font/google";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "./globals.css";
+import Rodape from "./components/Rodape";
 
 const almendra = Almendra({ subsets: ["latin"], weight: ["400", "700"], variable: "--font-almendra" });
 
 const literata = Literata({ subsets: ["latin"], variable: "--font-literata" });
 
 export const metadata: Metadata = {
-  title: "Ficha do jogador",
-  description: "Uma ficha interativa para mestrar RPG",
+  title: "Hub de mesas",
+  description: "Hub de mesas e ficha interativa para jogar RPG",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="pt-br" className={`dark ${almendra.variable} ${literata.variable}`}>
-      <body className="bg-fundo font-texto text-texto">{children}</body>
+      <body className="flex min-h-screen flex-col bg-fundo font-texto text-texto">
+        {children}
+        <Rodape />
+      </body>
     </html>
   );
 }

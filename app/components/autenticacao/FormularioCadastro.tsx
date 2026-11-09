@@ -2,21 +2,19 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { cadastrar, entrar } from "@/src/repositories/autenticacaoRepositorio";
 import type { ResultadoAutenticacao } from "@/src/dominio/autenticacao";
 import useEnvioFormulario from "./useEnvioFormulario";
 import CartaoFormulario from "./CartaoFormulario";
 import CampoFormulario from "./CampoFormulario";
-import { ROTA_APOS_LOGIN } from "./rotas";
 import { link } from "../estilos";
 
 const DICA_SENHA = "Mínimo de 6 caracteres, com letra maiúscula, minúscula, número e símbolo.";
 
 const MENSAGEM_SENHAS_DIFERENTES = "As senhas não são iguais.";
+const MENSAGEM_SUCESSO = "Conta criada e login feito com sucesso.";
 
 export default function FormularioCadastro() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [confirmacao, setConfirmacao] = useState("");
@@ -27,7 +25,7 @@ export default function FormularioCadastro() {
     return cadastro.sucesso ? entrar({ email, senha }) : cadastro;
   };
 
-  const envio = useEnvioFormulario(cadastrarEEntrar, () => router.push(ROTA_APOS_LOGIN));
+  const envio = useEnvioFormulario(cadastrarEEntrar);
 
   const rodape = (
     <>
@@ -36,7 +34,7 @@ export default function FormularioCadastro() {
   );
 
   return (
-    <CartaoFormulario titulo="Criar conta" textoBotao="Criar conta" envio={envio} rodape={rodape}>
+    <CartaoFormulario titulo="Criar conta" textoBotao="Criar conta" mensagemSucesso={MENSAGEM_SUCESSO} envio={envio} rodape={rodape}>
       <CampoFormulario id="email" nome="E-mail" tipo="email" valor={email} aoAlterar={setEmail} autoComplete="email" />
       <CampoFormulario id="senha" nome="Senha" tipo="password" valor={senha} aoAlterar={setSenha} autoComplete="new-password" dica={DICA_SENHA} />
       <CampoFormulario id="confirmacao" nome="Confirmar senha" tipo="password" valor={confirmacao} aoAlterar={setConfirmacao} autoComplete="new-password" />

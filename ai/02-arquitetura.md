@@ -4,11 +4,11 @@ Tecnologias e configuração: [04-tecnologias.md](04-tecnologias.md). Contexto e
 
 ## Como a página é montada
 
-Rotas: `/` (ficha), `/login` e `/cadastro`. As duas últimas ficam no route group `app/(autenticacao)/`, que tem um layout próprio (`TelaAutenticacao`). Login e cadastro falam com o backend (`Projeto_RPG_Backend`); a ficha ainda não.
+Rotas: `/` (hub de mesas, página padrão), `/ficha`, `/login` e `/cadastro`. Nenhum link leva à `/ficha` por enquanto. As duas últimas ficam no route group `app/(autenticacao)/`, que tem um layout próprio (`TelaAutenticacao`). Login e cadastro falam com o backend (`Projeto_RPG_Backend`); a ficha ainda não.
 
 ```
-app/layout.tsx          (Server Component)  <html class="dark">, <body>, metadata, fontes, globals.css e bootstrap-icons
-└─ app/page.tsx         (Server Component)  só renderiza <Ficha />
+app/layout.tsx          (Server Component)  <html class="dark">, <body> (flex coluna + <Rodape /> no fim), metadata, fontes, globals.css e bootstrap-icons
+└─ app/ficha/page.tsx   (Server Component)  só renderiza <Ficha />
    └─ Ficha.tsx         ("use client")      dono do estado, monta as seções
       ├─ BotaoTema      alterna claro / escuro             ← tema, alternarTema
       ├─ DivisorRunico  linha com runas abaixo do título
@@ -26,6 +26,13 @@ app/layout.tsx          (Server Component)  <html class="dark">, <body>, metadat
 
 Como `Ficha.tsx` tem `"use client"`, tudo o que ele importa também vira client component. Na prática, o servidor só gera o HTML inicial (pré-renderização estática) e o React assume no navegador (hidratação).
 
+## Hub (`/`)
+
+```
+app/page.tsx ─► Hub ("use client": useTema, useMesas) ─► CabecalhoHub (logo, Entrar, Criar conta, BotaoTema), BannerHub, DivisorRunico, ListaMesas ─► CartaoMesa
+                     useMesas ─► src/repositories/mesasRepositorio.listarMesas() (por enquanto devolve MESAS_DE_EXEMPLO, sem HTTP)
+```
+
 ## Telas de autenticação
 
 ```
@@ -36,8 +43,8 @@ app/(autenticacao)/layout.tsx  ─► TelaAutenticacao ("use client": useTema, B
         src/repositories/autenticacaoRepositorio ─► src/providers/api (FetchRestProvider) ─► POST /auth/register, /auth/login?useCookies=true
 ```
 
-- Os dois formulários usam `CartaoFormulario` (título, erros, botão, rodapé) e `useEnvioFormulario` (estado `enviando` / `erros`).
-- Deu certo: `router.push(ROTA_APOS_LOGIN)` (`/`). O backend grava o cookie de sessão.
+- Os dois formulários usam `CartaoFormulario` (título, erros, botão, rodapé) e `useEnvioFormulario` (estado `enviando` / `concluido` / `erros`).
+- Deu certo: o cartão mostra a mensagem de sucesso e fica na mesma tela (por enquanto nada leva à ficha). O backend grava o cookie de sessão.
 - O repositório converte os códigos de erro do Identity (`DuplicateUserName`, `PasswordTooShort`, `Failed`...) em mensagens em português.
 
 ## Fluxo de dados

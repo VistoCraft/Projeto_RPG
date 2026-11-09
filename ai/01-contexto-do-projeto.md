@@ -4,7 +4,7 @@
 
 Ficha interativa de jogador para RPG de mesa, com interface em português. O jogador preenche os dados pessoais, o status (Vida, Sanidade, Esforço), os atributos, as perícias e as armas. Os dados ficam salvos no próprio navegador.
 
-Não há backend, login nem banco de dados: é uma página única (rota `/`).
+Não havia backend, login nem banco de dados: era uma página única (hoje a ficha está em `/ficha`).
 
 ## Repositórios relacionados
 

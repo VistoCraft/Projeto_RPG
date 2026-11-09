@@ -4,6 +4,18 @@ Uma entrada por decisão, a mais recente no topo. Formato: **data — título**,
 
 ---
 
+## 2026-10-24 — Hub de mesas na rota `/`
+
+- **Contexto:** o planejamento prevê um hub com a lista de mesas como página inicial, e a ficha sai do `/`.
+- **Decisão:** `/` renderiza `Hub` (cabeçalho, banner, lista de mesas); a ficha foi para `/ficha`, sem link. O rodapé com os créditos fica no layout raiz, com `body` em coluna para empurrá-lo para baixo. Sem API de mesas, `mesasRepositorio.listarMesas()` devolve dados de exemplo; quando a API existir, só o repositório muda.
+- **Consequências:** o título padrão do site virou "Hub de mesas"; `/ficha` tem o próprio título. `TelaAutenticacao` usa `flex-1` em vez de `min-h-screen` por causa do rodapé.
+
+## 2026-10-24 — Login não redireciona para a ficha
+
+- **Contexto:** a ficha ainda não verifica a sessão nem tem logout, e os dados dela continuam só no `localStorage`.
+- **Decisão:** login e cadastro deixam de fazer `router.push("/")` (saiu `rotas.ts`); o `CartaoFormulario` mostra uma mensagem de sucesso no lugar.
+- **Consequências:** voltar a levar à ficha depende de protegê-la e criar o logout (ver [07-pendencias.md](07-pendencias.md)).
+
 ## 2026-10-21 — Telas de login e cadastro
 
 - **Contexto:** o backend já tinha `/auth/register` e `/auth/login` (Identity). Faltavam as telas.

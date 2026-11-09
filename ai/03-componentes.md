@@ -120,12 +120,26 @@ Constantes com combinações de classes Tailwind usadas em mais de um componente
 | Arquivo | Papel |
 | --- | --- |
 | `TelaAutenticacao.tsx` | `"use client"`. Moldura das telas: logo, `BotaoTema`, `DivisorRunico` e `children`, centralizados (máx. 440px) |
-| `CartaoFormulario.tsx` | Props `titulo`, `textoBotao`, `envio: EnvioFormulario`, `rodape`, `children`. Mostra os erros com `role="alert"` e desativa o botão enquanto envia |
+| `CartaoFormulario.tsx` | Props `titulo`, `textoBotao`, `mensagemSucesso`, `envio: EnvioFormulario`, `rodape`, `children`. Mostra os erros com `role="alert"`, o sucesso com `role="status"` e desativa o botão enquanto envia |
 | `CampoFormulario.tsx` | Props `id`, `nome`, `tipo` (`email` / `password`), `valor`, `aoAlterar`, `autoComplete`, `dica?`. Input `required` com rótulo e dica ligada por `aria-describedby` |
-| `useEnvioFormulario.ts` | `(acao, aoConcluir) => { enviando, erros, enviar }`. Chama `acao()` no submit; sucesso chama `aoConcluir`, falha guarda os erros |
+| `useEnvioFormulario.ts` | `(acao) => { enviando, concluido, erros, enviar }`. Chama `acao()` no submit; sucesso marca `concluido`, falha guarda os erros |
 | `FormularioLogin.tsx` | `"use client"`. E-mail e senha, chama `entrar` |
 | `FormularioCadastro.tsx` | `"use client"`. E-mail, senha e confirmação. Confere se as senhas batem, chama `cadastrar` e depois `entrar` |
-| `rotas.ts` | `ROTA_APOS_LOGIN = "/"` |
+
+## `Rodape.tsx`
+
+Rodapé de todas as páginas (em `app/layout.tsx`): linha fina em cima, "Desenvolvido por Victor Prezia · ano".
+
+## `hub/`
+
+| Arquivo | Papel |
+| --- | --- |
+| `Hub.tsx` | `"use client"`. Raiz da rota `/`: chama `useTema` e `useMesas`, monta cabeçalho, banner, `DivisorRunico` e lista (máx. 940px, responsivo) |
+| `CabecalhoHub.tsx` | Props `tema`, `alternarTema`. Logo à esquerda; links Entrar / Criar conta e `BotaoTema` à direita |
+| `BannerHub.tsx` | Faixa com degradê `noite` → `arcano-texto-claro` → `mare`, título "Hub de mesas" e frase de chamada |
+| `useMesas.ts` | `() => { mesas, carregando }`. Carrega `listarMesas()` em `useEffect` |
+| `ListaMesas.tsx` | Prop `estado: EstadoMesas`. Título "Mesas", aviso de carregando / vazio e grade de `CartaoMesa` (2 colunas a partir de `sm`) |
+| `CartaoMesa.tsx` | Prop `mesa: Mesa`. Nome, selo de status (`aparenciaDoStatus`), mestre, sistema e jogadores/limite |
 
 ## Ao criar um componente novo
 

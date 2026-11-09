@@ -15,8 +15,14 @@ Os botões existem na tela, mas não fazem nada:
 ## Autenticação
 
 - Não há logout nem indicação de usuário logado na ficha.
-- A ficha (`/`) não exige login; falta proteger as rotas.
+- Login e cadastro não levam à ficha (só mostram mensagem de sucesso) até a ficha exigir login; a ficha (`/ficha`) ainda abre direto pela URL.
 - O cadastro não pede o nome do usuário.
+
+## Hub
+
+- A lista de mesas vem de `MESAS_DE_EXEMPLO` em `mesasRepositorio.ts`; falta a API de mesas no backend.
+- Os cartões de mesa não levam a lugar nenhum; faltam a rota `/mesas/[id]`, criar mesa, busca e filtro.
+- O cabeçalho mostra Entrar / Criar conta mesmo para quem já está logado.
 - O e-mail não é confirmado (`isEmailConfirmed` fica `false`).
 
 ## Dados que não são salvos

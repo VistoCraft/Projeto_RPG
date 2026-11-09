@@ -1,5 +1,5 @@
-import Ficha from "./components/Ficha";
+import Hub from "./components/hub/Hub";
 
 export default function Home() {
-  return <Ficha />;
+  return <Hub />;
 }

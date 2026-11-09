@@ -20,8 +20,9 @@ Use **Yarn** (v1). Não use npm: não deve existir `package-lock.json`, só `yar
 ai/                    # Documentação do projeto (NN-nome.md; 00-regras tem prioridade)
 app/
   globals.css          # Tailwind: @import, @theme (paleta, tokens de papel, fontes) e @layer base (.dark, option)
-  layout.tsx           # HTML raiz (classe "dark"), metadata, fontes (next/font), globals.css e bootstrap-icons
-  page.tsx             # Rota "/" — só renderiza <Ficha />
+  layout.tsx           # HTML raiz (classe "dark"), metadata, fontes (next/font), globals.css, bootstrap-icons e <Rodape />
+  page.tsx             # Rota "/" — só renderiza <Hub />
+  ficha/page.tsx       # Rota "/ficha" — só renderiza <Ficha /> (sem link por enquanto)
   (autenticacao)/      # Route group: layout com TelaAutenticacao, rotas /login e /cadastro
   components/
     Ficha.tsx          # "use client" — monta a página e guarda o estado
@@ -39,10 +40,12 @@ app/
     Combate.tsx        # Tabela de armas
     Cabecalho.tsx      # Título de seção com botões "ver" / "editar"
     estilos.ts         # Combinações de classes Tailwind reutilizadas (cartao, campoNumero, botaoPrincipal, link...)
+    Rodape.tsx         # Rodapé com os créditos, em todas as páginas
+    hub/               # Hub de mesas: Hub, CabecalhoHub, BannerHub, ListaMesas, CartaoMesa, useMesas
     autenticacao/      # Telas de login e cadastro: TelaAutenticacao, CartaoFormulario, CampoFormulario,
-                       #   FormularioLogin, FormularioCadastro, useEnvioFormulario, rotas.ts
+                       #   FormularioLogin, FormularioCadastro, useEnvioFormulario
 src/
-  dominio/             # Tipos de domínio (Credenciais, ResultadoAutenticacao)
+  dominio/             # Tipos de domínio (Credenciais, ResultadoAutenticacao, Mesa, StatusMesa)
   providers/           # FetchRestProvider e a instância api (URL em NEXT_PUBLIC_API_URL)
   repositories/        # Únicas chamadas HTTP (regra R6), com DTO → domínio
 public/img/            # Imagens, servidas em /img/...
