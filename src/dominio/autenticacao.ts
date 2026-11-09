@@ -1,3 +1,5 @@
+import type { Falha } from "./resultado";
+
 export type Credenciais = {
   email: string;
   senha: string;
@@ -11,4 +13,4 @@ export type DadosCadastro = Credenciais & {
   aceitouTermos: boolean;
 };
 
-export type ResultadoAutenticacao = { sucesso: true } | { sucesso: false; erros: string[] };
+export type ResultadoAutenticacao = { sucesso: true } | Falha;

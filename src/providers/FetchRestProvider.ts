@@ -6,7 +6,7 @@ export type RespostaRest = {
   corpo: unknown;
 };
 
-type MetodoHttp = "GET" | "POST";
+type MetodoHttp = "GET" | "POST" | "PUT" | "DELETE";
 
 export default class FetchRestProvider {
   private readonly urlBase: string;
@@ -21,6 +21,14 @@ export default class FetchRestProvider {
 
   post(caminho: string, corpo?: unknown): Promise<RespostaRest> {
     return this.requisitar("POST", caminho, corpo);
+  }
+
+  put(caminho: string, corpo: unknown): Promise<RespostaRest> {
+    return this.requisitar("PUT", caminho, corpo);
+  }
+
+  delete(caminho: string): Promise<RespostaRest> {
+    return this.requisitar("DELETE", caminho);
   }
 
   private async requisitar(metodo: MetodoHttp, caminho: string, corpo?: unknown): Promise<RespostaRest> {

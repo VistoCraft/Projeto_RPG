@@ -4,9 +4,9 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { entrar } from "@/src/repositories/autenticacaoRepositorio";
-import useEnvioFormulario from "./useEnvioFormulario";
-import CartaoFormulario from "./CartaoFormulario";
-import CampoFormulario from "./CampoFormulario";
+import useEnvioFormulario from "../formulario/useEnvioFormulario";
+import CartaoFormulario from "../formulario/CartaoFormulario";
+import CampoFormulario from "../formulario/CampoFormulario";
 import { link } from "../estilos";
 
 const ROTA_DEPOIS_DO_LOGIN = "/mesas";

@@ -4,7 +4,7 @@ Tecnologias e configuração: [04-tecnologias.md](04-tecnologias.md). Contexto e
 
 ## Como a página é montada
 
-Rotas: `/` (home, apresentação do produto), `/mesas` (hub, aberto a visitantes), `/termos`, `/privacidade`, `/ficha`, `/login` e `/cadastro`. Nenhum link leva à `/ficha` por enquanto. As duas últimas ficam no route group `app/(autenticacao)/`, que tem um layout próprio (`TelaAutenticacao`). Login e cadastro falam com o backend (`Projeto_RPG_Backend`); a ficha ainda não.
+Rotas: `/` (home, apresentação do produto), `/mesas` (hub, aberto a visitantes), `/mesas/nova`, `/mesas/[id]`, `/termos`, `/privacidade`, `/ficha`, `/login` e `/cadastro`. Nenhum link leva à `/ficha` por enquanto. As duas últimas ficam no route group `app/(autenticacao)/`, que tem um layout próprio (`TelaAutenticacao`). Login e cadastro falam com o backend (`Projeto_RPG_Backend`); a ficha ainda não.
 
 ```
 app/layout.tsx          (Server Component)  <html class="dark">, <body> (flex coluna + <Rodape /> no fim), metadata, fontes, globals.css e bootstrap-icons
@@ -32,8 +32,14 @@ Como `Ficha.tsx` tem `"use client"`, tudo o que ele importa também vira client 
 app/page.tsx       ─► Home ("use client": useTema, useSessao) ─► CabecalhoSite, HeroHome, DivisorRunico, RecursosHome, PassosHome
 app/mesas/page.tsx ─► Hub  ("use client": useTema, useSessao, useMesas) ─► CabecalhoSite, BannerHub, AvisoVisitante (só visitante), DivisorRunico, ListaMesas ─► CartaoMesa
                      useSessao ─► perfilRepositorio.obterPerfil() (GET /perfil; 401 = visitante) e sair() (POST /auth/sair)
-                     useMesas  ─► mesasRepositorio.listarMesas() (por enquanto devolve MESAS_DE_EXEMPLO, sem HTTP)
+                     useMesas  ─► mesasRepositorio.listarMesas(filtro) (GET /mesas?busca&status&minhas)
+app/mesas/nova     ─► NovaMesa ─► FormularioNovaMesa ─► criarMesa() ─► /mesas/[id]
+app/mesas/[id]     ─► PaginaMesa ("use client": useTema, useSessao, useMesa) ─► CabecalhoMesa, PainelGerencia, ListaParticipantes, AreasMesa
+                     useMesa.executar(acao) ─► mesasRepositorio (entrar, sair, papel, remover, bloquear, código, encerrar, reabrir) ─► troca a mesa pela resposta
 ```
+
+- As regras de papel do front (`podeGerenciar`, `papeisAtribuiveis`, `podeRemover` em `src/dominio/mesa.ts`) só escondem botões; quem decide é o backend.
+- Os repositórios devolvem `Resultado<T>` (`src/dominio/resultado.ts`): `{ sucesso: true, valor }` ou `{ sucesso: false, erros }`, com os códigos traduzidos por `errosApi.ts`.
 
 - A sessão é conferida no navegador: o cookie é do domínio da API, então o servidor do Next não o enxerga. Enquanto `useSessao` carrega, o cabeçalho não mostra os links de conta, para não piscar.
 

@@ -118,15 +118,23 @@ Constantes com combinações de classes Tailwind usadas em mais de um componente
 | `faixaDestaque` | Faixa com degradê `noite` → `arcano-texto-claro` → `mare` e texto `pergaminho` (banner do hub e destaque da home) |
 | `chamadaPrincipal` / `chamadaSecundaria` | Links com cara de botão sobre a `faixaDestaque` (preenchido em `arcano` / contorno claro) |
 
+## `formulario/`
+
+Peças genéricas de formulário, usadas no login, no cadastro e na criação de mesa.
+
+| Arquivo | Papel |
+| --- | --- |
+| `CartaoFormulario.tsx` | Props `titulo`, `textoBotao`, `envio: EnvioFormulario`, `rodape`, `children`. Mostra os erros com `role="alert"` e desativa o botão enquanto envia |
+| `CampoFormulario.tsx` | Props `id`, `nome`, `tipo` (`email` / `password` / `text` / `date`), `valor`, `aoAlterar`, `autoComplete`, `dica?`. Input `required` com rótulo e dica ligada por `aria-describedby` |
+| `CampoSelecao.tsx` | Props `id`, `nome`, `valor`, `aoAlterar`, `opcoes: Opcao[]`, `textoVazio`, `obrigatorio`, `autoComplete?`. `<select>` com uma opção vazia no topo |
+| `CampoAreaTexto.tsx` | Props `id`, `nome`, `valor`, `aoAlterar`, `tamanhoMaximo`. `<textarea>` com contador de caracteres |
+| `useEnvioFormulario.ts` | `(acao, aoConcluir) => { enviando, erros, enviar }`. Genérico sobre o resultado: sucesso chama `aoConcluir(resultado)` (ex.: com a mesa criada), falha guarda os erros |
+
 ## `autenticacao/`
 
 | Arquivo | Papel |
 | --- | --- |
 | `TelaAutenticacao.tsx` | `"use client"`. Moldura das telas: logo, `BotaoTema`, `DivisorRunico` e `children`, centralizados (máx. 440px) |
-| `CartaoFormulario.tsx` | Props `titulo`, `textoBotao`, `envio: EnvioFormulario`, `rodape`, `children`. Mostra os erros com `role="alert"` e desativa o botão enquanto envia |
-| `CampoFormulario.tsx` | Props `id`, `nome`, `tipo` (`email` / `password` / `text` / `date`), `valor`, `aoAlterar`, `autoComplete`, `dica?`. Input `required` com rótulo e dica ligada por `aria-describedby` |
-| `CampoSelecao.tsx` | Props `id`, `nome`, `valor`, `aoAlterar`, `opcoes: Opcao[]`, `textoVazio`, `obrigatorio`, `autoComplete?`. `<select>` com uma opção vazia no topo |
-| `useEnvioFormulario.ts` | `(acao, aoConcluir) => { enviando, erros, enviar }`. Chama `acao()` no submit; sucesso chama `aoConcluir`, falha guarda os erros |
 | `CampoAceiteTermos.tsx` | Props `aceito`, `aoAlterar`. Checkbox obrigatório com links (nova aba) para `/termos` e `/privacidade` |
 | `usePaises.ts` | `() => Opcao[]`. Monta `listarPaises("pt-BR")` em `useEffect`, para os nomes do `Intl` não causarem erro de hidratação |
 | `FormularioLogin.tsx` | `"use client"`. E-mail e senha, chama `entrar` e leva a `/mesas` |
@@ -148,12 +156,34 @@ Rodapé de todas as páginas (em `app/layout.tsx`): linha fina em cima, aviso de
 
 | Arquivo | Papel |
 | --- | --- |
-| `Hub.tsx` | `"use client"`. Raiz da rota `/mesas`: chama `useTema`, `useSessao` e `useMesas`, monta `CabecalhoSite`, banner, aviso de visitante, `DivisorRunico` e lista (máx. 940px, responsivo) |
+| `Hub.tsx` | `"use client"`. Raiz da rota `/mesas`: chama `useTema`, `useSessao` e `useMesas(filtro)`, guarda o filtro e monta `CabecalhoSite`, banner, aviso de visitante ou `AcoesHub`, `DivisorRunico`, `FiltrosMesas` e lista |
 | `BannerHub.tsx` | `faixaDestaque` com o título "Hub de mesas" e frase de chamada |
 | `AvisoVisitante.tsx` | Sem props. Aviso de que a pessoa está vendo como visitante, com links para criar conta e entrar |
-| `useMesas.ts` | `() => { mesas, carregando }`. Carrega `listarMesas()` em `useEffect` |
-| `ListaMesas.tsx` | Prop `estado: EstadoMesas`. Título "Mesas", aviso de carregando / vazio e grade de `CartaoMesa` (2 colunas a partir de `sm`) |
-| `CartaoMesa.tsx` | Prop `mesa: Mesa`. Nome, selo de status (`aparenciaDoStatus`), mestre, sistema e jogadores/limite |
+| `AcoesHub.tsx` | Sem props (só logado). Link "Criar mesa" e formulário "Entrar com código", que leva à mesa |
+| `FiltrosMesas.tsx` | Props `filtro`, `aoAlterar`, `logado`. Busca pelo nome, situação (todas, ativas, encerradas) e "só as minhas" (logado) |
+| `useMesas.ts` | `(filtro, sessaoPronta) => { mesas, carregando, erros }`. Chama `listarMesas(filtro)` com espera de 300 ms entre digitações, depois que a sessão carrega |
+| `ListaMesas.tsx` | Prop `estado: EstadoMesas`. Avisos de carregando / erro / vazio e grade de `CartaoMesa` (2 colunas a partir de `sm`) |
+| `CartaoMesa.tsx` | Prop `mesa: Mesa`. Link para `/mesas/[id]` com nome (cadeado se privada), `SeloMesa`, descrição, mestre, template, jogadores e espectadores e o meu papel |
+
+## `mesa/`
+
+| Arquivo | Papel |
+| --- | --- |
+| `NovaMesa.tsx` | `"use client"`. Raiz de `/mesas/nova`: `CabecalhoSite` e `FormularioNovaMesa` (logado) ou `AvisoLogin` |
+| `FormularioNovaMesa.tsx` | Nome, descrição, template (`useTemplates`) e visibilidade; chama `criarMesa` e leva à mesa criada |
+| `useTemplates.ts` | `() => Template[]`. Carrega `listarTemplates()` |
+| `PaginaMesa.tsx` | `"use client"`. Raiz de `/mesas/[id]` (`useParams`): `CabecalhoMesa`, aviso de encerrada, `PainelGerencia` (dono/ajudante), `ListaParticipantes` e `AreasMesa`; visitante vê `AvisoLogin` |
+| `useMesa.ts` | `(id, logado) => { mesa, carregando, executando, erros, executar }`. `executar(acao)` roda uma ação do repositório e troca a mesa pela resposta |
+| `CabecalhoMesa.tsx` | Props `mesa`, `estado`. Nome, descrição, mestre, template, meu papel; botões "Entrar como espectador" e "Sair da mesa" |
+| `PainelGerencia.tsx` | Props `mesa`, `estado`. Código de convite (copiar, gerar novo), bloquear entrada; para o dono, encerrar/reabrir e excluir |
+| `ModalExclusao.tsx` | Props `mesa`, `aoFechar`. `<dialog>` que explica o que é apagado e o que é guardado e só libera o botão quando o nome da mesa é digitado |
+| `ListaParticipantes.tsx` | Props `mesa`, `estado`. Apelido e papel; quem gerencia troca o papel (`papeisAtribuiveis`) e remove (`podeRemover`) |
+| `AreasMesa.tsx` | Sem props. Cartões "Em breve" de chat, fichas e tabuleiro |
+
+## `AvisoLogin.tsx` e `SeloMesa.tsx`
+
+- `AvisoLogin`: prop `mensagem`. Cartão com a mensagem e os links Entrar / criar conta, para páginas que pedem login.
+- `SeloMesa`: prop `mesa` (`status`, `entradaBloqueada`). Selo "Aberta", "Entrada bloqueada" ou "Encerrada", usado no cartão e na página da mesa.
 
 ## `useSessao.ts`
 

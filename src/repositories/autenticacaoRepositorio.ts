@@ -1,5 +1,6 @@
 import { api } from "../providers/api";
-import { STATUS_SEM_CONEXAO, type RespostaRest } from "../providers/FetchRestProvider";
+import type { RespostaRest } from "../providers/FetchRestProvider";
+import { falhaDaResposta } from "./errosApi";
 import type { Credenciais, DadosCadastro, ResultadoAutenticacao } from "../dominio/autenticacao";
 import { IDADE_MINIMA } from "../dominio/perfil";
 import { VERSAO_TERMOS } from "../dominio/termos";
@@ -20,7 +21,6 @@ type CadastroDto = {
   versaoTermos: string;
 };
 
-const MENSAGEM_SEM_CONEXAO = "Não foi possível conectar ao servidor. Tente de novo em instantes.";
 const MENSAGEM_LOGIN_INVALIDO = "E-mail ou senha incorretos.";
 const MENSAGEM_CADASTRO_FALHOU = "Não foi possível criar a conta.";
 
@@ -71,21 +71,5 @@ function paraCadastroDto(dados: DadosCadastro): CadastroDto {
 }
 
 function paraResultado(resposta: RespostaRest, mensagemPadrao: string): ResultadoAutenticacao {
-  if (resposta.ok) return { sucesso: true };
-  if (resposta.status === STATUS_SEM_CONEXAO) return { sucesso: false, erros: [MENSAGEM_SEM_CONEXAO] };
-
-  const mensagens = lerCodigosDeErro(resposta.corpo)
-    .map((codigo) => mensagensPorCodigo[codigo])
-    .filter((mensagem) => mensagem !== undefined);
-
-  return { sucesso: false, erros: mensagens.length > 0 ? [...new Set(mensagens)] : [mensagemPadrao] };
-}
-
-function lerCodigosDeErro(corpo: unknown): string[] {
-  if (typeof corpo !== "object" || corpo === null) return [];
-
-  const codigosDeValidacao = "errors" in corpo && typeof corpo.errors === "object" && corpo.errors !== null ? Object.keys(corpo.errors) : [];
-  const codigoDoLogin = "detail" in corpo && typeof corpo.detail === "string" ? [corpo.detail] : [];
-
-  return [...codigosDeValidacao, ...codigoDoLogin];
+  return resposta.ok ? { sucesso: true } : falhaDaResposta(resposta, mensagensPorCodigo, mensagemPadrao);
 }

@@ -23,8 +23,10 @@ Os botões existem na tela, mas não fazem nada:
 
 ## Hub
 
-- A lista de mesas vem de `MESAS_DE_EXEMPLO` em `mesasRepositorio.ts`; falta a API de mesas no backend.
-- Os cartões de mesa não levam a lugar nenhum; faltam a rota `/mesas/[id]`, criar mesa, busca e filtro.
+- Não há tela para editar nome, descrição e visibilidade da mesa (a API `PUT /mesas/{id}` já aceita).
+- A página da mesa não atualiza sozinha quando outra pessoa entra ou muda de papel (falta o SignalR); é preciso recarregar.
+- O hub não pagina: mostra só as 20 mesas mais recentes que a API devolve.
+- Se "Sair da mesa" falhar, o erro não aparece na tela.
 - O e-mail não é confirmado (`isEmailConfirmed` fica `false`).
 
 ## Dados que não são salvos

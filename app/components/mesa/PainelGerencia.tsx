@@ -1,0 +1,62 @@
+import { useState } from "react";
+import { atualizarMesa, encerrarMesa, gerarNovoCodigo, reabrirMesa } from "@/src/repositories/mesasRepositorio";
+import { paraDadosEdicao, type DetalheMesa } from "@/src/dominio/mesa";
+import type { EstadoMesa } from "./useMesa";
+import ModalExclusao from "./ModalExclusao";
+import { botaoContorno, cartao, tituloSecao } from "../estilos";
+
+type PainelGerenciaProps = {
+  mesa: DetalheMesa;
+  estado: EstadoMesa;
+};
+
+export default function PainelGerencia({ mesa, estado }: PainelGerenciaProps) {
+  const [excluindo, setExcluindo] = useState(false);
+  const dono = mesa.meuPapel === "dono";
+  const ativa = mesa.status === "ativa";
+  const { executar, executando } = estado;
+
+  const alternarEntrada = () =>
+    executar(() => atualizarMesa(mesa.id, { ...paraDadosEdicao(mesa), entradaBloqueada: !mesa.entradaBloqueada }));
+
+  return (
+    <section className={`${cartao} flex flex-col gap-4`} aria-labelledby="titulo-gerencia">
+      <h2 id="titulo-gerencia" className={tituloSecao}>Gerenciar mesa</h2>
+      {ativa && mesa.codigoConvite && (
+        <div className="flex flex-wrap items-center gap-3">
+          <span className="text-sm">Código de convite:</span>
+          <code className="rounded-md border border-borda px-3 py-1 font-mono text-lg tracking-widest">{mesa.codigoConvite}</code>
+          <button type="button" className={botaoContorno} onClick={() => void navigator.clipboard.writeText(mesa.codigoConvite ?? "")}>
+            <i className="bi bi-clipboard" aria-hidden="true"></i> Copiar
+          </button>
+          <button type="button" className={botaoContorno} disabled={executando} onClick={() => void executar(() => gerarNovoCodigo(mesa.id))}>
+            <i className="bi bi-arrow-repeat" aria-hidden="true"></i> Gerar novo
+          </button>
+        </div>
+      )}
+      {ativa && (
+        <label className="flex items-center gap-3 text-sm">
+          <input className="h-4 w-4 accent-arcano" type="checkbox" checked={mesa.entradaBloqueada} disabled={executando} onChange={() => void alternarEntrada()} />
+          Bloquear a entrada de novas pessoas
+        </label>
+      )}
+      {dono && (
+        <div className="flex flex-wrap gap-3 border-t border-borda pt-4">
+          {ativa ? (
+            <button type="button" className={botaoContorno} disabled={executando} onClick={() => void executar(() => encerrarMesa(mesa.id))}>
+              <i className="bi bi-archive" aria-hidden="true"></i> Encerrar mesa
+            </button>
+          ) : (
+            <button type="button" className={botaoContorno} disabled={executando} onClick={() => void executar(() => reabrirMesa(mesa.id))}>
+              <i className="bi bi-arrow-counterclockwise" aria-hidden="true"></i> Reabrir mesa
+            </button>
+          )}
+          <button type="button" className={`${botaoContorno} text-vida hover:border-vida`} onClick={() => setExcluindo(true)}>
+            <i className="bi bi-trash" aria-hidden="true"></i> Excluir mesa
+          </button>
+        </div>
+      )}
+      {excluindo && <ModalExclusao mesa={mesa} aoFechar={() => setExcluindo(false)} />}
+    </section>
+  );
+}

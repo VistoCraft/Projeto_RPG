@@ -1,12 +1,62 @@
-import type { Mesa } from "../dominio/mesa";
+import { api } from "../providers/api";
+import type { DadosEdicaoMesa, DadosNovaMesa, DetalheMesa, FiltroMesas, Mesa, PapelParticipante } from "../dominio/mesa";
+import type { Resultado } from "../dominio/resultado";
+import { resultadoDetalhe, resultadoPagina, resultadoVazio } from "./mesasDto";
 
-const MESAS_DE_EXEMPLO: Mesa[] = [
-  { id: "1", nome: "Sombras sobre a Cidade", mestre: "Ana", sistema: "Ordem Paranormal", jogadores: 3, limiteJogadores: 5, status: "aberta" },
-  { id: "2", nome: "A Torre do Arcano", mestre: "Bruno", sistema: "D&D 5e", jogadores: 4, limiteJogadores: 4, status: "em-sessao" },
-  { id: "3", nome: "Expedição ao Abismo", mestre: "Carla", sistema: "Call of Cthulhu", jogadores: 2, limiteJogadores: 6, status: "aberta" },
-  { id: "4", nome: "Crônicas da Névoa", mestre: "Diego", sistema: "Ordem Paranormal", jogadores: 5, limiteJogadores: 5, status: "encerrada" },
-];
+export async function listarMesas(filtro: FiltroMesas): Promise<Resultado<Mesa[]>> {
+  const parametros = new URLSearchParams();
+  if (filtro.busca.trim()) parametros.set("busca", filtro.busca.trim());
+  if (filtro.status) parametros.set("status", filtro.status);
+  if (filtro.minhas) parametros.set("minhas", "true");
+  const consulta = parametros.toString();
+  return resultadoPagina(await api.get(consulta ? `/mesas?${consulta}` : "/mesas"));
+}
 
-export async function listarMesas(): Promise<Mesa[]> {
-  return MESAS_DE_EXEMPLO;
+export async function obterMesa(id: string): Promise<Resultado<DetalheMesa>> {
+  return resultadoDetalhe(await api.get(`/mesas/${id}`));
+}
+
+export async function criarMesa(dados: DadosNovaMesa): Promise<Resultado<DetalheMesa>> {
+  const corpo = { ...dados, nome: dados.nome.trim(), descricao: dados.descricao.trim() || null };
+  return resultadoDetalhe(await api.post("/mesas", corpo));
+}
+
+export async function atualizarMesa(id: string, dados: DadosEdicaoMesa): Promise<Resultado<DetalheMesa>> {
+  return resultadoDetalhe(await api.put(`/mesas/${id}`, dados));
+}
+
+export async function excluirMesa(id: string): Promise<Resultado<null>> {
+  return resultadoVazio(await api.delete(`/mesas/${id}`));
+}
+
+export async function encerrarMesa(id: string): Promise<Resultado<DetalheMesa>> {
+  return resultadoDetalhe(await api.post(`/mesas/${id}/encerrar`));
+}
+
+export async function reabrirMesa(id: string): Promise<Resultado<DetalheMesa>> {
+  return resultadoDetalhe(await api.post(`/mesas/${id}/reabrir`));
+}
+
+export async function gerarNovoCodigo(id: string): Promise<Resultado<DetalheMesa>> {
+  return resultadoDetalhe(await api.post(`/mesas/${id}/codigo`));
+}
+
+export async function entrarNaMesa(id: string): Promise<Resultado<DetalheMesa>> {
+  return resultadoDetalhe(await api.post(`/mesas/${id}/entrar`));
+}
+
+export async function entrarComCodigo(codigo: string): Promise<Resultado<DetalheMesa>> {
+  return resultadoDetalhe(await api.post("/mesas/entrar-com-codigo", { codigo: codigo.trim().toUpperCase() }));
+}
+
+export async function sairDaMesa(id: string): Promise<Resultado<null>> {
+  return resultadoVazio(await api.post(`/mesas/${id}/sair`));
+}
+
+export async function alterarPapel(id: string, usuarioId: string, papel: PapelParticipante): Promise<Resultado<DetalheMesa>> {
+  return resultadoDetalhe(await api.put(`/mesas/${id}/participantes/${usuarioId}`, { papel }));
+}
+
+export async function removerParticipante(id: string, usuarioId: string): Promise<Resultado<DetalheMesa>> {
+  return resultadoDetalhe(await api.delete(`/mesas/${id}/participantes/${usuarioId}`));
 }

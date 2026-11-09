@@ -4,6 +4,12 @@ Uma entrada por decisão, a mais recente no topo. Formato: **data — título**,
 
 ---
 
+## 2026-11-09 — Mesas, papéis e página da mesa (fase 3)
+
+- **Contexto:** a fase 3 tirava o hub dos dados de exemplo e criava a página de cada mesa. Decisões do dono do projeto: sem limite de jogadores (o mestre bloqueia a entrada), quem entra vira espectador, o mestre promove e pode ter ajudantes mas não passa a posse, a exclusão pede confirmação e a mesa encerrada fica só para leitura.
+- **Decisão:** papéis `dono`, `ajudante`, `jogador` e `espectador`. O hub lê `GET /mesas` com busca, situação e "só as minhas". `/mesas/nova` cria a mesa e `/mesas/[id]` mostra o cabeçalho, o painel de gerência, os participantes e as áreas futuras. A exclusão usa um `<dialog>` próprio que pede o nome da mesa. Os componentes genéricos de formulário foram para `formulario/`, e os repositórios passaram a devolver `Resultado<T>` com a tradução de erros centralizada em `errosApi.ts`.
+- **Consequências:** `MESAS_DE_EXEMPLO` saiu. A página da mesa ainda não se atualiza em tempo real; isso entra com o SignalR na fase 5.
+
 ## 2026-11-09 — Termos de uso e política de privacidade
 
 - **Contexto:** o cadastro coleta país e data de nascimento, e o site vai ser publicado. O projeto é de estudo e sem fins comerciais.

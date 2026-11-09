@@ -6,11 +6,11 @@ import { useRouter } from "next/navigation";
 import { cadastrar } from "@/src/repositories/autenticacaoRepositorio";
 import type { ResultadoAutenticacao } from "@/src/dominio/autenticacao";
 import { IDADE_MINIMA, OPCOES_COMO_CONHECEU } from "@/src/dominio/perfil";
-import useEnvioFormulario from "./useEnvioFormulario";
+import useEnvioFormulario from "../formulario/useEnvioFormulario";
 import usePaises from "./usePaises";
-import CartaoFormulario from "./CartaoFormulario";
-import CampoFormulario from "./CampoFormulario";
-import CampoSelecao from "./CampoSelecao";
+import CartaoFormulario from "../formulario/CartaoFormulario";
+import CampoFormulario from "../formulario/CampoFormulario";
+import CampoSelecao from "../formulario/CampoSelecao";
 import CampoAceiteTermos from "./CampoAceiteTermos";
 import { link } from "../estilos";
 

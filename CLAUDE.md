@@ -23,6 +23,7 @@ app/
   layout.tsx           # HTML raiz (classe "dark"), metadata, fontes (next/font), globals.css, bootstrap-icons e <Rodape />
   page.tsx             # Rota "/" — só renderiza <Home /> (apresentação do produto)
   mesas/page.tsx       # Rota "/mesas" — só renderiza <Hub /> (aberto a visitantes)
+  mesas/nova/, mesas/[id]/ # Rotas "/mesas/nova" (<NovaMesa />) e "/mesas/[id]" (<PaginaMesa />)
   termos/, privacidade/ # Rotas "/termos" e "/privacidade" — Termos de uso e Política de privacidade
   ficha/page.tsx       # Rota "/ficha" — só renderiza <Ficha /> (sem link por enquanto)
   (autenticacao)/      # Route group: layout com TelaAutenticacao, rotas /login e /cadastro
@@ -33,6 +34,8 @@ app/
     useBarras.ts       # Hook: Vida/Sanidade/Esforço e ajuste por −/+ (chave "barras")
     useTema.ts         # Hook: tema claro/escuro e classe "dark" no <html> (chave "tema")
     useSessao.ts       # Hook: visitante ou logado (GET /perfil) e sair()
+    AvisoLogin.tsx     # Cartão "entre para continuar" das páginas que pedem login
+    SeloMesa.tsx       # Selo Aberta / Entrada bloqueada / Encerrada
     CabecalhoSite.tsx  # Cabeçalho da home e do hub: logo, Mesas, Entrar/Criar conta ou nickname/Sair, BotaoTema
     BotaoTema.tsx      # Botão que alterna o tema
     DivisorRunico.tsx  # Linha decorativa com runas abaixo do título
@@ -47,13 +50,15 @@ app/
     Rodape.tsx         # Rodapé com os créditos, em todas as páginas
     home/              # Home: Home, HeroHome, RecursosHome, PassosHome
     legal/             # PaginaLegal (moldura com seções numeradas), TermosDeUso, PoliticaPrivacidade
-    hub/               # Hub de mesas: Hub, BannerHub, AvisoVisitante, ListaMesas, CartaoMesa, useMesas
-    autenticacao/      # Telas de login e cadastro: TelaAutenticacao, CartaoFormulario, CampoFormulario,
-                       #   CampoSelecao, CampoAceiteTermos, FormularioLogin, FormularioCadastro, useEnvioFormulario, usePaises
+    hub/               # Hub de mesas: Hub, BannerHub, AvisoVisitante, AcoesHub, FiltrosMesas, ListaMesas, CartaoMesa, useMesas
+    mesa/              # Criar mesa e página da mesa: NovaMesa, FormularioNovaMesa, PaginaMesa, CabecalhoMesa, PainelGerencia,
+                       #   ModalExclusao, ListaParticipantes, AreasMesa, useMesa, useTemplates
+    formulario/        # Peças genéricas: CartaoFormulario, CampoFormulario, CampoSelecao, CampoAreaTexto, useEnvioFormulario
+    autenticacao/      # Telas de login e cadastro: TelaAutenticacao, CampoAceiteTermos, FormularioLogin, FormularioCadastro, usePaises
 src/
-  dominio/             # Tipos de domínio (Credenciais, DadosCadastro, Perfil, Mesa...), listas (países, como conheceu) e termos.ts (versão, contato)
+  dominio/             # Tipos de domínio (Credenciais, Perfil, Mesa, DetalheMesa, Template, Resultado...) e regras de papel (mesa.ts), listas (países, como conheceu) e termos.ts (versão, contato)
   providers/           # FetchRestProvider e a instância api (URL em NEXT_PUBLIC_API_URL)
-  repositories/        # Únicas chamadas HTTP (regra R6), com DTO → domínio
+  repositories/        # Únicas chamadas HTTP (regra R6), com DTO → domínio; erros traduzidos em errosApi.ts
 public/img/            # Imagens, servidas em /img/...
 ```
 
