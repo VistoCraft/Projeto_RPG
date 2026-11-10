@@ -7,6 +7,7 @@ import useSessao from "../useSessao";
 import useMesa from "./useMesa";
 import useTempoRealMesa from "./useTempoRealMesa";
 import useFichas from "./useFichas";
+import usePropostas from "./usePropostas";
 import CabecalhoSite from "../CabecalhoSite";
 import AvisoLogin from "../AvisoLogin";
 import CabecalhoMesa from "./CabecalhoMesa";
@@ -26,14 +27,21 @@ export default function PaginaMesa() {
   const { mesa, carregando, erros } = estado;
   const participa = mesa?.meuPapel != null;
   const fichas = useFichas(id, participa);
+  const propostas = usePropostas(id, participa);
   useTempoRealMesa(id, logado, {
     aoAtualizar: () => {
       estado.recarregar();
-      if (participa) fichas.recarregar();
+      if (participa) {
+        fichas.recarregar();
+        propostas.recarregar();
+      }
     },
     aoExcluir: () => router.push("/mesas"),
     aoAtualizarFichas: () => {
       if (participa) fichas.recarregar();
+    },
+    aoAtualizarPropostas: () => {
+      if (participa) propostas.recarregar();
     },
   });
 
@@ -58,7 +66,7 @@ export default function PaginaMesa() {
                 </p>
               )}
               <div className="grid flex-1 items-start gap-6 xl:grid-cols-[1fr_400px]">
-                <AreasMesa fichas={participa ? <PainelFichas mesa={mesa} estado={fichas} /> : <AvisoFichas />} />
+                <AreasMesa fichas={participa ? <PainelFichas mesa={mesa} estado={fichas} propostas={propostas} /> : <AvisoFichas />} />
                 <aside className="flex flex-col gap-6">
                   {podeGerenciarMesa(mesa.meuPapel) && <PainelGerencia mesa={mesa} estado={estado} />}
                   <ListaParticipantes mesa={mesa} estado={estado} />

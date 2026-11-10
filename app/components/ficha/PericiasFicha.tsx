@@ -47,7 +47,7 @@ export default function PericiasFicha({ pericias, atributos, estados, contexto, 
         </button>
         <input
           id={idTreinada}
-          className="h-4 w-4 shrink-0 cursor-pointer accent-arcano disabled:cursor-default"
+          className="h-4 w-4 shrink-0 cursor-pointer accent-destaque disabled:cursor-default"
           type="checkbox"
           checked={estado.treinada}
           disabled={!editavel}

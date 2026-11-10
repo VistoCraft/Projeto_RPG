@@ -194,9 +194,10 @@ Rodapé de todas as páginas (em `app/layout.tsx`), de largura total e em linha 
 | `ModalExclusao.tsx` | Props `mesa`, `aoFechar`. `<dialog>` que explica o que é apagado e o que é guardado e só libera o botão quando o nome da mesa é digitado |
 | `ListaParticipantes.tsx` | Props `mesa`, `estado`. Apelido e papel; quem gerencia troca o papel (`papeisAtribuiveis`) e remove (`podeRemover`) |
 | `AreasMesa.tsx` | Prop `fichas: ReactNode` (largura total no topo da grade). Abaixo, espaços reservados "Em breve" de tabuleiro e chat, com grade de fundo |
-| `useFichas.ts` | `(mesaId, ativo)` → `{ fichas, carregando, executando, erros, executar, recarregar }`. Só busca se a pessoa participa da mesa; `executar(acao)` roda a ação, mostra os erros ou recarrega a lista e devolve se deu certo |
+| `useFichas.ts` / `usePropostas.ts` | `(mesaId, ativo)` → `useColecaoRemota` com `listarFichas` / `listarPropostas`. Só buscam se a pessoa participa da mesa |
+| `PainelPropostas.tsx` | Props `mesa`, `estado`. Equipe: propostas pendentes com Aceitar e Recusar (some se não houver). Jogador: "Escolher da biblioteca" (lista a biblioteca e propõe) e as próprias propostas com Cancelar |
 | `PainelFichas.tsx` | Props `mesa`, `estado: EstadoFichas`. Cartão "Fichas" com contador, botão "Nova ficha" (equipe, mesa ativa), formulário de criação, lista separada em Personagens e Pets e NPCs e edição no lugar do item |
-| `ItemFicha.tsx` | Props `mesaId`, `ficha`, `podeCuidar`, `executando`, `aoEditar`, `aoExcluir`. Nome (link para a ficha) e botão "Abrir", jogador ("Você", apelido ou "NPC do mestre"), visibilidade (para a equipe) ou "Só leitura"; editar e excluir com confirmação no próprio item. A ficha da pessoa fica destacada |
+| `ItemFicha.tsx` | Props `mesaId`, `ficha`, `podeCuidar`, `executando`, `aoEditar`, `aoExcluir`, `aoSalvarNaBiblioteca`. Na ficha da pessoa, botão de marcador que guarda uma cópia (aviso "Cópia salva" por 4 s). Nome (link para a ficha) e botão "Abrir", jogador ("Você", apelido ou "NPC do mestre"), visibilidade (para a equipe) ou "Só leitura"; editar e excluir com confirmação no próprio item. A ficha da pessoa fica destacada |
 | `FormularioFicha.tsx` | Props `ficha` (`null` = nova), `jogadores`, `executando`, `aoSalvar`, `aoFechar`. Nome, tipo (só na criação), jogador (só papel Jogador; vazio = NPC do mestre) e "os outros jogadores podem ver" |
 
 ## `AvisoLogin.tsx` e `SeloMesa.tsx`
@@ -215,15 +216,44 @@ Rodapé de todas as páginas (em `app/layout.tsx`), de largura total e em linha 
 | --- | --- |
 | `PaginaFicha.tsx` | `"use client"`. Raiz de `/mesas/[id]/fichas/[fichaId]`: `FaixaPagina` com volta para a mesa, tipo, jogador, "Só leitura" ou a situação da gravação (`role="status"`) e o botão Modo leitura / Editar ficha; abaixo, `FichaModelo`. Só edita quem `podeEditar` com a mesa ativa |
 | `useFicha.ts` | `(mesaId, fichaId, ativo)` → `{ ficha, carregando, erros, situacao, alterar }`. `situacao`: `salvo`, `pendente`, `salvando` ou `erro` (recarrega a ficha). Envia os campos pendentes ao sair da página |
-| `FichaModelo.tsx` | Props `modelo`, `conteudo`, `editavel`, `aoAlterar`. Monta o contexto das fórmulas (atributo, detalhe numérico, perícia, barra; `treinada(id)`) e as seções que o modelo tiver |
-| `SecaoFicha.tsx` | Props `id`, `titulo`, `icone`, `acoes?`, `classes?`, `children`. Cartão de cada seção |
+| `FichaModelo.tsx` | Props `modelo`, `conteudo`, `editavel`, `aoAlterar`. Monta o contexto das fórmulas (atributo, detalhe numérico, perícia, barra; `treinada(id)`) e distribui as seções pelo `layout` do modelo (`layoutParaExibir`: padrão se não houver, seções de fora no fim; seções vazias somem e uma linha com só uma coluna preenchida ocupa a largura toda) |
+| | Estilo: a raiz recebe `atributosDaFicha(modelo.estilo)` (`data-tema-ficha`, `data-fonte-*`, `data-cantos-ficha`, `data-densidade-ficha`, `--cor-ficha`) e ganha moldura com fundo próprio quando o tema não é o padrão; cada seção fica num invólucro com `atributosDaSecao(cor)` e um `AparenciaSecaoContexto.Provider` |
+| `SecaoFicha.tsx` | Props `id`, `titulo`, `icone`, `acoes?`, `classes?`, `children`. Cartão de cada seção; borda e título vêm de `AparenciaSecaoContexto` (fornecido pelo `FichaModelo` para cada seção; fora dele, fina e simples). Exporta `IdentidadeSecao` (`{ id, titulo, icone, caminho }`), que as seções recebem para servir tanto às padrão quanto às novas (`caminho` = onde gravar, como `extras.inventario`) |
+| `AnotacoesFicha.tsx` | Texto livre (até 5.000 caracteres) das seções de anotações; em leitura, mostra o texto com as quebras de linha |
 | `DetalhesFicha.tsx` | Campos de texto, número e lista em grade `auto-fill` |
 | `BarrasFicha.tsx` | Barra com cor do modelo (`CORES`), atual e máximo editáveis e botões −/+ |
-| `AtributosFicha.tsx` | Cartões com modificador grande, valor e a rolagem calculada (`1d20 + 3`) |
+| `AtributosFicha.tsx` | Cartões com modificador grande, valor e a rolagem calculada (`1d20 + 3`); a grade usa `@container` (2, 3 ou 6 colunas conforme a largura da própria seção) |
 | `PericiasFicha.tsx` | Busca, favoritas no topo, estrela (favorita), caixa (treinada), sigla do atributo e rolagem calculada |
 | `CondicoesFicha.tsx` | Botões que marcam e desmarcam (`aria-pressed`); grava a lista inteira |
 | `CombateFicha.tsx` | Tabela de ataques: adicionar e remover linhas, células por coluna do modelo; coluna de rolagem mostra o resultado da fórmula. Grava a tabela inteira |
 | `CampoNumeroFicha.tsx` | Input numérico com rascunho local: só grava quando o número é inteiro e está dentro dos limites; fica vermelho (`aria-invalid`) se não estiver |
+
+## `biblioteca/` e `Logo.tsx`
+
+| Arquivo | Papel |
+| --- | --- |
+| `PaginaBiblioteca.tsx` | `"use client"`. Raiz de `/biblioteca`: `FaixaPagina`, estado vazio explicando como guardar e grade de `CartaoBiblioteca` |
+| `CartaoBiblioteca.tsx` | Props `ficha`, `executando`, `aoExcluir`. Nome, tipo, modelo, data (formatada em `useEffect`), Ver ficha e excluir com confirmação |
+| `PaginaFichaBiblioteca.tsx` | `"use client"`. Raiz de `/biblioteca/fichas/[fichaId]`: a cópia guardada em `FichaModelo` com `editavel={false}` |
+| `Logo.tsx` | Props `tamanho?` (`pequeno`, `medio`, `grande`), `comTexto?`. `EmblemaLogo` desenha o dado com gradientes do tema (`useId` para os ids) |
+| `useColecaoRemota.ts` | `(buscar, ativo)` → `{ itens, carregando, executando, erros, executar, recarregar }`; base de `useFichas`, `usePropostas` e da biblioteca |
+
+## `templates/`
+
+| Arquivo | Papel |
+| --- | --- |
+| `PaginaTemplates.tsx` | `"use client"`. Raiz de `/templates`: "Padrão do site" e "Seus templates" (logado), botão Novo template |
+| `CartaoTemplate.tsx` | Props `template`, `logado`, `executando?`, `aoExcluir?`. Ver (padrão) ou Editar (seu), Criar cópia e excluir com confirmação |
+| `PaginaEditorTemplate.tsx` | `"use client"`. Props `{ modo: "novo", baseId }` ou `{ modo: "existente", templateId }`. Novo em branco ou cópia de `?base=`; template padrão abre só para leitura com "Criar cópia para editar"; ao criar, vai para `/templates/[id]` |
+| `EditorTemplate.tsx` | Props `inicial`, `editavel`, `textoSalvar`, `aoSalvar` (devolve os erros). Nome e descrição, abas Ficha completa / Ficha simplificada, editor à esquerda e prévia (`FichaModelo`) à direita a partir de `2xl`; limpa o modelo (`limparModelo`) antes de salvar |
+| `EditorModelo.tsx` | Props `modelo`, `editavel`, `aoAlterar`. Uma `ListaEditavel` por seção; dica com o resultado da fórmula usando os valores padrão; trocar um id troca as referências nas fórmulas e no atributo das perícias (`renomearId`) |
+| `EditorEstilo.tsx` | Props `modelo`, `editavel`, `aoAlterar(estilo)`. Estilos prontos (`ESTILOS_PRONTOS`, cada botão mostra uma amostra com o próprio estilo), selects de tema, fontes, espaçamento, cantos, bordas e títulos, cor de destaque (`input type=color` + sugestões) e, em "Estilo por seção", cor, borda e título de cada seção (vazio = igual à ficha) |
+| `EditorSecoesExtras.tsx` | Props `modelo`, `editavel`, `aoAlterar`. "Nova seção" abre os 6 formatos (`FORMATOS_SECAO`) e os modelos prontos (`MODELOS_PRONTOS`: Inventário, Magias, Moedas, Idiomas, Energia, História); cada seção é um cartão arrastável com nome, id (acompanha o nome), formato e a `ListaEditavel` embutida do formato; a seção nova entra numa linha nova do grid e, ao remover, sai do grid |
+| `RenderizadoresModelo.tsx` | `LinhaCampo`, `LinhaValor`, `LinhaBarra`, `LinhaColuna`, `DicaFormula` e `contextoDeExemplo` (inclui os valores das seções novas), usados nas seções padrão e nas novas |
+| `EditorLayout.tsx` | Props `layout`, `modelo`, `editavel`, `aoAlterar`. Linhas com divisão (1 coluna, 2 iguais, larga + estreita, estreita + larga, 3), arrastáveis pela alça; cada coluna recebe seções arrastadas (soltar sobre uma seção coloca antes dela); bandeja "Fora da ficha"; em cada seção, um seletor "Mover para" faz o mesmo pelo teclado |
+| `ListaEditavel.tsx` | Genérica: nome e id de cada item, arrastar pela alça (`useReordenacao`) ou subir e descer pelas setas, remover e Adicionar; o id acompanha o nome enquanto não for editado à mão |
+| `useReordenacao.ts` | `(aoMover, ativo)` → `{ arrastando, alvo, propsItem, propsAlca }`. O item só fica arrastável enquanto a alça é pressionada, para não atrapalhar a seleção de texto nos campos |
+| `CamposEditor.tsx` | `EntradaTexto`, `EntradaNumero`, `EntradaSelecao` (rótulo ligado por `useId`, estilo `campoFicha`) |
 
 ## `FaixaPagina.tsx` e `PainelLateral.tsx`
 

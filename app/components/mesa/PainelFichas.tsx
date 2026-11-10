@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { atualizarFicha, criarFicha, excluirFicha } from "@/src/repositories/fichasRepositorio";
+import { salvarNaBiblioteca } from "@/src/repositories/bibliotecaRepositorio";
 import { jogadoresDaMesa, ROTULOS_TIPO_FICHA, TIPOS_FICHA, type DadosNovaFicha } from "@/src/dominio/ficha";
 import { podeCuidarDeFichasETabuleiro, type DetalheMesa } from "@/src/dominio/mesa";
 import type { EstadoFichas } from "./useFichas";
+import type { EstadoPropostas } from "./usePropostas";
+import PainelPropostas from "./PainelPropostas";
 import FormularioFicha from "./FormularioFicha";
 import ItemFicha from "./ItemFicha";
 import ListaErros from "../formulario/ListaErros";
@@ -11,13 +14,14 @@ import { botaoCompacto, cartao, tituloPainel } from "../estilos";
 type PainelFichasProps = {
   mesa: DetalheMesa;
   estado: EstadoFichas;
+  propostas: EstadoPropostas;
 };
 
 const NOVA_FICHA = "nova";
 
-export default function PainelFichas({ mesa, estado }: PainelFichasProps) {
+export default function PainelFichas({ mesa, estado, propostas }: PainelFichasProps) {
   const [emEdicao, setEmEdicao] = useState<string | null>(null);
-  const { fichas, carregando, executando, erros, executar } = estado;
+  const { itens: fichas, carregando, executando, erros, executar } = estado;
   const ativa = mesa.status === "ativa";
   const podeCuidar = ativa && podeCuidarDeFichasETabuleiro(mesa.meuPapel);
   const jogadores = jogadoresDaMesa(mesa.participantes);
@@ -41,6 +45,7 @@ export default function PainelFichas({ mesa, estado }: PainelFichasProps) {
         )}
       </header>
       <ListaErros erros={erros} />
+      <PainelPropostas mesa={mesa} estado={propostas} />
       {emEdicao === NOVA_FICHA && (
         <FormularioFicha ficha={null} jogadores={jogadores} executando={executando} aoSalvar={criar} aoFechar={fecharEdicao} />
       )}
@@ -75,6 +80,7 @@ export default function PainelFichas({ mesa, estado }: PainelFichasProps) {
                     executando={executando}
                     aoEditar={() => setEmEdicao(ficha.id)}
                     aoExcluir={() => void executar(() => excluirFicha(mesa.id, ficha.id))}
+                    aoSalvarNaBiblioteca={() => executar(() => salvarNaBiblioteca(mesa.id, ficha.id))}
                   />
                 ),
               )}

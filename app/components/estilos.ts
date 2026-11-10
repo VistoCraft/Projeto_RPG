@@ -16,7 +16,7 @@ export const grupoCampo = "mb-5 flex flex-col";
 
 export const campoCaixa = "peer min-h-11 w-full rounded-md border border-texto/25 bg-fundo py-2 text-texto outline-none transition placeholder:text-texto/45 hover:border-arcano/60 focus:border-arcano focus:ring-3 focus:ring-arcano/25 aria-invalid:border-vida user-invalid:border-vida";
 
-export const campoFicha = "min-w-0 rounded-md border border-texto/20 bg-fundo px-2 py-1.5 text-texto outline-none transition hover:border-arcano/60 focus:border-arcano focus:ring-2 focus:ring-arcano/25 aria-invalid:border-vida disabled:cursor-default disabled:border-transparent disabled:bg-transparent disabled:px-0";
+export const campoFicha = "min-w-0 rounded-md border border-texto/20 bg-fundo px-2 py-1.5 text-texto outline-none transition hover:border-destaque/60 focus:border-destaque focus:ring-2 focus:ring-destaque/25 aria-invalid:border-vida disabled:cursor-default disabled:border-transparent disabled:bg-transparent disabled:px-0";
 
 export const rotuloFicha = "text-xs font-semibold tracking-wide opacity-75";
 

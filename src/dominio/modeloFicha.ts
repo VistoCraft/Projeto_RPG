@@ -1,3 +1,6 @@
+import type { LayoutFicha } from "./layoutFicha";
+import type { EstiloFicha } from "./estiloFicha";
+
 export type TipoCampo = "texto" | "numero" | "lista";
 
 export type TipoColunaCombate = "texto" | "numero" | "rolagem";
@@ -23,6 +26,19 @@ export type CondicaoModelo = { id: string; rotulo: string };
 
 export type ColunaCombate = { id: string; rotulo: string; tipo: TipoColunaCombate };
 
+export type FormatoSecao = "campos" | "valores" | "barras" | "marcadores" | "tabela" | "anotacoes";
+
+export type SecaoExtra = {
+  id: string;
+  rotulo: string;
+  formato: FormatoSecao;
+  campos?: CampoDetalhe[] | null;
+  valores?: AtributoModelo[] | null;
+  barras?: BarraModelo[] | null;
+  marcadores?: CondicaoModelo[] | null;
+  colunas?: ColunaCombate[] | null;
+};
+
 export type ModeloFicha = {
   versao: number;
   detalhes?: CampoDetalhe[] | null;
@@ -31,6 +47,9 @@ export type ModeloFicha = {
   barras?: BarraModelo[] | null;
   condicoes?: CondicaoModelo[] | null;
   combate?: { colunas: ColunaCombate[] } | null;
+  layout?: LayoutFicha | null;
+  secoesExtras?: SecaoExtra[] | null;
+  estilo?: EstiloFicha | null;
 };
 
 export type ValorDetalhe = string | number | null;
@@ -48,7 +67,16 @@ export type ConteudoFicha = {
   barras: Record<string, ValorBarra>;
   condicoes: string[];
   combate: LinhaCombate[];
+  extras: Record<string, unknown>;
 };
+
+export type ConteudoSecaoExtra =
+  | { formato: "campos"; valor: Record<string, ValorDetalhe> }
+  | { formato: "valores"; valor: Record<string, number> }
+  | { formato: "barras"; valor: Record<string, ValorBarra> }
+  | { formato: "marcadores"; valor: string[] }
+  | { formato: "tabela"; valor: LinhaCombate[] }
+  | { formato: "anotacoes"; valor: string };
 
 export type CamposAlterados = Record<string, unknown>;
 
@@ -74,9 +102,44 @@ export function normalizarConteudo(bruto: unknown, modelo: ModeloFicha): Conteud
     atributos: Object.fromEntries((modelo.atributos ?? []).map((atributo) => [atributo.id, numero(atributos[atributo.id], atributo.padrao)])),
     pericias: Object.fromEntries((modelo.pericias ?? []).map((pericia) => [pericia.id, estadoPericia(pericias[pericia.id])])),
     barras: Object.fromEntries((modelo.barras ?? []).map((barra) => [barra.id, valorBarra(barras[barra.id], barra.maximoPadrao)])),
-    condicoes: Array.isArray(dados.condicoes) ? dados.condicoes.filter((item): item is string => typeof item === "string") : [],
-    combate: Array.isArray(dados.combate) ? dados.combate.map((linha) => objeto(linha) as LinhaCombate) : [],
+    condicoes: listaDeTextos(dados.condicoes),
+    combate: linhasDeTabela(dados.combate),
+    extras: objeto(dados.extras),
   };
+}
+
+export function lerSecaoExtra(conteudo: ConteudoFicha, secao: SecaoExtra): ConteudoSecaoExtra {
+  const bruto = conteudo.extras[secao.id];
+  const dados = objeto(bruto);
+  switch (secao.formato) {
+    case "campos":
+      return { formato: "campos", valor: Object.fromEntries((secao.campos ?? []).map((campo) => [campo.id, valorDetalhe(dados[campo.id])])) };
+    case "valores":
+      return { formato: "valores", valor: Object.fromEntries((secao.valores ?? []).map((item) => [item.id, numero(dados[item.id], item.padrao)])) };
+    case "barras":
+      return { formato: "barras", valor: Object.fromEntries((secao.barras ?? []).map((barra) => [barra.id, valorBarra(dados[barra.id], barra.maximoPadrao)])) };
+    case "marcadores":
+      return { formato: "marcadores", valor: listaDeTextos(bruto) };
+    case "tabela":
+      return { formato: "tabela", valor: linhasDeTabela(bruto) };
+    case "anotacoes":
+      return { formato: "anotacoes", valor: typeof bruto === "string" ? bruto : "" };
+  }
+}
+
+function listaDeTextos(valor: unknown): string[] {
+  return Array.isArray(valor) ? valor.filter((item): item is string => typeof item === "string") : [];
+}
+
+function linhasDeTabela(valor: unknown): LinhaCombate[] {
+  return Array.isArray(valor) ? valor.map(linhaDeTabela) : [];
+}
+
+function linhaDeTabela(valor: unknown): LinhaCombate {
+  return Object.fromEntries(
+    Object.entries(objeto(valor)).filter((par): par is [string, string | number | null] =>
+      typeof par[1] === "string" || typeof par[1] === "number" || par[1] === null),
+  );
 }
 
 export function aplicarCampos(conteudo: ConteudoFicha, campos: CamposAlterados): ConteudoFicha {

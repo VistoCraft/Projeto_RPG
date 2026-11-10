@@ -4,7 +4,7 @@ Tecnologias e configuração: [04-tecnologias.md](04-tecnologias.md). Contexto e
 
 ## Como a página é montada
 
-Rotas: `/` (home, apresentação do produto), `/mesas` (hub, aberto a visitantes), `/mesas/nova`, `/mesas/[id]`, `/mesas/[id]/fichas/[fichaId]`, `/termos`, `/privacidade`, `/creditos`, `/ficha`, `/login` e `/cadastro`. Nenhum link leva à `/ficha` por enquanto. As duas últimas ficam no route group `app/(autenticacao)/`, que tem um layout próprio (`TelaAutenticacao`). Login, cadastro, mesas e a ficha da mesa falam com o backend (`Projeto_RPG_Backend`); só a ficha de teste antiga (`/ficha`) não.
+Rotas: `/` (home, apresentação do produto), `/mesas` (hub, aberto a visitantes), `/mesas/nova`, `/mesas/[id]`, `/mesas/[id]/fichas/[fichaId]`, `/biblioteca`, `/biblioteca/fichas/[fichaId]`, `/templates`, `/templates/novo`, `/templates/[id]`, `/termos`, `/privacidade`, `/creditos`, `/ficha`, `/login` e `/cadastro`. Nenhum link leva à `/ficha` por enquanto. As duas últimas ficam no route group `app/(autenticacao)/`, que tem um layout próprio (`TelaAutenticacao`). Login, cadastro, mesas e a ficha da mesa falam com o backend (`Projeto_RPG_Backend`); só a ficha de teste antiga (`/ficha`) não.
 
 ```
 app/layout.tsx          (Server Component)  <html class="dark">, <body> (flex coluna + <Rodape /> no fim), metadata, fontes, globals.css e bootstrap-icons
@@ -38,7 +38,12 @@ app/mesas/[id]     ─► PaginaMesa ("use client": useTema, useSessao, useMesa)
                      useMesa.executar(acao) ─► mesasRepositorio (entrar, sair, papel, remover, bloquear, código, encerrar, reabrir) ─► troca a mesa pela resposta
                      useFichas (só participante) ─► fichasRepositorio (listar, criar, editar, excluir em /mesas/{id}/fichas)
                      useTempoRealMesa ─► tempoRealMesaRepositorio.assinarMesa ─► ConexaoTempoReal (SignalR /hubs/mesa)
-                       MesaAtualizada → recarrega mesa e fichas · FichasAtualizadas → recarrega fichas · MesaExcluida → /mesas
+                       MesaAtualizada → recarrega mesa, fichas e propostas · FichasAtualizadas → fichas · PropostasAtualizadas → propostas · MesaExcluida → /mesas
+                     usePropostas ─► bibliotecaRepositorio (propor, aceitar, recusar, cancelar em /mesas/{id}/propostas) ─► PainelPropostas (dentro de PainelFichas)
+app/templates      ─► PaginaTemplates ─► CartaoTemplate (Ver/Editar, Criar cópia, excluir)
+app/templates/novo, [id] ─► PaginaEditorTemplate ─► EditorTemplate (nome, abas completa/simplificada, prévia com FichaModelo)
+                     ─► EditorModelo ─► ListaEditavel por seção ─► templatesRepositorio (POST/PUT /templates; erros do modelo traduzidos para "Perícias, item 3")
+app/biblioteca     ─► PaginaBiblioteca (useColecaoRemota(listarBiblioteca)) ─► CartaoBiblioteca ─► /biblioteca/fichas/[fichaId] (FichaModelo só leitura)
                        MesaAtualizada ─► useMesa.recarregar()   MesaExcluida ─► volta para /mesas
 ```
 
@@ -117,6 +122,7 @@ Feito com classes Tailwind direto no JSX (regra R8).
 | 4 | `Combate` (`col-span-2`) | |
 | 5 | `Pericias` completa (`col-span-2`, `grid-cols-8`) | |
 
+- Estilo da ficha (por template): os temas, fontes, cantos e espaçamento são regras por `data-*` no `@layer base` do `globals.css`, que trocam os tokens de papel (`--color-fundo`, `--color-destaque`...), `--font-titulo`/`--font-texto` (por isso esse `@theme` não é `inline`), `--radius-*` e `--spacing` só dentro da ficha. A cor própria vem de `--cor-ficha` (inline, dado do modelo) e gera o destaque com `color-mix` contra a cor do texto, para funcionar no claro e no escuro. Borda e título das seções são classes Tailwind escolhidas pelo `SecaoFicha`.
 - Identidade visual: `Projeto_RPG_Planejamento/03-identidade-visual.md`. As cores são tokens no `@theme static` de `app/globals.css`: a paleta (`pergaminho`, `nevoa`, `abismo`, `noite`, `arcano`, `essencia`, `mare`...), as barras (`vida`, `sanidade`, `esforco`) e os tokens de papel (`fundo`, `superficie`, `borda`, `texto`, `destaque`, `acento`, `trilho`). Componentes usam os tokens de papel (`bg-superficie`, `text-destaque`); a classe `.dark` no `<html>` troca o valor deles, então não é preciso `dark:` nas classes.
 - Fontes: `font-titulo` (Almendra) em títulos e `font-texto` (Literata) no resto, carregadas por `next/font/google` em `layout.tsx`.
 - As combinações de classes usadas em mais de um componente ficam em `app/components/estilos.ts`: `cartao`, `tituloSecao`, `rotulo`, `campoLinha`, `campoNumero` e `botaoContorno`.

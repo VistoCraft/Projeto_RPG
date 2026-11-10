@@ -3,7 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { ROTULOS_TIPO_FICHA } from "@/src/dominio/ficha";
+import { ROTULO_TIPO_FICHA } from "@/src/dominio/ficha";
+import { salvarNaBiblioteca } from "@/src/repositories/bibliotecaRepositorio";
 import useTema from "../useTema";
 import useSessao from "../useSessao";
 import useMesa from "../mesa/useMesa";
@@ -34,6 +35,12 @@ export default function PaginaFicha() {
   const { mesa } = useMesa(id, logado);
   const { ficha, carregando, erros, situacao, alterar } = useFicha(id, fichaId, logado);
   const [modo, setModo] = useState<Modo>("editar");
+  const [avisoBiblioteca, setAvisoBiblioteca] = useState<string | null>(null);
+
+  const guardarCopia = async () => {
+    const resultado = await salvarNaBiblioteca(id, fichaId);
+    setAvisoBiblioteca(resultado.sucesso ? "Cópia salva na biblioteca." : resultado.erros.join(" "));
+  };
 
   const mesaAtiva = mesa?.status === "ativa";
   const podeEditar = Boolean(ficha?.podeEditar && mesaAtiva);
@@ -47,7 +54,7 @@ export default function PaginaFicha() {
       </Link>
       {ficha && (
         <>
-          <span className={chip}><i className="bi bi-layers" aria-hidden="true"></i>{ROTULOS_TIPO_FICHA[ficha.tipo]}</span>
+          <span className={chip}><i className="bi bi-layers" aria-hidden="true"></i>{ROTULO_TIPO_FICHA[ficha.tipo]}</span>
           <span className={chip}><i className="bi bi-person" aria-hidden="true"></i>{ficha.ehMinha ? "Sua ficha" : ficha.dono ?? "NPC do mestre"}</span>
           {!podeEditar && <span className={chip}><i className="bi bi-lock" aria-hidden="true"></i>Só leitura</span>}
           {podeEditar && (
@@ -65,6 +72,11 @@ export default function PaginaFicha() {
       <CabecalhoSite tema={tema} alternarTema={alternarTema} sessao={sessao} />
       <main className="flex flex-1 flex-col">
         <FaixaPagina rotulo={rotulo} titulo={ficha?.nome ?? "Ficha"}>
+          {ficha?.ehMinha && (
+            <button type="button" className={`${chamadaSecundaria} cursor-pointer`} onClick={() => void guardarCopia()}>
+              <i className="bi bi-bookmark-plus" aria-hidden="true"></i> Salvar na biblioteca
+            </button>
+          )}
           {podeEditar && (
             <button
               type="button"
@@ -84,6 +96,11 @@ export default function PaginaFicha() {
             </div>
           )}
           {logado && carregando && <p className="py-16 text-center opacity-80">Carregando ficha...</p>}
+          {avisoBiblioteca && (
+            <p role="status" className="rounded-md border border-acento/60 bg-acento/10 p-3 text-sm">
+              <i className="bi bi-bookmark-check" aria-hidden="true"></i> {avisoBiblioteca}
+            </p>
+          )}
           <ListaErros erros={erros} />
           {ficha && <FichaModelo modelo={ficha.modelo} conteudo={ficha.conteudo} editavel={editavel} aoAlterar={alterar} />}
         </div>

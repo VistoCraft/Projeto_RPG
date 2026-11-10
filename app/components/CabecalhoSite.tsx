@@ -3,6 +3,7 @@ import { usePathname } from "next/navigation";
 import type { AlternarTema, Tema } from "./useTema";
 import type { EstadoSessao } from "./useSessao";
 import BotaoTema from "./BotaoTema";
+import Logo from "./Logo";
 import { botaoContorno, conteudoPagina } from "./estilos";
 
 type CabecalhoSiteProps = {
@@ -11,11 +12,13 @@ type CabecalhoSiteProps = {
   sessao: EstadoSessao;
 };
 
-type ItemMenu = { rotulo: string; href: string; icone: string };
+type ItemMenu = { rotulo: string; href: string; icone: string; soLogado?: boolean };
 
 const itensMenu: ItemMenu[] = [
   { rotulo: "Início", href: "/", icone: "bi-house" },
   { rotulo: "Mesas", href: "/mesas", icone: "bi-grid" },
+  { rotulo: "Templates", href: "/templates", icone: "bi-file-earmark-text" },
+  { rotulo: "Biblioteca", href: "/biblioteca", icone: "bi-bookmark", soLogado: true },
 ];
 
 const itemMenu = "flex items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold transition-colors hover:bg-texto/5";
@@ -30,17 +33,17 @@ export default function CabecalhoSite({ tema, alternarTema, sessao: { sessao, sa
   return (
     <header className="sticky top-0 z-30 border-b border-borda bg-fundo/85 backdrop-blur">
       <div className={`${conteudoPagina} flex min-h-16 flex-wrap items-center justify-between gap-x-6 gap-y-2 py-2`}>
-        <div className="flex items-center gap-6">
+        <div className="flex min-w-0 items-center gap-3 sm:gap-6">
           <Link href="/" aria-label="Página inicial">
-            <img className="w-[96px]" src="/img/Logo.png" alt="Logo RPG" />
+            <Logo tamanho="pequeno" comTextoSoEmTelaGrande />
           </Link>
           <nav aria-label="Principal" className="flex items-center gap-1">
-            {itensMenu.map(({ rotulo, href, icone }) => {
+            {itensMenu.filter((item) => !item.soLogado || sessao.estado === "logado").map(({ rotulo, href, icone }) => {
               const ativo = estaAtivo(caminho, href);
               return (
-                <Link key={href} href={href} aria-current={ativo ? "page" : undefined} className={`${itemMenu} ${ativo ? "bg-arcano/15 text-destaque" : ""}`}>
+                <Link key={href} href={href} aria-label={rotulo} title={rotulo} aria-current={ativo ? "page" : undefined} className={`${itemMenu} ${ativo ? "bg-arcano/15 text-destaque" : ""}`}>
                   <i className={`bi ${icone}`} aria-hidden="true"></i>
-                  {rotulo}
+                  <span className="hidden md:inline">{rotulo}</span>
                 </Link>
               );
             })}

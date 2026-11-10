@@ -43,7 +43,6 @@ Atributos, perícias, condições e tabela de combate. Veja [05-estado-e-persist
 - A tabela de combate mostra 4 linhas iguais de exemplo ("balestra").
 - O layout da ficha antiga (`/ficha`) tem largura fixa de **940px** e não é responsivo (as outras páginas já ocupam a tela toda).
 - `public/img/bg.jpg` e `public/img/d20.png` não são usados.
-- `public/img/Logo.png` é o logo de D&D (marca de terceiros) e contradiz o aviso de não afiliação em `/creditos`; trocar pelo logo próprio em SVG antes de publicar.
 - Quem escolhe o tema claro vê o escuro por um instante ao recarregar, porque o tema salvo só é aplicado depois da hidratação.
 - As cores das barras (`vida`, `sanidade`, `esforco`) têm pouco contraste com o trilho no tema escuro; o valor numérico ao lado do título compensa.
 - Colunas "nun. Atual" e "nun. Maximo" da tabela de combate (`Combate.tsx`): falta confirmar o que significam (munição?) antes de corrigir o texto.

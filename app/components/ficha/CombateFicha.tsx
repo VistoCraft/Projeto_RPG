@@ -1,10 +1,12 @@
 import type { ColunaCombate, LinhaCombate } from "@/src/dominio/modeloFicha";
 import { avaliarFormula, descreverFormula, type ContextoFormula } from "@/src/dominio/formula";
 import type { AlterarCampo } from "./useFicha";
-import SecaoFicha from "./SecaoFicha";
+import SecaoFicha, { type IdentidadeSecao } from "./SecaoFicha";
 import { botaoCompacto, botaoPerigo, campoFicha } from "../estilos";
 
 type CombateFichaProps = {
+  secao: IdentidadeSecao;
+  rotuloLinha: string;
   colunas: ColunaCombate[];
   linhas: LinhaCombate[];
   contexto: ContextoFormula;
@@ -15,8 +17,8 @@ type CombateFichaProps = {
 const LINHAS_MAXIMAS = 50;
 const TAMANHO_MAXIMO_CELULA = 200;
 
-export default function CombateFicha({ colunas, linhas, contexto, editavel, aoAlterar }: CombateFichaProps) {
-  const gravar = (novas: LinhaCombate[]) => aoAlterar("combate", novas);
+export default function CombateFicha({ secao, rotuloLinha, colunas, linhas, contexto, editavel, aoAlterar }: CombateFichaProps) {
+  const gravar = (novas: LinhaCombate[]) => aoAlterar(secao.caminho, novas);
 
   const mudarCelula = (indice: number, coluna: ColunaCombate, texto: string) => {
     const numero = Number(texto);
@@ -26,14 +28,14 @@ export default function CombateFicha({ colunas, linhas, contexto, editavel, aoAl
 
   const adicionar = editavel && linhas.length < LINHAS_MAXIMAS && (
     <button type="button" className={botaoCompacto} onClick={() => gravar([...linhas, {}])}>
-      <i className="bi bi-plus-lg" aria-hidden="true"></i> Adicionar ataque
+      <i className="bi bi-plus-lg" aria-hidden="true"></i> Adicionar {rotuloLinha}
     </button>
   );
 
   return (
-    <SecaoFicha id="combate" titulo="Ataques" icone="bi-crosshair" acoes={adicionar}>
+    <SecaoFicha id={secao.id} titulo={secao.titulo} icone={secao.icone} acoes={adicionar}>
       {linhas.length === 0 ? (
-        <p className="rounded-md border border-dashed border-borda p-5 text-center text-sm opacity-75">Nenhum ataque ainda.</p>
+        <p className="rounded-md border border-dashed border-borda p-5 text-center text-sm opacity-75">Nada por aqui ainda.</p>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full min-w-[640px] border-separate border-spacing-y-1 text-sm">
@@ -74,7 +76,7 @@ export default function CombateFicha({ colunas, linhas, contexto, editavel, aoAl
                       <button
                         type="button"
                         className={botaoPerigo}
-                        aria-label={`Remover ataque ${indice + 1}`}
+                        aria-label={`Remover ${rotuloLinha} ${indice + 1}`}
                         onClick={() => gravar(linhas.filter((_, posicao) => posicao !== indice))}
                       >
                         <i className="bi bi-x-lg" aria-hidden="true"></i>

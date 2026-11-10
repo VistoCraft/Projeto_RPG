@@ -1,10 +1,11 @@
 import type { CampoDetalhe, ValorDetalhe } from "@/src/dominio/modeloFicha";
 import type { AlterarCampo } from "./useFicha";
 import CampoNumeroFicha from "./CampoNumeroFicha";
-import SecaoFicha from "./SecaoFicha";
+import SecaoFicha, { type IdentidadeSecao } from "./SecaoFicha";
 import { campoFicha, rotuloFicha } from "../estilos";
 
 type DetalhesFichaProps = {
+  secao: IdentidadeSecao;
   campos: CampoDetalhe[];
   valores: Record<string, ValorDetalhe>;
   editavel: boolean;
@@ -13,13 +14,13 @@ type DetalhesFichaProps = {
 
 const TAMANHO_MAXIMO_TEXTO = 200;
 
-export default function DetalhesFicha({ campos, valores, editavel, aoAlterar }: DetalhesFichaProps) {
+export default function DetalhesFicha({ secao, campos, valores, editavel, aoAlterar }: DetalhesFichaProps) {
   return (
-    <SecaoFicha id="detalhes" titulo="Detalhes" icone="bi-person-lines-fill">
+    <SecaoFicha id={secao.id} titulo={secao.titulo} icone={secao.icone}>
       <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,200px),1fr))] gap-x-5 gap-y-4">
         {campos.map((campo) => {
           const id = `detalhe-${campo.id}`;
-          const caminho = `detalhes.${campo.id}`;
+          const caminho = `${secao.caminho}.${campo.id}`;
           const valor = valores[campo.id];
           return (
             <div key={campo.id} className="flex flex-col gap-1">

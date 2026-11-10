@@ -19,12 +19,14 @@ Use **Yarn** (v1). Não use npm: não deve existir `package-lock.json`, só `yar
 ```
 ai/                    # Documentação do projeto (NN-nome.md; 00-regras tem prioridade)
 app/
-  globals.css          # Tailwind: @import, @theme (paleta, tokens de papel, fontes) e @layer base (.dark, option)
+  globals.css          # Tailwind: @import, @theme (paleta, tokens de papel, fontes) e @layer base (.dark, temas/fontes/cantos/espaçamento da ficha por data-*, option)
   layout.tsx           # HTML raiz (classe "dark"), metadata, fontes (next/font), globals.css, bootstrap-icons e <Rodape />
   page.tsx             # Rota "/" — só renderiza <Home /> (apresentação do produto)
   mesas/page.tsx       # Rota "/mesas" — só renderiza <Hub /> (aberto a visitantes)
   mesas/nova/, mesas/[id]/ # Rotas "/mesas/nova" (<NovaMesa />) e "/mesas/[id]" (<PaginaMesa />)
   mesas/[id]/fichas/[fichaId]/ # Rota da ficha (<PaginaFicha />)
+  templates/, templates/novo/, templates/[id]/ # Lista de templates, novo (?base=id copia um template) e edição/visualização
+  biblioteca/, biblioteca/fichas/[fichaId]/ # Rotas "/biblioteca" (<PaginaBiblioteca />) e da ficha guardada (<PaginaFichaBiblioteca />)
   termos/, privacidade/, creditos/ # Rotas "/termos", "/privacidade" e "/creditos" (atribuição do SRD 5.1 e licenças)
   ficha/page.tsx       # Rota "/ficha" — ficha de teste antiga (<Ficha />), sem link; substituída pela ficha da mesa
   (autenticacao)/      # Route group: layout com TelaAutenticacao, rotas /login e /cadastro
@@ -37,7 +39,9 @@ app/
     useSessao.ts       # Hook: visitante ou logado (GET /perfil) e sair()
     AvisoLogin.tsx     # Cartão "entre para continuar" das páginas que pedem login
     SeloMesa.tsx       # Selo Aberta / Entrada bloqueada / Encerrada
-    CabecalhoSite.tsx  # Barra fixa de largura total: logo, menu (Início, Mesas), Entrar/Criar conta ou nickname/Sair, BotaoTema
+    Logo.tsx           # Logo próprio: EmblemaLogo (dado de 20 faces em SVG, cores do tema) + "RPG de mesa"; app/icon.svg é o mesmo emblema
+    useColecaoRemota.ts # Hook genérico: lista vinda do backend + executar(acao) que recarrega (fichas, propostas, biblioteca)
+    CabecalhoSite.tsx  # Barra fixa de largura total: logo, menu (Início, Mesas, Templates, Biblioteca se logado), Entrar/Criar conta ou nickname/Sair, BotaoTema
     FaixaPagina.tsx    # Faixa de título de largura total (hub, mesa, páginas legais)
     PainelLateral.tsx  # Coluna com degradê das telas divididas (login, cadastro, nova mesa)
     BotaoTema.tsx      # Botão que alterna o tema
@@ -55,15 +59,21 @@ app/
     legal/             # PaginaLegal (moldura com seções numeradas), TermosDeUso, PoliticaPrivacidade, Creditos
     hub/               # Hub de mesas: Hub, AvisoVisitante, EntrarComCodigo, FiltrosMesas, ListaMesas, CartaoMesa, useMesas
     mesa/              # Criar mesa e página da mesa: NovaMesa, FormularioNovaMesa, PaginaMesa, CabecalhoMesa, PainelGerencia,
-                       #   FormularioEdicaoMesa, ModalExclusao, ListaParticipantes, AreasMesa, PainelFichas, ItemFicha, FormularioFicha,
-                       #   useMesa, useFichas, useTempoRealMesa, useTemplates
+                       #   FormularioEdicaoMesa, ModalExclusao, ListaParticipantes, AreasMesa, PainelFichas, PainelPropostas, ItemFicha, FormularioFicha,
+                       #   useMesa, useFichas, usePropostas, useTempoRealMesa, useTemplates
+    biblioteca/        # PaginaBiblioteca, CartaoBiblioteca, PaginaFichaBiblioteca (FichaModelo só leitura)
+    templates/         # PaginaTemplates, CartaoTemplate, PaginaEditorTemplate, EditorTemplate (abas + prévia), EditorModelo,
+                       #   EditorEstilo (estilo da ficha: estilos prontos, tema, cor, fontes, cantos, bordas, títulos, espaçamento e por seção),
+                       #   EditorLayout (grid da ficha: linhas, divisões e seções arrastáveis), EditorSecoesExtras (seções novas: formatos e modelos prontos),
+                       #   RenderizadoresModelo (linhas de campo, valor, barra e coluna + dica da fórmula), ListaEditavel (genérica: arrastar, reordenar,
+                       #   remover, id a partir do nome), CamposEditor, useReordenacao (arrastar e soltar em listas)
     formulario/        # Peças genéricas: CartaoFormulario, CaixaCampo, CampoFormulario, CampoSelecao, CampoBuscaSelecao, CampoDataSelecao, CampoAreaTexto, ListaErros,
                        #   useEnvioFormulario
     ficha/             # Ficha montada pelo modelo: PaginaFicha, FichaModelo (reaproveitável, sem depender da página), SecaoFicha,
-                       #   DetalhesFicha, BarrasFicha, AtributosFicha, PericiasFicha, CondicoesFicha, CombateFicha, CampoNumeroFicha, useFicha
+                       #   DetalhesFicha, BarrasFicha, AtributosFicha, PericiasFicha, CondicoesFicha, CombateFicha, AnotacoesFicha, CampoNumeroFicha, useFicha
     autenticacao/      # Telas de login e cadastro: TelaAutenticacao, CampoAceiteTermos, FormularioLogin, FormularioCadastro, usePaises
 src/
-  dominio/             # Tipos de domínio (Credenciais, Perfil, Mesa, DetalheMesa, Template, Ficha, ModeloFicha, Resultado...), formula.ts (avalia as fórmulas para exibir) e regras de papel (mesa.ts), listas (países, como conheceu) e termos.ts (versão, contato)
+  dominio/             # Tipos de domínio (Credenciais, Perfil, Mesa, DetalheMesa, Template, Ficha, ModeloFicha, Resultado...), formula.ts (avalia as fórmulas para exibir), layoutFicha.ts (layout das seções e operações), estiloFicha.ts (estilo da ficha: opções, estilos prontos, data-* da raiz e limpeza), listas.ts (moverItem) e regras de papel (mesa.ts), listas (países, como conheceu) e termos.ts (versão, contato)
   providers/           # FetchRestProvider, a instância api (URL em NEXT_PUBLIC_API_URL) e ConexaoTempoReal (SignalR)
   repositories/        # Únicas chamadas HTTP e de tempo real (regra R6), com DTO → domínio; erros traduzidos em errosApi.ts
 public/img/            # Imagens, servidas em /img/...

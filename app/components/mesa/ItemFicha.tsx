@@ -10,15 +10,25 @@ type ItemFichaProps = {
   executando: boolean;
   aoEditar: () => void;
   aoExcluir: () => void;
+  aoSalvarNaBiblioteca: () => Promise<boolean>;
 };
+
+const TEMPO_DO_AVISO_MS = 4000;
 
 function rotuloDono(ficha: ResumoFicha): string {
   if (!ficha.donoId) return "NPC do mestre";
   return ficha.ehMinha ? "Você" : ficha.dono ?? "Jogador";
 }
 
-export default function ItemFicha({ mesaId, ficha, podeCuidar, executando, aoEditar, aoExcluir }: ItemFichaProps) {
+export default function ItemFicha({ mesaId, ficha, podeCuidar, executando, aoEditar, aoExcluir, aoSalvarNaBiblioteca }: ItemFichaProps) {
   const [confirmando, setConfirmando] = useState(false);
+  const [salva, setSalva] = useState(false);
+
+  const salvar = async () => {
+    if (!(await aoSalvarNaBiblioteca())) return;
+    setSalva(true);
+    setTimeout(() => setSalva(false), TEMPO_DO_AVISO_MS);
+  };
 
   return (
     <li className={`flex flex-wrap items-center gap-3 rounded-md border px-3 py-2.5 ${ficha.ehMinha ? "border-arcano/50 bg-arcano/10" : "border-borda bg-fundo"}`}>
@@ -36,8 +46,14 @@ export default function ItemFicha({ mesaId, ficha, podeCuidar, executando, aoEdi
             </span>
           )}
           {!podeCuidar && !ficha.podeEditar && <span><i className="bi bi-lock" aria-hidden="true"></i> Só leitura</span>}
+          {salva && <span role="status" className="font-semibold text-acento"><i className="bi bi-bookmark-check" aria-hidden="true"></i> Cópia salva na biblioteca</span>}
         </span>
       </div>
+      {ficha.ehMinha && !confirmando && (
+        <button type="button" className={botaoContorno} aria-label={`Salvar ${ficha.nome} na biblioteca`} title="Salvar uma cópia na biblioteca" disabled={executando} onClick={() => void salvar()}>
+          <i className="bi bi-bookmark-plus" aria-hidden="true"></i>
+        </button>
+      )}
       {!confirmando && (
         <Link className={`${botaoContorno} text-sm`} href={`/mesas/${mesaId}/fichas/${ficha.id}`}>
           <i className="bi bi-box-arrow-up-right" aria-hidden="true"></i> Abrir

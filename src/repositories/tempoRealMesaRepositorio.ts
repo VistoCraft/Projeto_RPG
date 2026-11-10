@@ -5,11 +5,13 @@ const EVENTO_MESA_ATUALIZADA = "MesaAtualizada";
 const EVENTO_MESA_EXCLUIDA = "MesaExcluida";
 const EVENTO_FICHAS_ATUALIZADAS = "FichasAtualizadas";
 const EVENTO_FICHA_ATUALIZADA = "FichaAtualizada";
+const EVENTO_PROPOSTAS_ATUALIZADAS = "PropostasAtualizadas";
 
 export type EventosMesa = {
   aoAtualizar: () => void;
   aoExcluir: () => void;
   aoAtualizarFichas: () => void;
+  aoAtualizarPropostas: () => void;
 };
 
 export function assinarMesa(mesaId: string, eventos: EventosMesa): () => void {
@@ -19,11 +21,13 @@ export function assinarMesa(mesaId: string, eventos: EventosMesa): () => void {
   const aoAtualizar = seForEstaMesa(eventos.aoAtualizar);
   const aoExcluir = seForEstaMesa(eventos.aoExcluir);
   const aoAtualizarFichas = seForEstaMesa(eventos.aoAtualizarFichas);
+  const aoAtualizarPropostas = seForEstaMesa(eventos.aoAtualizarPropostas);
 
   const inscricao = Promise.all([
     conexaoMesa.ouvir(EVENTO_MESA_ATUALIZADA, aoAtualizar),
     conexaoMesa.ouvir(EVENTO_MESA_EXCLUIDA, aoExcluir),
     conexaoMesa.ouvir(EVENTO_FICHAS_ATUALIZADAS, aoAtualizarFichas),
+    conexaoMesa.ouvir(EVENTO_PROPOSTAS_ATUALIZADAS, aoAtualizarPropostas),
   ]).then(() => conexaoMesa.acompanharMesa(mesaId)).catch(() => undefined);
 
   return () => {
@@ -31,6 +35,7 @@ export function assinarMesa(mesaId: string, eventos: EventosMesa): () => void {
       conexaoMesa.pararDeOuvir(EVENTO_MESA_ATUALIZADA, aoAtualizar),
       conexaoMesa.pararDeOuvir(EVENTO_MESA_EXCLUIDA, aoExcluir),
       conexaoMesa.pararDeOuvir(EVENTO_FICHAS_ATUALIZADAS, aoAtualizarFichas),
+      conexaoMesa.pararDeOuvir(EVENTO_PROPOSTAS_ATUALIZADAS, aoAtualizarPropostas),
       conexaoMesa.deixarMesa(mesaId),
     ])).catch(() => undefined);
   };

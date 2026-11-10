@@ -29,7 +29,8 @@
   --color-trilho: var(--color-nevoa-escura);
 }
 
-@theme inline {
+/* Sem "inline": a ficha troca --font-titulo e --font-texto pelo estilo do template. */
+@theme {
   --font-titulo: var(--font-almendra);
   --font-texto: var(--font-literata);
 }
@@ -44,6 +45,138 @@
     --color-acento: var(--color-essencia);
     --color-trilho: var(--color-abismo-claro);
   }
+
+  /* Estilo da ficha (vem do template): ver src/dominio/estiloFicha.ts */
+  [data-tema-ficha="pergaminho"] {
+    --color-fundo: #f8f1e1;
+    --color-superficie: #efe2c4;
+    --color-borda: #d6c095;
+    --color-trilho: #d6c095;
+    --color-texto: #3b2f20;
+    --color-destaque: #8a4b16;
+    --color-acento: #5f7a2a;
+  }
+
+  .dark [data-tema-ficha="pergaminho"] {
+    --color-fundo: #1c1610;
+    --color-superficie: #2a2118;
+    --color-borda: #4a3a28;
+    --color-trilho: #4a3a28;
+    --color-texto: #f1e6cf;
+    --color-destaque: #e0a868;
+    --color-acento: #b5cf6e;
+  }
+
+  [data-tema-ficha="grimorio"] {
+    --color-fundo: #f4f0fa;
+    --color-superficie: #e6ddf3;
+    --color-borda: #cdbde6;
+    --color-trilho: #cdbde6;
+    --color-texto: #2a1f3d;
+    --color-destaque: #6b2fa3;
+    --color-acento: #a3317a;
+  }
+
+  .dark [data-tema-ficha="grimorio"] {
+    --color-fundo: #120d1c;
+    --color-superficie: #1e1630;
+    --color-borda: #3a2b55;
+    --color-trilho: #3a2b55;
+    --color-texto: #ece4f7;
+    --color-destaque: #c39af5;
+    --color-acento: #f08bc6;
+  }
+
+  [data-tema-ficha="floresta"] {
+    --color-fundo: #eef4ea;
+    --color-superficie: #dde9d7;
+    --color-borda: #bcd1b3;
+    --color-trilho: #bcd1b3;
+    --color-texto: #1f2e1c;
+    --color-destaque: #2f6b34;
+    --color-acento: #8a6a1f;
+  }
+
+  .dark [data-tema-ficha="floresta"] {
+    --color-fundo: #0f1a12;
+    --color-superficie: #18271b;
+    --color-borda: #2c4230;
+    --color-trilho: #2c4230;
+    --color-texto: #e3efe0;
+    --color-destaque: #7fcf87;
+    --color-acento: #e0c070;
+  }
+
+  [data-tema-ficha="brasa"] {
+    --color-fundo: #faf0eb;
+    --color-superficie: #f1ddd3;
+    --color-borda: #e0bfb0;
+    --color-trilho: #e0bfb0;
+    --color-texto: #3a1d14;
+    --color-destaque: #b1361e;
+    --color-acento: #9a5d10;
+  }
+
+  .dark [data-tema-ficha="brasa"] {
+    --color-fundo: #1a0f0c;
+    --color-superficie: #2a1813;
+    --color-borda: #4d2a20;
+    --color-trilho: #4d2a20;
+    --color-texto: #f6e3dc;
+    --color-destaque: #ff8a65;
+    --color-acento: #ffc061;
+  }
+
+  [data-tema-ficha="gelo"] {
+    --color-fundo: #f0f6fb;
+    --color-superficie: #dde9f3;
+    --color-borda: #bfd4e6;
+    --color-trilho: #bfd4e6;
+    --color-texto: #15283a;
+    --color-destaque: #1f6390;
+    --color-acento: #1f7a7a;
+  }
+
+  .dark [data-tema-ficha="gelo"] {
+    --color-fundo: #0c1620;
+    --color-superficie: #142332;
+    --color-borda: #26405a;
+    --color-trilho: #26405a;
+    --color-texto: #e2eef8;
+    --color-destaque: #7cc4f2;
+    --color-acento: #6fe0d6;
+  }
+
+  [data-cor-ficha],
+  .dark [data-cor-ficha] {
+    --color-destaque: color-mix(in oklab, var(--cor-ficha) 78%, var(--color-texto));
+  }
+
+  [data-fonte-titulo="classica"] { --font-titulo: var(--font-literata); }
+  [data-fonte-titulo="moderna"] { --font-titulo: ui-sans-serif, system-ui, sans-serif; }
+  [data-fonte-titulo="maquina"] { --font-titulo: ui-monospace, "Cascadia Mono", Consolas, monospace; }
+  [data-fonte-texto="medieval"] { --font-texto: var(--font-almendra); }
+  [data-fonte-texto="moderna"] { --font-texto: ui-sans-serif, system-ui, sans-serif; }
+  [data-fonte-texto="maquina"] { --font-texto: ui-monospace, "Cascadia Mono", Consolas, monospace; }
+
+  [data-cantos-ficha="retos"] {
+    --radius-sm: 0;
+    --radius-md: 0;
+    --radius-lg: 0;
+    --radius-xl: 0;
+    --radius-2xl: 0;
+  }
+
+  [data-cantos-ficha="redondos"] {
+    --radius-sm: 0.375rem;
+    --radius-md: 0.625rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.25rem;
+    --radius-2xl: 1.5rem;
+  }
+
+  [data-densidade-ficha="compacta"] { --spacing: 0.2rem; }
+  [data-densidade-ficha="espacosa"] { --spacing: 0.3rem; }
 
   option {
     background-color: var(--color-superficie);

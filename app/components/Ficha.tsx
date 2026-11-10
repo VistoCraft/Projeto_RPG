@@ -1,5 +1,6 @@
 "use client";
 
+import Logo from "./Logo";
 import useDetalhes from "./useDetalhes";
 import useBarras from "./useBarras";
 import useTema from "./useTema";
@@ -30,7 +31,7 @@ export default function Ficha() {
       <header className="col-span-2 grid grid-cols-[1fr_auto_1fr] items-center pt-5">
         <div></div>
         <div className="text-center">
-          <img className="mx-auto w-[188px]" src="/img/Logo.png" alt="Logo RPG" />
+          <span className="flex justify-center"><Logo tamanho="grande" /></span>
           <h1 className="mb-2 font-titulo text-[2.5rem] leading-tight font-bold">Ficha do jogador</h1>
         </div>
         <BotaoTema tema={tema} alternar={alternarTema} />

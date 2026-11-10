@@ -2,9 +2,10 @@ import { comSinal, modificador, type AtributoModelo } from "@/src/dominio/modelo
 import { avaliarFormula, descreverFormula, type ContextoFormula } from "@/src/dominio/formula";
 import type { AlterarCampo } from "./useFicha";
 import CampoNumeroFicha from "./CampoNumeroFicha";
-import SecaoFicha from "./SecaoFicha";
+import SecaoFicha, { type IdentidadeSecao } from "./SecaoFicha";
 
 type AtributosFichaProps = {
+  secao: IdentidadeSecao;
   atributos: AtributoModelo[];
   valores: Record<string, number>;
   contexto: ContextoFormula;
@@ -12,10 +13,10 @@ type AtributosFichaProps = {
   aoAlterar: AlterarCampo;
 };
 
-export default function AtributosFicha({ atributos, valores, contexto, editavel, aoAlterar }: AtributosFichaProps) {
+export default function AtributosFicha({ secao, atributos, valores, contexto, editavel, aoAlterar }: AtributosFichaProps) {
   return (
-    <SecaoFicha id="atributos" titulo="Atributos" icone="bi-lightning-charge">
-      <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 2xl:grid-cols-6">
+    <SecaoFicha id={secao.id} titulo={secao.titulo} icone={secao.icone} classes="@container">
+      <ul className="grid grid-cols-2 gap-3 @sm:grid-cols-3 @4xl:grid-cols-6">
         {atributos.map((atributo) => {
           const valor = valores[atributo.id] ?? atributo.padrao;
           const rolagem = atributo.rolagem ? avaliarFormula(atributo.rolagem, contexto) : null;
@@ -31,7 +32,7 @@ export default function AtributosFicha({ atributos, valores, contexto, editavel,
                 minimo={atributo.minimo}
                 maximo={atributo.maximo}
                 editavel={editavel}
-                aoAlterar={(numero) => aoAlterar(`atributos.${atributo.id}`, numero)}
+                aoAlterar={(numero) => aoAlterar(`${secao.caminho}.${atributo.id}`, numero)}
                 classes="w-16 text-center"
               />
               {rolagem && <span className="font-mono text-xs opacity-70" title={atributo.rolagem ?? undefined}>{descreverFormula(rolagem)}</span>}

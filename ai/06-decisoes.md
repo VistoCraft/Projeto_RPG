@@ -4,6 +4,42 @@ Uma entrada por decisão, a mais recente no topo. Formato: **data — título**,
 
 ---
 
+## 2026-11-09 — Estilo da ficha configurável no template
+
+- **Contexto:** o usuário queria fichas com visual próprio, um CSS mais dinâmico para cada uma.
+- **Decisão:** o modelo ganhou `estilo` (tema de cores, cor de destaque, fonte dos títulos e do texto, cantos, bordas, títulos, espaçamento e `secoes` com cor/borda/título por seção), só com valores de listas fechadas e cores `#rrggbb`, validados no backend. Nada de CSS livre (risco de injeção e de quebrar o layout). Na tela, tudo vira troca de variáveis CSS dentro da ficha (`data-*` + `--cor-ficha`), então os componentes da ficha não mudaram, só passaram a usar `destaque` onde usavam `arcano`.
+- **Consequências:** o estilo é do template (vale para todas as fichas dele), não de cada ficha. Mesas já criadas guardam a cópia antiga do modelo até a 4.7. O editor só grava o que difere do padrão.
+
+## 2026-11-09 — Template 5e com todos os campos da ficha de papel
+
+- **Contexto:** o usuário pediu todos os campos da primeira página da ficha oficial do 5e, organizados para a tela.
+- **Decisão:** os campos que faltavam viraram seções novas do template (combate, testes contra a morte, personalidade, proficiências e idiomas, moedas, equipamento, características) e o template ganhou um layout em 3 colunas no topo. Só os nomes dos campos (termos do SRD) foram usados; o visual da ficha oficial não foi copiado. O bônus de proficiência virou um campo que o jogador preenche (como no papel), usado por todas as perícias. A grade de atributos passou a se ajustar ao espaço da coluna (`@container`), e o menu do site mostra só ícones no celular.
+- **Consequências:** o seed do 5e mudou (migração `Template5eFichaCompleta`); mesas já criadas continuam com a cópia antiga do modelo até a 4.7.
+
+## 2026-11-09 — Seções novas no template, com formatos padrão
+
+- **Contexto:** o mestre queria áreas próprias na ficha (inventário, magias, história...).
+- **Decisão:** `secoesExtras` no modelo, cada uma com um de 6 formatos que reaproveitam os componentes da ficha (campos, valores, barras, marcadores, tabela) mais anotações; os valores ficam em `extras.<id>` nos dados da ficha. O editor oferece os formatos e modelos prontos, e a seção nova entra no grid.
+- **Consequências:** ids continuam únicos no modelo inteiro (seções e itens), para as fórmulas. Mudar o formato de uma seção não existe: remove-se e cria-se outra.
+
+## 2026-11-09 — Layout da ficha no template e arrastar no editor
+
+- **Contexto:** o mestre queria decidir onde ficam atributos, perícias e as outras seções, e reordenar os itens sem clicar várias vezes nas setas.
+- **Decisão:** o modelo ganhou `layout` opcional (linhas com divisões prontas e seções por coluna), validado no backend. O editor monta esse grid arrastando as seções (HTML5 drag and drop, sem biblioteca nova) e também por um seletor acessível pelo teclado. Itens de cada seção se arrastam pela alça; as setas continuam.
+- **Consequências:** modelos antigos, sem `layout`, usam o layout padrão. As divisões são fixas (5 opções) para a ficha continuar bonita e responsiva; colunas de largura livre ficaram de fora.
+
+## 2026-11-09 — Templates do usuário e editor de modelo (fase 4.6)
+
+- **Contexto:** o mestre precisava montar fichas para outros sistemas além do 5e.
+- **Decisão:** área `/templates` com editor por seções (sem JSON à mão), prévia ao vivo da ficha e as duas fichas (completa e simplificada) no mesmo template. Ids saem do nome automaticamente; renomear um id atualiza as fórmulas. A validação de verdade é a do backend; o frontend só mostra a dica do cálculo e traduz o caminho dos erros.
+- **Consequências:** mudar um template não altera mesas existentes; levar as mudanças para uma mesa é a 4.7 (alterar o modelo da mesa com backup e conversão).
+
+## 2026-11-09 — Logo próprio e biblioteca com propostas (fase 4.5)
+
+- **Contexto:** o logo era de D&D (marca de terceiros) e o jogador precisava guardar personagens e levá-los a outras mesas.
+- **Decisão:** logo próprio em SVG (`Logo.tsx`, dado de 20 faces com as cores do tema) e o mesmo emblema como ícone da aba (`app/icon.svg`); o texto é "RPG de mesa" até o nome do site ser escolhido. Biblioteca em `/biblioteca` (cópias só leitura). O jogador propõe pela área de fichas da mesa e a equipe aceita ou recusa ali mesmo; tudo atualiza pelo evento `PropostasAtualizadas`.
+- **Consequências:** editar uma ficha da biblioteca não existe: a cópia só muda quando volta para uma mesa. Ficha de outro modelo só entra depois da conversão da 4.7.
+
 ## 2026-11-09 — Ficha montada pelo modelo, em página própria (fase 4.4)
 
 - **Contexto:** a ficha antiga tinha campos fixos e salvava no `localStorage`.

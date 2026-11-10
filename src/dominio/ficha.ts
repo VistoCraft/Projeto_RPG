@@ -37,6 +37,11 @@ export const ROTULOS_TIPO_FICHA: Record<TipoFicha, string> = {
   simplificada: "Pets e NPCs",
 };
 
+export const ROTULO_TIPO_FICHA: Record<TipoFicha, string> = {
+  completa: "Personagem",
+  simplificada: "Pet ou NPC",
+};
+
 export const OPCOES_TIPO_FICHA: Opcao[] = [
   { valor: "completa", rotulo: "Completa: personagem de jogador ou NPC importante" },
   { valor: "simplificada", rotulo: "Simplificada: pet, montaria ou NPC de apoio" },

@@ -5,6 +5,7 @@ import Link from "next/link";
 import useTema from "../useTema";
 import BotaoTema from "../BotaoTema";
 import PainelLateral, { type ItemPainel } from "../PainelLateral";
+import Logo from "../Logo";
 
 type TelaAutenticacaoProps = {
   children: ReactNode;
@@ -19,7 +20,7 @@ const vantagens: ItemPainel[] = [
 
 const logo = (
   <Link href="/" aria-label="Página inicial">
-    <img className="w-[120px]" src="/img/Logo.png" alt="Logo RPG" />
+    <Logo tamanho="grande" />
   </Link>
 );
 
