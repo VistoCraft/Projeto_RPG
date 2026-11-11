@@ -14,6 +14,7 @@ import FaixaPagina from "../FaixaPagina";
 import AvisoLogin from "../AvisoLogin";
 import ListaErros from "../formulario/ListaErros";
 import FichaModelo from "./FichaModelo";
+import BackupsFicha from "./BackupsFicha";
 import { chamadaSecundaria, conteudoPagina } from "../estilos";
 
 type Modo = "editar" | "ver";
@@ -36,6 +37,7 @@ export default function PaginaFicha() {
   const { ficha, carregando, erros, situacao, alterar } = useFicha(id, fichaId, logado);
   const [modo, setModo] = useState<Modo>("editar");
   const [avisoBiblioteca, setAvisoBiblioteca] = useState<string | null>(null);
+  const [vendoBackups, setVendoBackups] = useState(false);
 
   const guardarCopia = async () => {
     const resultado = await salvarNaBiblioteca(id, fichaId);
@@ -46,6 +48,7 @@ export default function PaginaFicha() {
   const podeEditar = Boolean(ficha?.podeEditar && mesaAtiva);
   const editavel = podeEditar && modo === "editar";
   const estadoGravacao = SITUACOES[situacao];
+  const temVersoesAntigas = Boolean(ficha?.podeEditar && ficha.versaoModelo > 1);
 
   const rotulo = (
     <>
@@ -77,6 +80,11 @@ export default function PaginaFicha() {
               <i className="bi bi-bookmark-plus" aria-hidden="true"></i> Salvar na biblioteca
             </button>
           )}
+          {temVersoesAntigas && (
+            <button type="button" className={`${chamadaSecundaria} cursor-pointer`} aria-pressed={vendoBackups} onClick={() => setVendoBackups((atual) => !atual)}>
+              <i className="bi bi-clock-history" aria-hidden="true"></i> Versões antigas
+            </button>
+          )}
           {podeEditar && (
             <button
               type="button"
@@ -102,6 +110,7 @@ export default function PaginaFicha() {
             </p>
           )}
           <ListaErros erros={erros} />
+          {vendoBackups && <BackupsFicha mesaId={id} fichaId={fichaId} aoFechar={() => setVendoBackups(false)} />}
           {ficha && <FichaModelo modelo={ficha.modelo} conteudo={ficha.conteudo} editavel={editavel} aoAlterar={alterar} />}
         </div>
       </main>

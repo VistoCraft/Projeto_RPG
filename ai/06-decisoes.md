@@ -4,6 +4,12 @@ Uma entrada por decisão, a mais recente no topo. Formato: **data — título**,
 
 ---
 
+## 2026-11-11 — Alterar o modelo da mesa com backup e conversão (fase 4.7)
+
+- **Contexto:** mudar um template não alterava as mesas já criadas, e o mestre precisava ajustar a ficha da mesa sem perder os dados dos jogadores.
+- **Decisão:** página `/mesas/[id]/modelo` com o mesmo editor dos templates (`EditorModelosFicha`), opção de começar de um template e um passo de conversão antes de aplicar. A regra da conversão (quais campos existem, tipos e origem padrão) fica só no backend, que devolve tudo em `POST /mesas/{id}/modelo-ficha/previa`; o frontend só mostra os seletores. Cada ficha convertida ganha um backup, visto em "Versões antigas" na ficha.
+- **Consequências:** a ficha aberta recarrega sozinha pelo `FichasAtualizadas` que o backend emite depois da conversão. O template de origem não muda, e a mesa continua ligada ao mesmo `TemplateId`.
+
 ## 2026-11-09 — Estilo da ficha configurável no template
 
 - **Contexto:** o usuário queria fichas com visual próprio, um CSS mais dinâmico para cada uma.

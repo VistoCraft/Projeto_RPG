@@ -4,19 +4,9 @@ import type { ModeloFicha } from "../dominio/modeloFicha";
 import type { Falha, Resultado } from "../dominio/resultado";
 import type { RespostaRest } from "../providers/FetchRestProvider";
 import { ehObjeto, falhaDaResposta } from "./errosApi";
+import { mensagensDeModelo } from "./errosModelo";
 
 const ROTA_TEMPLATES = "/templates";
-const PREFIXO_ERRO_DE_MODELO = "Modelo";
-const CAMINHO_DE_ITEM = /(detalhes|atributos|pericias|barras|condicoes|combate\.colunas)\[(\d+)\](\.rolagem)?/g;
-
-const NOMES_DE_SECAO: Record<string, string> = {
-  detalhes: "Detalhes",
-  atributos: "Atributos",
-  pericias: "Perícias",
-  barras: "Barras",
-  condicoes: "Condições",
-  "combate.colunas": "Colunas de ataque",
-};
 const MENSAGEM_FALHA = "Não foi possível salvar o template.";
 const MENSAGEM_NAO_ENCONTRADO = "Template não encontrado.";
 const STATUS_NAO_ENCONTRADO = 404;
@@ -64,22 +54,9 @@ function resultadoDetalhe(resposta: RespostaRest): Resultado<DetalheTemplate> {
 
 function falha(resposta: RespostaRest): Falha {
   if (resposta.status === STATUS_NAO_ENCONTRADO) return { sucesso: false, erros: [MENSAGEM_NAO_ENCONTRADO] };
-  const doModelo = mensagensDoServidor(resposta.corpo);
+  const doModelo = mensagensDeModelo(resposta.corpo, ["TemplateEmUso"]);
   if (doModelo.length > 0) return { sucesso: false, erros: doModelo };
   return falhaDaResposta(resposta, mensagens, MENSAGEM_FALHA);
-}
-
-function mensagensDoServidor(corpo: unknown): string[] {
-  if (!ehObjeto(corpo) || !ehObjeto(corpo.errors)) return [];
-  return Object.entries(corpo.errors)
-    .filter(([codigo]) => codigo.startsWith(PREFIXO_ERRO_DE_MODELO) || codigo === "TemplateEmUso")
-    .flatMap(([, lista]) => (Array.isArray(lista) ? lista.filter((item): item is string => typeof item === "string") : []))
-    .map(legivel);
-}
-
-function legivel(mensagem: string): string {
-  return mensagem.replace(CAMINHO_DE_ITEM, (_, secao: string, indice: string, rolagem?: string) =>
-    `${NOMES_DE_SECAO[secao] ?? secao}, item ${Number(indice) + 1}${rolagem ? " (rolagem)" : ""}`);
 }
 
 function ehTemplate(valor: unknown): valor is Template {

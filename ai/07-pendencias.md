@@ -8,6 +8,8 @@ A ficha atual era um teste e será refeita do zero, montada pelo modelo da mesa 
 
 - A ficha de teste antiga (`/ficha`, `Ficha.tsx`, `Detalhes`, `Status`, `Barra`, `Atributos`, `Pericias`, `Combate`, `Cabecalho`, `usePersistido`, `useDetalhes`, `useBarras`) foi substituída pela ficha da mesa e pode ser apagada.
 - A ficha mostra o resultado das fórmulas, mas ainda não rola os dados (entra com o chat).
+- A cópia na biblioteca de uma ficha de mesa com modelo alterado é mostrada com o modelo do template, e a proposta só aceita fichas com o mesmo template ou modelo igual; falta guardar o modelo na cópia e usar a conversão ao aceitar.
+- Backups de ficha só podem ser vistos; não há restaurar.
 
 Os botões existem na tela, mas não fazem nada:
 

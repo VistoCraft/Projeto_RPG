@@ -25,6 +25,7 @@ app/
   mesas/page.tsx       # Rota "/mesas" — só renderiza <Hub /> (aberto a visitantes)
   mesas/nova/, mesas/[id]/ # Rotas "/mesas/nova" (<NovaMesa />) e "/mesas/[id]" (<PaginaMesa />)
   mesas/[id]/fichas/[fichaId]/ # Rota da ficha (<PaginaFicha />)
+  mesas/[id]/modelo/    # Rota do modelo da ficha da mesa (<PaginaModeloMesa />)
   templates/, templates/novo/, templates/[id]/ # Lista de templates, novo (?base=id copia um template) e edição/visualização
   biblioteca/, biblioteca/fichas/[fichaId]/ # Rotas "/biblioteca" (<PaginaBiblioteca />) e da ficha guardada (<PaginaFichaBiblioteca />)
   termos/, privacidade/, creditos/ # Rotas "/termos", "/privacidade" e "/creditos" (atribuição do SRD 5.1 e licenças)
@@ -62,20 +63,21 @@ app/
                        #   FormularioEdicaoMesa, ModalExclusao, ListaParticipantes, AreasMesa, PainelFichas, PainelPropostas, ItemFicha, FormularioFicha,
                        #   useMesa, useFichas, usePropostas, useTempoRealMesa, useTemplates
     biblioteca/        # PaginaBiblioteca, CartaoBiblioteca, PaginaFichaBiblioteca (FichaModelo só leitura)
-    templates/         # PaginaTemplates, CartaoTemplate, PaginaEditorTemplate, EditorTemplate (abas + prévia), EditorModelo,
+    templates/         # PaginaTemplates, CartaoTemplate, PaginaEditorTemplate, EditorTemplate (nome + EditorModelosFicha: abas + prévia), EditorModelo,
                        #   EditorEstilo (estilo da ficha: estilos prontos, tema, cor, fontes, cantos, bordas, títulos, espaçamento e por seção),
                        #   EditorLayout (grid da ficha: linhas, divisões e seções arrastáveis), EditorSecoesExtras (seções novas: formatos e modelos prontos),
                        #   RenderizadoresModelo (linhas de campo, valor, barra e coluna + dica da fórmula), ListaEditavel (genérica: arrastar, reordenar,
                        #   remover, id a partir do nome), CamposEditor, useReordenacao (arrastar e soltar em listas)
+    modeloMesa/        # PaginaModeloMesa, TopoModeloMesa, ConversaoModelo (campo novo ← campo antigo), useModeloMesa
     formulario/        # Peças genéricas: CartaoFormulario, CaixaCampo, CampoFormulario, CampoSelecao, CampoBuscaSelecao, CampoDataSelecao, CampoAreaTexto, ListaErros,
                        #   useEnvioFormulario
     ficha/             # Ficha montada pelo modelo: PaginaFicha, FichaModelo (reaproveitável, sem depender da página), SecaoFicha,
-                       #   DetalhesFicha, BarrasFicha, AtributosFicha, PericiasFicha, CondicoesFicha, CombateFicha, AnotacoesFicha, CampoNumeroFicha, useFicha
+                       #   BackupsFicha, DetalhesFicha, BarrasFicha, AtributosFicha, PericiasFicha, CondicoesFicha, CombateFicha, AnotacoesFicha, CampoNumeroFicha, useFicha
     autenticacao/      # Telas de login e cadastro: TelaAutenticacao, CampoAceiteTermos, FormularioLogin, FormularioCadastro, usePaises
 src/
-  dominio/             # Tipos de domínio (Credenciais, Perfil, Mesa, DetalheMesa, Template, Ficha, ModeloFicha, Resultado...), formula.ts (avalia as fórmulas para exibir), layoutFicha.ts (layout das seções e operações), estiloFicha.ts (estilo da ficha: opções, estilos prontos, data-* da raiz e limpeza), listas.ts (moverItem) e regras de papel (mesa.ts), listas (países, como conheceu) e termos.ts (versão, contato)
+  dominio/             # Tipos de domínio (Credenciais, Perfil, Mesa, DetalheMesa, Template, Ficha, ModeloFicha, Resultado...), formula.ts (avalia as fórmulas para exibir), modeloMesa.ts (prévia, conversão e backups), layoutFicha.ts (layout das seções e operações), estiloFicha.ts (estilo da ficha: opções, estilos prontos, data-* da raiz e limpeza), listas.ts (moverItem) e regras de papel (mesa.ts), listas (países, como conheceu) e termos.ts (versão, contato)
   providers/           # FetchRestProvider, a instância api (URL em NEXT_PUBLIC_API_URL) e ConexaoTempoReal (SignalR)
-  repositories/        # Únicas chamadas HTTP e de tempo real (regra R6), com DTO → domínio; erros traduzidos em errosApi.ts
+  repositories/        # Únicas chamadas HTTP e de tempo real (regra R6), com DTO → domínio; erros traduzidos em errosApi.ts (e os do modelo em errosModelo.ts)
 public/img/            # Imagens, servidas em /img/...
 ```
 

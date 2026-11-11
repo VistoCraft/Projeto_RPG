@@ -189,7 +189,7 @@ Rodapé de todas as páginas (em `app/layout.tsx`), de largura total e em linha 
 | `useTempoRealMesa.ts` | `(mesaId, ativo, { aoAtualizar, aoExcluir, aoAtualizarFichas })`. Assina os eventos da mesa enquanto a página está aberta; guarda os callbacks num `ref` para não reassinar a cada render |
 | `useMesa.ts` | `(id, logado) => { mesa, carregando, executando, erros, executar, substituir, recarregar }`. `recarregar()` busca a mesa de novo sem mostrar "carregando" (usado pelo tempo real). `executar(acao)` roda uma ação do repositório e troca a mesa pela resposta; `substituir(mesa)` troca direto (usado pelo formulário de edição, que mostra os próprios erros) |
 | `CabecalhoMesa.tsx` | Props `mesa`, `estado`. `FaixaPagina` com voltar, selo (`rotuloDoSelo`), mestre, template, visibilidade, nome, descrição e meu papel; botões "Entrar como espectador" e "Sair da mesa" |
-| `PainelGerencia.tsx` | Props `mesa`, `estado`. Botão de editar (abre `FormularioEdicaoMesa`), código de convite (copiar, gerar novo), bloquear entrada, encerrar/reabrir; só o dono vê o excluir |
+| `PainelGerencia.tsx` | Props `mesa`, `estado`. Botão de editar (abre `FormularioEdicaoMesa`), link para `/mesas/[id]/modelo`, código de convite (copiar, gerar novo), bloquear entrada, encerrar/reabrir; só o dono vê o excluir |
 | `FormularioEdicaoMesa.tsx` | Props `mesa`, `estado`, `aoFechar`. Nome, descrição e visibilidade (mantém o bloqueio de entrada); só salva se algo mudou, mostra os erros dentro do formulário e fecha ao salvar |
 | `ModalExclusao.tsx` | Props `mesa`, `aoFechar`. `<dialog>` que explica o que é apagado e o que é guardado e só libera o botão quando o nome da mesa é digitado |
 | `ListaParticipantes.tsx` | Props `mesa`, `estado`. Apelido e papel; quem gerencia troca o papel (`papeisAtribuiveis`) e remove (`podeRemover`) |
@@ -214,7 +214,7 @@ Rodapé de todas as páginas (em `app/layout.tsx`), de largura total e em linha 
 
 | Arquivo | Papel |
 | --- | --- |
-| `PaginaFicha.tsx` | `"use client"`. Raiz de `/mesas/[id]/fichas/[fichaId]`: `FaixaPagina` com volta para a mesa, tipo, jogador, "Só leitura" ou a situação da gravação (`role="status"`) e o botão Modo leitura / Editar ficha; abaixo, `FichaModelo`. Só edita quem `podeEditar` com a mesa ativa |
+| `PaginaFicha.tsx` | `"use client"`. Raiz de `/mesas/[id]/fichas/[fichaId]`: `FaixaPagina` com volta para a mesa, tipo, jogador, "Só leitura" ou a situação da gravação (`role="status"`) o botão Versões antigas (quem edita, com `versaoModelo > 1`) e Modo leitura / Editar ficha; abaixo, `BackupsFicha` (se aberto) e `FichaModelo`. Só edita quem `podeEditar` com a mesa ativa |
 | `useFicha.ts` | `(mesaId, fichaId, ativo)` → `{ ficha, carregando, erros, situacao, alterar }`. `situacao`: `salvo`, `pendente`, `salvando` ou `erro` (recarrega a ficha). Envia os campos pendentes ao sair da página |
 | `FichaModelo.tsx` | Props `modelo`, `conteudo`, `editavel`, `aoAlterar`. Monta o contexto das fórmulas (atributo, detalhe numérico, perícia, barra; `treinada(id)`) e distribui as seções pelo `layout` do modelo (`layoutParaExibir`: padrão se não houver, seções de fora no fim; seções vazias somem e uma linha com só uma coluna preenchida ocupa a largura toda) |
 | | Estilo: a raiz recebe `atributosDaFicha(modelo.estilo)` (`data-tema-ficha`, `data-fonte-*`, `data-cantos-ficha`, `data-densidade-ficha`, `--cor-ficha`) e ganha moldura com fundo próprio quando o tema não é o padrão; cada seção fica num invólucro com `atributosDaSecao(cor)` e um `AparenciaSecaoContexto.Provider` |
@@ -234,6 +234,7 @@ Rodapé de todas as páginas (em `app/layout.tsx`), de largura total e em linha 
 | --- | --- |
 | `PaginaBiblioteca.tsx` | `"use client"`. Raiz de `/biblioteca`: `FaixaPagina`, estado vazio explicando como guardar e grade de `CartaoBiblioteca` |
 | `CartaoBiblioteca.tsx` | Props `ficha`, `executando`, `aoExcluir`. Nome, tipo, modelo, data (formatada em `useEffect`), Ver ficha e excluir com confirmação |
+| `BackupsFicha.tsx` | Props `mesaId`, `fichaId`, `aoFechar`. Lista os backups da ficha (versão e data) e mostra o escolhido em `FichaModelo` só leitura, com o modelo daquela versão |
 | `PaginaFichaBiblioteca.tsx` | `"use client"`. Raiz de `/biblioteca/fichas/[fichaId]`: a cópia guardada em `FichaModelo` com `editavel={false}` |
 | `Logo.tsx` | Props `tamanho?` (`pequeno`, `medio`, `grande`), `comTexto?`. `EmblemaLogo` desenha o dado com gradientes do tema (`useId` para os ids) |
 | `useColecaoRemota.ts` | `(buscar, ativo)` → `{ itens, carregando, executando, erros, executar, recarregar }`; base de `useFichas`, `usePropostas` e da biblioteca |
@@ -245,7 +246,8 @@ Rodapé de todas as páginas (em `app/layout.tsx`), de largura total e em linha 
 | `PaginaTemplates.tsx` | `"use client"`. Raiz de `/templates`: "Padrão do site" e "Seus templates" (logado), botão Novo template |
 | `CartaoTemplate.tsx` | Props `template`, `logado`, `executando?`, `aoExcluir?`. Ver (padrão) ou Editar (seu), Criar cópia e excluir com confirmação |
 | `PaginaEditorTemplate.tsx` | `"use client"`. Props `{ modo: "novo", baseId }` ou `{ modo: "existente", templateId }`. Novo em branco ou cópia de `?base=`; template padrão abre só para leitura com "Criar cópia para editar"; ao criar, vai para `/templates/[id]` |
-| `EditorTemplate.tsx` | Props `inicial`, `editavel`, `textoSalvar`, `aoSalvar` (devolve os erros). Nome e descrição, abas Ficha completa / Ficha simplificada, editor à esquerda e prévia (`FichaModelo`) à direita a partir de `2xl`; limpa o modelo (`limparModelo`) antes de salvar |
+| `EditorTemplate.tsx` | Props `inicial`, `editavel`, `textoSalvar`, `aoSalvar` (devolve os erros). Nome, descrição e salvar no `topo` de `EditorModelosFicha`; limpa o modelo (`limparModelo`) antes de salvar |
+| `EditorModelosFicha.tsx` | Props `modelos` (completa e simplificada), `editavel`, `aoAlterar(tipo, modelo)`, `rotulo`, `topo`. Cartão com o `topo` e as abas, editor (`EditorModelo`) à esquerda e prévia (`FichaModelo`) à direita a partir de `2xl`; usado pelo template e pelo modelo da mesa |
 | `EditorModelo.tsx` | Props `modelo`, `editavel`, `aoAlterar`. Uma `ListaEditavel` por seção; dica com o resultado da fórmula usando os valores padrão; trocar um id troca as referências nas fórmulas e no atributo das perícias (`renomearId`) |
 | `EditorEstilo.tsx` | Props `modelo`, `editavel`, `aoAlterar(estilo)`. Estilos prontos (`ESTILOS_PRONTOS`, cada botão mostra uma amostra com o próprio estilo), selects de tema, fontes, espaçamento, cantos, bordas e títulos, cor de destaque (`input type=color` + sugestões) e, em "Estilo por seção", cor, borda e título de cada seção (vazio = igual à ficha) |
 | `EditorSecoesExtras.tsx` | Props `modelo`, `editavel`, `aoAlterar`. "Nova seção" abre os 6 formatos (`FORMATOS_SECAO`) e os modelos prontos (`MODELOS_PRONTOS`: Inventário, Magias, Moedas, Idiomas, Energia, História); cada seção é um cartão arrastável com nome, id (acompanha o nome), formato e a `ListaEditavel` embutida do formato; a seção nova entra numa linha nova do grid e, ao remover, sai do grid |
@@ -284,3 +286,13 @@ Rodapé de todas as páginas (em `app/layout.tsx`), de largura total e em linha 
 3. Estilize só com classes Tailwind. Reaproveite as constantes de `estilos.ts`; se uma combinação nova se repetir, adicione lá.
 4. Só use `"use client"` se ele tiver hooks **e** for importado fora de `Ficha`.
 5. Adicione uma seção neste arquivo e atualize a árvore em [02-arquitetura.md](02-arquitetura.md).
+
+## `modeloMesa/`
+
+| Arquivo | O que faz |
+| --- | --- |
+| `PaginaModeloMesa.tsx` | `"use client"`. Raiz de `/mesas/[id]/modelo`: edita um rascunho do modelo da mesa em `EditorModelosFicha` (só dono e co-mestre, mesa aberta), revisa a conversão e aplica; os outros veem só leitura |
+| `TopoModeloMesa.tsx` | Versão do modelo, "Começar de um template" (carrega o modelo de um template no rascunho), Desfazer mudanças e Revisar conversão |
+| `ConversaoModelo.tsx` | Por tipo de ficha que muda: cada campo novo com um seletor "Vem de" (campos antigos do mesmo tipo ou "Começa vazio"), já preenchido com a origem padrão da prévia; botão Aplicar e converter N fichas |
+| `useModeloMesa.ts` | Carrega o modelo atual da mesa (`GET /mesas/{id}/modelo-ficha`) e permite trocar pelo que o PUT devolve |
+

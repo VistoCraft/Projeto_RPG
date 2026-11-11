@@ -4,7 +4,7 @@ Tecnologias e configuração: [04-tecnologias.md](04-tecnologias.md). Contexto e
 
 ## Como a página é montada
 
-Rotas: `/` (home, apresentação do produto), `/mesas` (hub, aberto a visitantes), `/mesas/nova`, `/mesas/[id]`, `/mesas/[id]/fichas/[fichaId]`, `/biblioteca`, `/biblioteca/fichas/[fichaId]`, `/templates`, `/templates/novo`, `/templates/[id]`, `/termos`, `/privacidade`, `/creditos`, `/ficha`, `/login` e `/cadastro`. Nenhum link leva à `/ficha` por enquanto. As duas últimas ficam no route group `app/(autenticacao)/`, que tem um layout próprio (`TelaAutenticacao`). Login, cadastro, mesas e a ficha da mesa falam com o backend (`Projeto_RPG_Backend`); só a ficha de teste antiga (`/ficha`) não.
+Rotas: `/` (home, apresentação do produto), `/mesas` (hub, aberto a visitantes), `/mesas/nova`, `/mesas/[id]`, `/mesas/[id]/fichas/[fichaId]`, `/mesas/[id]/modelo`, `/biblioteca`, `/biblioteca/fichas/[fichaId]`, `/templates`, `/templates/novo`, `/templates/[id]`, `/termos`, `/privacidade`, `/creditos`, `/ficha`, `/login` e `/cadastro`. Nenhum link leva à `/ficha` por enquanto. As duas últimas ficam no route group `app/(autenticacao)/`, que tem um layout próprio (`TelaAutenticacao`). Login, cadastro, mesas e a ficha da mesa falam com o backend (`Projeto_RPG_Backend`); só a ficha de teste antiga (`/ficha`) não.
 
 ```
 app/layout.tsx          (Server Component)  <html class="dark">, <body> (flex coluna + <Rodape /> no fim), metadata, fontes, globals.css e bootstrap-icons
@@ -41,7 +41,8 @@ app/mesas/[id]     ─► PaginaMesa ("use client": useTema, useSessao, useMesa)
                        MesaAtualizada → recarrega mesa, fichas e propostas · FichasAtualizadas → fichas · PropostasAtualizadas → propostas · MesaExcluida → /mesas
                      usePropostas ─► bibliotecaRepositorio (propor, aceitar, recusar, cancelar em /mesas/{id}/propostas) ─► PainelPropostas (dentro de PainelFichas)
 app/templates      ─► PaginaTemplates ─► CartaoTemplate (Ver/Editar, Criar cópia, excluir)
-app/templates/novo, [id] ─► PaginaEditorTemplate ─► EditorTemplate (nome, abas completa/simplificada, prévia com FichaModelo)
+app/templates/novo, [id] ─► PaginaEditorTemplate ─► EditorTemplate (nome e descrição) ─► EditorModelosFicha (abas completa/simplificada, prévia com FichaModelo)
+app/mesas/[id]/modelo ─► PaginaModeloMesa (useModeloMesa) ─► EditorModelosFicha + TopoModeloMesa (puxar de template, revisar) ─► ConversaoModelo ─► modeloMesaRepositorio (GET/PUT /mesas/{id}/modelo-ficha, POST .../previa)
                      ─► EditorModelo ─► ListaEditavel por seção ─► templatesRepositorio (POST/PUT /templates; erros do modelo traduzidos para "Perícias, item 3")
 app/biblioteca     ─► PaginaBiblioteca (useColecaoRemota(listarBiblioteca)) ─► CartaoBiblioteca ─► /biblioteca/fichas/[fichaId] (FichaModelo só leitura)
                        MesaAtualizada ─► useMesa.recarregar()   MesaExcluida ─► volta para /mesas
@@ -84,7 +85,7 @@ useDetalhes() ─► [detalhes, alterar]   useBarras() ─► [barras, ajustarBa
 ## Ficha da mesa
 
 ```
-app/mesas/[id]/fichas/[fichaId] ─► PaginaFicha ("use client": useTema, useSessao, useMesa, useFicha) ─► FaixaPagina + FichaModelo
+app/mesas/[id]/fichas/[fichaId] ─► PaginaFicha ("use client": useTema, useSessao, useMesa, useFicha) ─► FaixaPagina + BackupsFicha (versões antigas) + FichaModelo
   useFicha ─► fichasRepositorio.obterFicha (GET .../fichas/{fichaId}: dados + modelo) ─► normalizarConteudo
            ─► alterar(caminho, valor): muda na tela na hora, junta os campos e envia depois de 400 ms (PATCH .../fichas/{fichaId})
            ─► assinarFicha: FichaAtualizada (campos de outra pessoa, menos os editados aqui há menos de 1,5 s) · FichasAtualizadas (recarrega)

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Link from "next/link";
 import { atualizarMesa, encerrarMesa, gerarNovoCodigo, reabrirMesa } from "@/src/repositories/mesasRepositorio";
 import { paraDadosEdicao, type DetalheMesa } from "@/src/dominio/mesa";
 import type { EstadoMesa } from "./useMesa";
@@ -30,6 +31,11 @@ export default function PainelGerencia({ mesa, estado }: PainelGerenciaProps) {
         </button>
       )}
       {ativa && editando && <FormularioEdicaoMesa mesa={mesa} estado={estado} aoFechar={() => setEditando(false)} />}
+      {ativa && (
+        <Link className={`${botaoContorno} self-start`} href={`/mesas/${mesa.id}/modelo`}>
+          <i className="bi bi-ui-checks-grid" aria-hidden="true"></i> Alterar modelo da ficha
+        </Link>
+      )}
       {ativa && mesa.codigoConvite && (
         <div className="flex flex-col gap-2 rounded-md border border-borda bg-fundo p-3">
           <span className="text-xs font-semibold tracking-wide opacity-75">Código de convite</span>
